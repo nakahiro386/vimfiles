@@ -3,8 +3,8 @@ bundle/**/*
 bundle_local/**/*
 !bundle_local/.gitkeep
 dict/**/*
-!dict/cp932/.gitkeep
-!dict/utf-8/.gitkeep
+!dict/migemo/cp932/.gitkeep
+!dict/migemo/utf-8/.gitkeep
 spell/**/*
 !spell/.gitkeep
 tmp/**/*
