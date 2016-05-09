@@ -9,5 +9,6 @@ spell/**/*
 !spell/.gitkeep
 unite_bookmark/**/*
 !unite_bookmark/.gitkeep
+launcher_local.vim
 vimrc_local.vim
 .vimrc_local.vim

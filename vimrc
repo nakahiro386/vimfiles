@@ -2771,39 +2771,22 @@ if Tap('unite.vim') "{{{
     let s:c = { 'description' : 'Shortcut' }
     let s:c.command_candidates = []
 
-    if g:is_windows
-      if executable('explorer.exe') "{{{
-        call add(s:c.command_candidates, ['explorer /n, %:h', 'call Start($WINDIR.''\explorer.exe'' . '' /n, ''.expand(''%:p:h:gs?/?\?''))'])
+    function! s:readLauncher(candidates, file) "{{{
+      let l:file = expand(a:file)
+      if filereadable(l:file)
+        for l:line in readfile(l:file)
+          if l:line !~? '^"'
+            call add(a:candidates, split(l:line, "\t"))
+          endif
+        endfor
       endif
-      if executable('SystemPropertiesAdvanced')
-        call add(s:c.command_candidates, ['SystemPropertiesAdvanced', 'call Start(''SystemPropertiesAdvanced'')'])
-      endif "}}}
-    endif
-    if filereadable(expand('$VIMFILES/launcher.vim')) "{{{
-      for line in readfile(expand('$VIMFILES/launcher.vim'))
-        call add(s:c.command_candidates, split(line, "\t"))
-      endfor
-      unlet line
-    endif "}}}
+    endfunction "}}}
 
-    call add(s:c.command_candidates, ['Unite neobundle', 'Unite -buffer-name=neobundle neobundle'])
-    call add(s:c.command_candidates, ['Unite neobundle/install', 'Unite -buffer-name=neobundleinstall neobundle/install'])
-    call add(s:c.command_candidates, ['Unite neobundle/update', 'Unite -buffer-name=neobundleupdate neobundle/update'])
-    call add(s:c.command_candidates, ['Unite neobundle/log', 'Unite -buffer-name=neobundlelog neobundle/log'])
-    call add(s:c.command_candidates, ['Unite neobundle/lazy', 'Unite -buffer-name=neobundlelazy neobundle/lazy'])
-    call add(s:c.command_candidates, ['Unite neobundle/search', 'Unite -buffer-name=neobundlesearch neobundle/search'])
-    call add(s:c.command_candidates, ['Unite quickfix', 'Unite -buffer-name=quickfix quickfix '])
-    call add(s:c.command_candidates, ['Unite location_list', 'Unite -buffer-name=location_list location_list '])
-    call add(s:c.command_candidates, ['UniteBeautifulAttack', 'Unite -auto-preview -buffer-name=colorscheme colorscheme'])
-    call add(s:c.command_candidates, ['Unite process', 'Unite -buffer-name=process -auto-resize process'])
-    if filereadable(expand('$VIMRUNTIME/syntax/colortest.vim'))
-      call add(s:c.command_candidates, ['ColorTest', "exe 'sp $VIMRUNTIME/syntax/colortest.vim  so %'"])
+    call s:readLauncher(s:c.command_candidates, '$VIMFILES/launcher.vim')
+    if g:is_windows
+      call s:readLauncher(s:c.command_candidates, '$VIMFILES/launcher_win.vim')
     endif
-
-    call add(s:c.command_candidates, ['Reload with encoding', 'Unite menu:reload_encoding'])
-    call add(s:c.command_candidates, ['Reload with fileformat', 'Unite menu:reload_fileformat'])
-    call add(s:c.command_candidates, ['Set fileencoding', 'Unite menu:set_fileencoding'])
-    call add(s:c.command_candidates, ['Set fileformat', 'Unite menu:set_fileformat'])
+    call s:readLauncher(s:c.command_candidates, '$VIMFILES/launcher_local.vim')
 
     let g:unite_source_menu_menus["shortcut"] = deepcopy(s:c)
     unlet s:c
