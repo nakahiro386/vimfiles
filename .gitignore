@@ -5,6 +5,8 @@ bundle_local/
 dict/
 !dict/cp932/.gitkeep
 !dict/utf-8/.gitkeep
+spell/*
+!spell/.gitkeep
 tmp/
 !tmp/view/.gitkeep
 unite_bookmark/
