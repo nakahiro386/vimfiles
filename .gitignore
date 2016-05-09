@@ -7,8 +7,6 @@ dict/**/*
 !dict/migemo/utf-8/.gitkeep
 spell/**/*
 !spell/.gitkeep
-tmp/**/*
-!tmp/view/.gitkeep
 unite_bookmark/**/*
 !unite_bookmark/.gitkeep
 vimrc_local.vim
