@@ -9,4 +9,5 @@ tmp/
 !tmp/view/.gitkeep
 unite_bookmark/
 !unite_bookmark/.gitkeep
+vimrc_local.vim
 .vimrc_local.vim
