@@ -5456,10 +5456,10 @@ function! EchoError(msg) "{{{
   execute 'echohl None'
 endfunction "}}}
 
-function! Source(file) "{{{
+function! Source(file, ...) "{{{
   if filereadable(expand(a:file))
     execute 'source '.a:file
-  else
+  elseif empty(a:000) || a:1 isnot 1
     call add(g:messages, a:file)
   endif
 endfunction "}}}
@@ -5541,12 +5541,8 @@ else
   endif
 endif
 
-if filereadable(expand('$VIMFILES/.vimrc_local.vim'))
-  call Source('$VIMFILES/.vimrc_local.vim')
-endif
-if filereadable(expand('$VIMFILES/vimrc_local.vim'))
-  call Source('$VIMFILES/vimrc_local.vim')
-endif
+call Source('$VIMFILES/.vimrc_local.vim', 1)
+call Source('$VIMFILES/vimrc_local.vim', 1)
 
 if len(g:messages) > 0
   augroup lazy-starting-msg
