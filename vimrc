@@ -2184,6 +2184,8 @@ if s:neobundle_is_installed && neobundle#load_cache(g:sfile_path)
 
   NeoBundleLazy 'stephpy/vim-yaml', { 'on_ft' : ['yaml'], }
 
+  NeoBundleLazy 'evanmiller/nginx-vim-syntax', { 'on_ft' : ['nginx'], }
+
   " colorscheme"{{{
   NeoBundle 'jammy.vim', { 'frozen' : 1, }
   NeoBundle 'another-dark-scheme', { 'frozen' : 1, }
