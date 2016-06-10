@@ -2186,13 +2186,6 @@ if s:neobundle_is_installed && neobundle#load_cache(g:sfile_path)
 
   NeoBundleLazy 'evanmiller/nginx-vim-syntax', { 'on_ft' : ['nginx'], }
 
-  " colorscheme"{{{
-  NeoBundle 'jammy.vim', { 'frozen' : 1, }
-  NeoBundle 'another-dark-scheme', { 'frozen' : 1, }
-  NeoBundle 'candycode.vim', { 'frozen' : 1, }
-  NeoBundle 'tomasr/molokai', { 'frozen' : 1, }
-  "}}}
-
   NeoBundleLazy 'vim-jp/vimdoc-ja'
   NeoBundleLazy 'chrisbra/vim_faq'
 
@@ -4292,74 +4285,6 @@ function! s:morning() "{{{
   highlight SpecialKey   guifg=DarkGreen  guibg=grey90
   highlight Pmenu        guibg=LightMagenta guifg=black
   highlight Normal       guifg=Black      guibg=grey100
-endfunction "}}}
-function! s:jammy() "{{{
-  highlight Pmenu      guibg=LightMagenta guifg=black
-  highlight SpecialKey   guibg=grey15
-  highlight StatusLineNC gui=NONE         guifg=grey30       guibg=grey10
-  highlight LineNr       guifg=lightred
-  highlight PmenuSel     guifg=black
-  highlight WildMenu     guibg=lightgreen
-  highlight ModeMsg      guibg=lightgreen guifg=red gui=bold
-  highlight Visual       guibg=grey50
-  "highlight Constant     guifg=firebrick2 guibg=grey25
-  highlight Constant     guibg=grey25
-  highlight String       guibg=grey20
-  highlight Comment      guifg=orange
-  highlight Folded       gui=bold guifg=LightBlue
-  "highlight Folded       guifg=LightBlue
-  highlight VertSplit    guifg=grey30
-  highlight Type         guifg=DarkSeaGreen
-  "highlight Type         gui=none         guifg=DarkSeaGreen
-  "highlight Statement    gui=none
-endfunction "}}}
-function! s:candycode() "{{{
-  highlight SpecialKey guibg=grey20
-  "  highlight LineNr     guifg=lightred   guibg=grey20
-  highlight LineNr     guibg=grey10
-  highlight CursorLine term=underline guibg=#2b3b20
-  highlight Type       gui=bold guifg=#70a3dc
-  highlight clear      Visual
-  highlight Visual     gui=none         guibg=grey30 ctermbg=8
-  highlight WildMenu   guifg=#ffffff    guibg=#133293
-  highlight ModeMsg    guifg=lightgreen gui=bold,reverse
-  highlight Constant   guibg=grey20
-  highlight ErrorMsg   gui=none
-  highlight Folded     gui=none
-  highlight VertSplit  guifg=grey30
-  "highight StatusLine term=bold,reverse cterm=bold ctermfg=0 ctermbg=15 guifg=#000000 guibg=#c2bfa5
-  highlight Statusline gui=none
-  highlight StatuslineNC gui=reverse
-  "hi Special term=bold cterm=bold ctermfg=7 gui=bold guifg=#9999aa
-  highlight Special term=bold cterm=bold ctermfg=7 gui=bold guifg=grey50
-  "highlight Comment term=bold ctermfg=6 guifg=#ff9922
-  highlight Comment term=bold ctermfg=6 guifg=#c2bfa5
-endfunction "}}}
-function! s:anotherdark() "{{{
-  highlight Normal       guibg=Black
-  highlight NonText      guibg=grey10
-  highlight SpecialKey   guibg=grey10
-  highlight LineNr       guibg=grey10 guifg=lightred
-  highlight StatusLineNC gui=reverse
-  highlight Type         guifg=SandyBrown
-  highlight clear        Visual
-  highlight Visual       gui=none guibg=grey30
-  highlight Pmenu        guibg=LightMagenta guifg=black
-  highlight PmenuSel     guifg=black
-  highlight WildMenu     guibg=LightMagenta
-  highlight ModeMsg      guifg=lightgreen
-  highlight Constant     guibg=grey20
-  " highlight Comment      guifg=gold
-  "highlight Folded       guifg=Coral
-  highlight Folded       gui=bold guifg=LightBlue
-endfunction "}}}
-function! s:molokai() "{{{
-  highlight Comment      guifg=DarkSeaGreen
-  "highlight Constant guibg=grey20
-  highlight String guibg=grey20
-  highlight VertSplit  guibg=grey60 guifg=grey30
-  highlight LineNr       guifg=lightred
-  highlight Folded       gui=bold guifg=grey40
 endfunction "}}}
 function! s:desert() "{{{
   highlight Normal  ctermfg=15 ctermbg=0  guibg=grey10
