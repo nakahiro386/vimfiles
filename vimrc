@@ -169,9 +169,6 @@ endif
 "}}}
 
 if has('vim_starting') && g:is_windows
-  let $TEMP = ConvEnvPath('$HOME/.tmp')
-  let $TMP = ConvEnvPath('$HOME/.tmp')
-  call Mkdir($TEMP)
   function! AddPath(list, path) "{{{
     let l:path = ConvEnvPath(a:path)
     if index(a:list, l:path, 0, 1) is -1
