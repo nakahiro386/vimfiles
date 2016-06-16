@@ -58,16 +58,6 @@ if g:is_windows
   let g:drive_letter = g:sfile_path[0]
 endif
 
-if g:is_msys && executable('sh')
-  "let &shell = 'sh --login -i'
-  let &shell = 'sh'
-  set shellcmdflag=-c
-  set shellpipe=2>&1\|tee
-  "set shellpipe=>%s\ 2>&1
-  set shellredir=>%s\ 2>&1
-  set shellxquote=\"
-endif
-
 augroup MyAutoCmd
   autocmd!
 augroup END
@@ -104,7 +94,7 @@ scriptencoding utf-8
 function! Is_cmd() "{{{
   return &shell =~? 'cmd.exe' || &term =~? 'win32'
 endfunction "}}}
-if Is_cmd() || g:is_msys
+if Is_cmd()
   set termencoding=cp932
   let g:term_separator='\'
 else
