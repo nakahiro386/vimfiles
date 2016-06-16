@@ -251,7 +251,10 @@ if g:is_windows
   " CraftDrop
   let g:cdrop = expand('$HOME/bin/cdrop/cdrop.exe')
 
-  let g:ipmsg_path = expand('$PROGRAMFILES/IPMsg/ipmsg.exe')
+  let g:ipmsg_path = expand('$LOCALAPPDATA/IPMsg/ipmsg.exe')
+  if !executable(g:ipmsg_path)
+    let g:ipmsg_path = expand('$PROGRAMFILES/IPMsg/ipmsg.exe')
+  endif
 
 endif
 "}}}
