@@ -3962,6 +3962,9 @@ if Tap('vim-quickrun') "{{{
   function! neobundle#hooks.on_post_source(bundle) "{{{
     "{{{ 2012-05-07 - C++でゲームプログラミング
     "http://d.hatena.ne.jp/osyo-manga/20120507
+    let g:titlestring_bk = &titlestring
+    command! RestoreTitlestring let &titlestring = g:titlestring_bk
+
     let s:hook = {
       \   "name" : "anime",
       \   "kind" : "hook",
@@ -3971,7 +3974,7 @@ if Tap('vim-quickrun') "{{{
 
     function! s:hook.on_ready(session, context)
       let self.index_counter = -2
-      let self.titlestring =&titlestring
+      let self.titlestring = &titlestring
     endfunction
 
     function! s:hook.on_output(session, context)
