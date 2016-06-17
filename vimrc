@@ -2065,10 +2065,6 @@ if s:neobundle_is_installed && neobundle#load_cache(g:sfile_path)
     \ }
   "}}}
 
-  NeoBundleLazy 'mattn/vim-mynumber', {
-    \   'on_cmd' : ['ValidateMyNumber', ],
-    \ }
-
   "mattn/webapi-vim{{{
   NeoBundleLazy 'mattn/webapi-vim', {
     \   'on_func' : 'webapi#',
