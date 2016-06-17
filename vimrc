@@ -679,6 +679,13 @@ autocmd MyAutoCmd BufWritePost * call UnBufpath()
 
 "}}}
 "-----------------------------------------------------------------------------
+"Titlestring:{{{
+let &g:titlestring=''
+  \ . '%t%( %M%R%)'
+  \ . '%( (%{&l:buftype==# "" ? expand("%:~:h") : &l:buftype})%)'
+  \ . '%( %a%) - %{v:servername}'
+"}}}
+"-----------------------------------------------------------------------------
 "Statusline:{{{
 set laststatus=2
 
@@ -3988,7 +3995,8 @@ if Tap('vim-quickrun') "{{{
         call add(l:aa_list, repeat('■', n).repeat('□', l:i).' NOW RUNNING')
         let l:i -= 1
       endfor
-      let &titlestring = l:aa_list[ self.index_counter / 5 % len(l:aa_list)  ]
+      let &titlestring = self.titlestring . ' ' .
+        \ l:aa_list[ self.index_counter / 5 % len(l:aa_list)  ]
     endfunction
     function! s:hook.on_exit(session, context)
       let &titlestring  = self.titlestring
