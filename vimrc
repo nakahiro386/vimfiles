@@ -4518,10 +4518,8 @@ augroup MyAutoCmd "{{{
   endfunction "}}}
   "}}}
   "dosbatch"{{{
-  augroup MyAutoCmd
-    autocmd BufNewFile * if &l:filetype ==? 'dosbatch' | setlocal fileformat=dos | setlocal fileencoding=cp932 | endif
-  augroup END
-  function! s:dosbatchSetting()
+  autocmd BufNewFile * if &l:filetype ==? 'dosbatch' | setlocal fileformat=dos fileencoding=cp932 | endif
+  function! s:dosbatchSetting() "{{{
     let g:dosbatch_cmdextversion = 1
     let b:match_words = '\<SETLOCAL\>:\<ENDLOCAL\>'
     "let b:match_words .= ',%:%'
@@ -4533,7 +4531,7 @@ augroup MyAutoCmd "{{{
     syn match dosbatchLineComment '^\s*@REM.*$'
     hi def link dosbatchLineComment Comment
 
-  endfunction
+  endfunction "}}}
   "}}}
   "java"{{{
   let g:java_highlight_all=1
