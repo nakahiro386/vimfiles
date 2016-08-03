@@ -4518,6 +4518,7 @@ augroup MyAutoCmd "{{{
   endfunction "}}}
   "}}}
   "dosbatch"{{{
+  autocmd FileType dos setlocal filetype=dosbatch
   autocmd BufNewFile * if &l:filetype ==? 'dosbatch' | setlocal fileformat=dos fileencoding=cp932 | endif
   function! s:dosbatchSetting() "{{{
     let g:dosbatch_cmdextversion = 1
