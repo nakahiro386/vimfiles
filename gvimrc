@@ -87,7 +87,13 @@ endif
 "画面表示に関する設定"{{{
 if g:is_windows
   function! s:setGuiFont() "{{{
-    if !empty(getfontname('MeiryoKe_Gothic'))
+    if !empty(getfontname('VL_ゴシック'))
+      set guifont=VL_ゴシック:h10:cDEFAULT
+    elseif !empty(getfontname('MyricaM_M'))
+      set guifont=MyricaM_M:h11:cDEFAULT
+    elseif !empty(getfontname('MyricaM_M'))
+      set guifont=MyricaM_M:h11:cDEFAULT
+    elseif !empty(getfontname('MeiryoKe_Gothic'))
       set guifont=MeiryoKe_Gothic:h10:cDEFAULT
     elseif !empty(getfontname('MS_Gothic'))
       set guifont=MS_Gothic:h10:cSHIFTJIS
