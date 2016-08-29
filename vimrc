@@ -103,8 +103,8 @@ else
 endif
 let g:rep_path = ':p:gs?[\/]?'.g:term_separator.'?'
 
-let s:fencs = ['ucs-bom', 'utf-8', 'euc-jp', 'cp932', 'ucs-2le', 'ucs-2',
-  \ 'iso-2022-jp-3', 'euc-jisx0213']
+let s:fencs = ['ucs-bom', 'utf-8', 'utf-16le', 'euc-jp', 'cp932', 'ucs-2le',
+  \ 'ucs-2', 'iso-2022-jp-3', 'euc-jisx0213']
 let &fileencodings = join(s:fencs ,',')
 if has('guess_encode')
   set fileencodings^=guess
@@ -178,16 +178,9 @@ if has('vim_starting') && g:is_windows
 
   let s:PATH = split(tr($PATH, '/', '\'), ';')
   let s:PATH = map(s:PATH, 'ConvEnvPath(v:val)')
-  if !has("win64")
-    call filter(s:PATH, 'v:val !~? "mingw64"')
-  endif
 
   let s:path_list = [ConvEnvPath($VIM)]
   call map(s:PATH, 'AddPath(s:path_list, v:val)')
-
-  " set chocolatey
-  " git ctags diffutils nkfwin curl Lynx jvgrep w3m Libxml Mercurial global
-  " ruby perl python python3 Everything ...
 
   " ruby puts RUBY_VERSION
   " perl VIM::Msg($])
@@ -197,13 +190,6 @@ if has('vim_starting') && g:is_windows
   " if !exists('$RUBYOPT')
     " let $RUBYOPT='-EUTF-8'
   " endif
-
-  "http://sourceforge.net/projects/mingw/files/
-  let s:mingw_path = expand('$ChocolateyBinRoot/MinGW/bin')
-  if !isdirectory(s:mingw_path)
-    let s:mingw_path = g:drive_letter.':/MinGW/bin'
-  endif
-  call AddPath(s:path_list, s:mingw_path)
 
   let $PATH = join(s:path_list, (g:is_windows ? ';' : ':'))
   delfunction AddPath
