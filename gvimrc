@@ -85,31 +85,24 @@ endif
 "}}}
 "-----------------------------------------------------------------------------
 "画面表示に関する設定"{{{
+let g:guiFontList = []
+let g:guiFontWideList = []
 if g:is_windows
-  function! s:setGuiFont() "{{{
-    if !empty(getfontname('VL_ゴシック'))
-      set guifont=VL_ゴシック:h10:cDEFAULT
-    elseif !empty(getfontname('MyricaM_M'))
-      set guifont=MyricaM_M:h11:cDEFAULT
-    elseif !empty(getfontname('MyricaM_M'))
-      set guifont=MyricaM_M:h11:cDEFAULT
-    elseif !empty(getfontname('MeiryoKe_Gothic'))
-      set guifont=MeiryoKe_Gothic:h10:cDEFAULT
-    elseif !empty(getfontname('MS_Gothic'))
-      set guifont=MS_Gothic:h10:cSHIFTJIS
-    endif
-    let &guifontwide = &guifont
-  endfunction "}}}
+  call add(g:guiFontList, 'MeiryoKe_Gothic:h11:cDEFAULT')
+  call add(g:guiFontList, 'MyricaM_M:h12:cDEFAULT')
+  call add(g:guiFontList, 'Myrica_M:h12:cDEFAULT')
+  call add(g:guiFontList, 'VL_ゴシック:h11:cDEFAULT')
+  call add(g:guiFontList, 'MS_Gothic:h10:cSHIFTJIS')
 else
-  function! s:setGuiFont() "{{{
-    if has("gui_gtk2")
-      let &guifont='VL ゴシック 10'
-    else
-      " TODO android
-    endif
-    let &guifontwide = &guifont
-  endfunction "}}}
+  if has("gui_gtk2")
+    call add(g:guiFontList, 'VL ゴシック 10')
+  endif
 endif
+function! s:setGuiFont() "{{{
+  if !empty(g:guiFontList)
+    let &guifont = join(g:guiFontList, ',')
+  endif
+endfunction "}}}
 
 if has('vim_starting')
   autocmd gvimEnter GUIEnter * call s:setGuiFont()
