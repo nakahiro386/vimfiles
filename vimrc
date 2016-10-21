@@ -285,7 +285,7 @@ if &undofile
 endif
 set undoreload=10000
 
-set history=50
+set history=100
 set updatetime=1000
 if has('vim_starting')
   let g:update_time = &updatetime
