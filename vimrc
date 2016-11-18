@@ -4625,6 +4625,35 @@ function! IndentSet(...) "{{{
 endfunction "}}}
 command! -nargs=? IndentSet call IndentSet(<args>)
 
+augroup javap
+  autocmd!
+  autocmd BufReadPre,FileReadPre *.class setlocal binary
+  autocmd BufReadPost,FileReadPost *.class call JavapCurrentBuffer()
+augroup END
+
+function! JavapCurrentBuffer() "{{{
+  silent execute '%del _'
+
+  let l:V = VitalWrapper('Prelude', 'System.Filepath')
+  let l:abs = l:V.System.Filepath.abspath(expand('%'))
+  if l:V.Prelude.is_windows()
+    let l:path = l:V.System.Filepath.winpath(l:abs)
+  else
+    let l:path = l:V.System.Filepath.realpath(l:abs)
+  endif
+  if executable('jad')
+    let l:result = System(printf('jad -8 -p "%s"', l:path))
+  else
+    let l:result = System(printf('javap -c -v -p -s "%s"', l:path))
+  endif
+  execute '0put =l:result'
+  normal! gg
+  setlocal filetype=java
+  setlocal readonly
+  setlocal nomodifiable
+  setlocal nobinary
+endfunction "}}}
+
 
 if g:is_windows
   augroup office_readonly
