@@ -3385,7 +3385,13 @@ if Tap('vimfiler') "{{{
 endif "}}}
 
 if Tap('which.vim') "{{{
-  command! -nargs=1 Which echo Which(<q-args>)
+  function! s:defWhichCommand() abort
+    command! -nargs=1 Which echo Which(<q-args>)
+  endfunction
+  function! neobundle#hooks.on_post_source(bundle) "{{{
+    call s:defWhichCommand()
+  endfunction "}}}
+  call s:defWhichCommand()
 endif "}}}
 
 if Tap('capture.vim') "{{{
@@ -3876,7 +3882,7 @@ if Tap('vim-ref') "{{{
     call unite#custom_default_action('ref', 'split')
     let g:ref_use_vimproc = 1
     let g:ref_no_default_key_mappings = 1
-    let g:ref_open = 'split'
+    let g:ref_open = 'vsplit'
     let g:ref_use_cache =1
     let g:ref_cache_dir = expand('$VIMFILES/tmp/.vim_ref_cache')
     let g:manual_dir = expand('$HOME/Documents/Manual')
