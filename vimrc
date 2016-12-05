@@ -4380,6 +4380,7 @@ set formatoptions+=c
 set formatoptions+=q
 " filetype detect "{{{
 augroup MyAutoCmd
+  autocmd BufRead,BufNewFile .vrapperrc setlocal filetype=vim
   autocmd BufRead,BufNewFile *.{md,mkd} setlocal filetype=markdown
   autocmd BufRead,BufNewFile *.js setlocal filetype=javascript syntax=jquery
   autocmd BufRead,BufNewFile *.wlst setlocal filetype=python
@@ -4659,7 +4660,6 @@ function! JavapCurrentBuffer() "{{{
   setlocal nomodifiable
   setlocal nobinary
 endfunction "}}}
-
 
 if g:is_windows
   augroup office_readonly
