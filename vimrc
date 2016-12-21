@@ -365,7 +365,6 @@ else
   set viminfo&
   set viminfo='0,<10,s1,h
   set viminfo+=f0
-  "set viminfo+=f1
   set viminfo+=/10
   set viminfo+=@5
   set viminfo+=%
@@ -4648,7 +4647,9 @@ function! JavapCurrentBuffer() "{{{
   else
     let l:path = l:V.System.Filepath.realpath(l:abs)
   endif
-  if executable('jad')
+  if executable('java') && executable('cfr_0_119.jar')
+    let l:result = System(printf('java -jar "%s" "%s"', exepath('cfr_0_119.jar'), l:path))
+  elseif executable('jad')
     let l:result = System(printf('jad -8 -p "%s"', l:path))
   else
     let l:result = System(printf('javap -c -v -p -s "%s"', l:path))
