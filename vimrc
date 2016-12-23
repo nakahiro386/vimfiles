@@ -2165,6 +2165,8 @@ if s:neobundle_is_installed && neobundle#load_cache(g:sfile_path)
 
   NeoBundleLazy 'evanmiller/nginx-vim-syntax', { 'on_ft' : ['nginx'], }
 
+  NeoBundleLazy 'ekalinin/Dockerfile.vim', { 'on_ft' : ['Dockerfile', 'docker-compose'], }
+
   NeoBundleLazy 'vim-jp/vimdoc-ja'
   NeoBundleLazy 'chrisbra/vim_faq'
 
