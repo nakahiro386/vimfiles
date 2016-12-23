@@ -4887,7 +4887,7 @@ nnoremap <Leader>sm :<C-u>call SessionMake()<CR>
 nnoremap <Leader>sl :<C-u>call SessionSelect()<CR>
 
 "RestoreSession "{{{
-if !g:is_view
+if !g:is_view || v:servername !=? 'SUDO' || v:servername !=? 'SUDOW'
   let g:restore_vim_path = expand('$VIMFILES/tmp/restore.vim')
   function! SessionSave() abort "{{{
     if v:dying is 0 && len(filter(range(1, bufnr('$')), 'bufexists(v:val) && bufname(v:val) !=# ""')) is 0
