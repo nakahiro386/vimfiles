@@ -4811,7 +4811,7 @@ function! SessionMake() "{{{
 endfunction "}}}
 function! SessionSelect() "{{{
   let l:sessionDir = g:sessionBaseDir
-  let l:lines = map(expand(g:sessionBaseDir.'*', 1, 1), 'fnamemodify(v:val, ":t")."    |".fnamemodify(v:val, ":p")')
+  let l:lines = map(expand(g:sessionBaseDir.'*', 1, 1), 'fnamemodify(v:val, ":t")."|".fnamemodify(v:val, ":p")')
   call MakeBuf('SessionSelect')
   setl modifiable
   setl noreadonly
@@ -4830,17 +4830,21 @@ function! SessionSelect() "{{{
   let b:lastLnum = len(l:lines)
   vert resize 20
   let b:sessionFunc = {}
+  function! b:sessionFunc.get_name() "{{{
+    return split(getline("."), '|', 1)[0]
+  endfunction "}}}
+  function! b:sessionFunc.get_path() "{{{
+    return split(getline("."), '|', 1)[1]
+  endfunction "}}}
   function! b:sessionFunc.execute() "{{{
-    let l:bufnr = bufnr('%')
-    let l:path = split(getline("."), '|', 1)[1]
+    let l:path = b:sessionFunc.get_path()
     exe tabpagenr('$').'tabnew'
     exe 'source '.l:path
     exe 'bw! SessionSelect'
     exe 'tablast'
   endfunction "}}}
   function! b:sessionFunc.delete() "{{{
-    let l:bufnr = bufnr('%')
-    let l:path = split(getline("."), '|', 1)[1]
+    let l:path = b:sessionFunc.get_path()
     call inputsave()
     let l:sessinFileName = input(l:path."\nAre you sure you want to remove file ? [y/n] : ")
     call inputrestore()
@@ -4855,12 +4859,15 @@ function! SessionSelect() "{{{
 
   nnoremap <buffer> <silent> <CR> :<C-u>call b:sessionFunc.execute()<CR>
   nnoremap <buffer> <silent> D :<C-u>call b:sessionFunc.delete()<CR>:call SessionSelect()<CR>
+  nnoremap <buffer> <silent> yy :<C-u>let @*=b:sessionFunc.get_name()<CR>:echo 'yank!'<CR>
+  nnoremap <buffer> <silent> Y :<C-u>let @*=b:sessionFunc.get_name()<CR>:echo 'yank!'<CR>
   nnoremap <buffer> <silent> p :<c-u>exe 'pedit ' matchstr(getline("."), "\|.*$")[1:]<cr>
   nnoremap <buffer> <silent> q :<C-U>bw<CR>
   nnoremap <buffer> <silent> Q :<C-U>bw<CR>
   nnoremap <buffer> <silent> <C-r> :<C-u>call SessionSelect()<CR>
   nnoremap <buffer> <silent> <expr> j (line('.') is b:lastLnum ? 'gg' : 'j')
   nnoremap <buffer> <silent> <expr> k (line('.') is 1 ? 'G' : 'k')
+  nnoremap <buffer> <silent> ? :<C-U>map <buffer><CR>
 
 endfunction "}}}
 function! s:Session(bang, session) "{{{
