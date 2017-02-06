@@ -417,7 +417,7 @@ augroup MyAutoCmd
   let s:path = ['$VIMRUNTIME/**', g:backup_dir.'/**', '$VIMBUNDLE/**', 'ipmsg.log', ]
   exe printf('autocmd BufRead %s setlocal nomodifiable', join(s:path, ','))
   unlet s:path
-  autocmd InsertLeave * if &paste | set nopaste | endif
+  autocmd InsertLeave * if has('gui_running') && &paste | set nopaste | endif
 augroup END
 
 "}}}
@@ -552,6 +552,7 @@ if !has('gui_running')
   else
     set t_Co=16
   endif
+  set t_BE=
   " " http://ttssh2.sourceforge.jp/manual/ja/usage/tips/vim.html
   " set t_SI&
   " set t_EI&
