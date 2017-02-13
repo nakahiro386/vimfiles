@@ -4680,8 +4680,18 @@ endif
 "Commands Functions:"{{{
 
 "tabopen{{{
-command! -nargs=* -complete=file E tabnew <args>
-command! -nargs=* -complete=file Enew tabnew <args>
+" command! -nargs=* -complete=file E tabnew <args>
+function! Enew(args) abort "{{{
+  let l:args = a:args
+  let l:prefix = 'file:///'
+  let l:prefix_len = len(l:prefix)
+  if l:prefix ==? l:args[0:(l:prefix_len - 1)]
+    let l:args = l:args[(l:prefix_len):]
+  endif
+  execute 'tabnew ' . l:args
+endfunction "}}}
+command! -nargs=* -complete=file E call Enew(<q-args>)
+command! -nargs=* -complete=file Enew call Enew(<q-args>)
 command! -nargs=? -complete=help TH tab help <args>
 command! -nargs=? -complete=help THelp tab help <args>
 "}}}
