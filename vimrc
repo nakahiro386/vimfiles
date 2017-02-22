@@ -3665,8 +3665,8 @@ if Tap('vim-easymotion') "{{{
   map s <Plug>(easymotion-prefix)
   function! neobundle#hooks.on_source(bundle) "{{{
     let g:EasyMotion_leader_key="s"
-    let g:EasyMotion_grouping=1
-    let g:EasyMotion_keys='jkhlasdfgyuiopqwertnmzxcvbJKHL'
+    let g:EasyMotion_grouping=2
+    let g:EasyMotion_keys='jkhlasdfgyuiopqwertnmzxcvb'
     let g:EasyMotion_use_migemo = 1
   endfunction "}}}
 endif "}}}
@@ -4242,6 +4242,9 @@ function! Highlight() "{{{
   highlight Folded     guibg=bg
   highlight CursorIM   guibg=red
   highlight FoldColumn gui=bold
+  highlight DiffText guibg=darkRed
+  highlight DiffAdd guibg=DarkBlue
+
   highlight TabLine     gui=underline guifg=fg guibg=NONE ctermfg=fg ctermbg=bg
   highlight TabLineFill gui=underline guifg=fg guibg=NONE ctermfg=fg ctermbg=bg
   "highlight TabLineInfo gui=underline guifg=fg guibg=NONE
