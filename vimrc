@@ -3326,7 +3326,7 @@ if Tap('vimfiler') "{{{
       \ }})
 
     let l:context = {
-      \   'auto_cd': 1,
+      \   'auto_cd': 0,
       \   'direction': 'botright',
       \   'edit_action': 'open',
       \   'no_quit': 1,
