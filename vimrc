@@ -365,7 +365,6 @@ else
   set viminfo&
   set viminfo='0,<10,s1,h
   set viminfo+=f0
-  "set viminfo+=f1
   set viminfo+=/10
   set viminfo+=@5
   set viminfo+=%
@@ -418,7 +417,7 @@ augroup MyAutoCmd
   let s:path = ['$VIMRUNTIME/**', g:backup_dir.'/**', '$VIMBUNDLE/**', 'ipmsg.log', ]
   exe printf('autocmd BufRead %s setlocal nomodifiable', join(s:path, ','))
   unlet s:path
-  autocmd InsertLeave * if &paste | set nopaste | endif
+  autocmd InsertLeave * if has('gui_running') && &paste | set nopaste | endif
 augroup END
 
 "}}}
@@ -553,6 +552,7 @@ if !has('gui_running')
   else
     set t_Co=16
   endif
+  set t_BE=
   " " http://ttssh2.sourceforge.jp/manual/ja/usage/tips/vim.html
   " set t_SI&
   " set t_EI&
@@ -3328,7 +3328,7 @@ if Tap('vimfiler') "{{{
       \ }})
 
     let l:context = {
-      \   'auto_cd': 1,
+      \   'auto_cd': 0,
       \   'direction': 'botright',
       \   'edit_action': 'open',
       \   'no_quit': 1,
@@ -3667,8 +3667,8 @@ if Tap('vim-easymotion') "{{{
   map s <Plug>(easymotion-prefix)
   function! neobundle#hooks.on_source(bundle) "{{{
     let g:EasyMotion_leader_key="s"
-    let g:EasyMotion_grouping=1
-    let g:EasyMotion_keys='jkhlasdfgyuiopqwertnmzxcvbJKHL'
+    let g:EasyMotion_grouping=2
+    let g:EasyMotion_keys='jkhlasdfgyuiopqwertnmzxcvb'
     let g:EasyMotion_use_migemo = 1
   endfunction "}}}
 endif "}}}
@@ -4244,6 +4244,9 @@ function! Highlight() "{{{
   highlight Folded     guibg=bg
   highlight CursorIM   guibg=red
   highlight FoldColumn gui=bold
+  highlight DiffText guibg=darkRed
+  highlight DiffAdd guibg=DarkBlue
+
   highlight TabLine     gui=underline guifg=fg guibg=NONE ctermfg=fg ctermbg=bg
   highlight TabLineFill gui=underline guifg=fg guibg=NONE ctermfg=fg ctermbg=bg
   "highlight TabLineInfo gui=underline guifg=fg guibg=NONE
@@ -4650,7 +4653,9 @@ function! JavapCurrentBuffer() "{{{
   else
     let l:path = l:V.System.Filepath.realpath(l:abs)
   endif
-  if executable('jad')
+  if executable('java') && executable('cfr_0_119.jar')
+    let l:result = System(printf('java -jar "%s" "%s"', exepath('cfr_0_119.jar'), l:path))
+  elseif executable('jad')
     let l:result = System(printf('jad -8 -p "%s"', l:path))
   else
     let l:result = System(printf('javap -c -v -p -s "%s"', l:path))
@@ -4680,8 +4685,18 @@ endif
 "Commands Functions:"{{{
 
 "tabopen{{{
-command! -nargs=* -complete=file E tabnew <args>
-command! -nargs=* -complete=file Enew tabnew <args>
+" command! -nargs=* -complete=file E tabnew <args>
+function! Enew(args) abort "{{{
+  let l:args = a:args
+  let l:prefix = 'file:///'
+  let l:prefix_len = len(l:prefix)
+  if l:prefix ==? l:args[0:(l:prefix_len - 1)]
+    let l:args = l:args[(l:prefix_len):]
+  endif
+  execute 'tabnew ' . l:args
+endfunction "}}}
+command! -nargs=* -complete=file E call Enew(<q-args>)
+command! -nargs=* -complete=file Enew call Enew(<q-args>)
 command! -nargs=? -complete=help TH tab help <args>
 command! -nargs=? -complete=help THelp tab help <args>
 "}}}
@@ -4812,7 +4827,7 @@ function! SessionMake() "{{{
 endfunction "}}}
 function! SessionSelect() "{{{
   let l:sessionDir = g:sessionBaseDir
-  let l:lines = map(expand(g:sessionBaseDir.'*', 1, 1), 'fnamemodify(v:val, ":t")."    |".fnamemodify(v:val, ":p")')
+  let l:lines = map(expand(g:sessionBaseDir.'*', 1, 1), 'fnamemodify(v:val, ":t")."|".fnamemodify(v:val, ":p")')
   call MakeBuf('SessionSelect')
   setl modifiable
   setl noreadonly
@@ -4831,17 +4846,21 @@ function! SessionSelect() "{{{
   let b:lastLnum = len(l:lines)
   vert resize 20
   let b:sessionFunc = {}
+  function! b:sessionFunc.get_name() "{{{
+    return split(getline("."), '|', 1)[0]
+  endfunction "}}}
+  function! b:sessionFunc.get_path() "{{{
+    return split(getline("."), '|', 1)[1]
+  endfunction "}}}
   function! b:sessionFunc.execute() "{{{
-    let l:bufnr = bufnr('%')
-    let l:path = split(getline("."), '|', 1)[1]
+    let l:path = b:sessionFunc.get_path()
     exe tabpagenr('$').'tabnew'
     exe 'source '.l:path
     exe 'bw! SessionSelect'
     exe 'tablast'
   endfunction "}}}
   function! b:sessionFunc.delete() "{{{
-    let l:bufnr = bufnr('%')
-    let l:path = split(getline("."), '|', 1)[1]
+    let l:path = b:sessionFunc.get_path()
     call inputsave()
     let l:sessinFileName = input(l:path."\nAre you sure you want to remove file ? [y/n] : ")
     call inputrestore()
@@ -4856,12 +4875,15 @@ function! SessionSelect() "{{{
 
   nnoremap <buffer> <silent> <CR> :<C-u>call b:sessionFunc.execute()<CR>
   nnoremap <buffer> <silent> D :<C-u>call b:sessionFunc.delete()<CR>:call SessionSelect()<CR>
+  nnoremap <buffer> <silent> yy :<C-u>let @*=b:sessionFunc.get_name()<CR>:echo 'yank!'<CR>
+  nnoremap <buffer> <silent> Y :<C-u>let @*=b:sessionFunc.get_name()<CR>:echo 'yank!'<CR>
   nnoremap <buffer> <silent> p :<c-u>exe 'pedit ' matchstr(getline("."), "\|.*$")[1:]<cr>
   nnoremap <buffer> <silent> q :<C-U>bw<CR>
   nnoremap <buffer> <silent> Q :<C-U>bw<CR>
   nnoremap <buffer> <silent> <C-r> :<C-u>call SessionSelect()<CR>
   nnoremap <buffer> <silent> <expr> j (line('.') is b:lastLnum ? 'gg' : 'j')
   nnoremap <buffer> <silent> <expr> k (line('.') is 1 ? 'G' : 'k')
+  nnoremap <buffer> <silent> ? :<C-U>map <buffer><CR>
 
 endfunction "}}}
 function! s:Session(bang, session) "{{{
