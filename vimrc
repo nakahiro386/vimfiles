@@ -1571,7 +1571,7 @@ if s:neobundle_is_installed && neobundle#load_cache(g:sfile_path)
     \   'on_source' : ['unite.vim', ],
     \ }
   NeoBundleLazy 'Shougo/neossh.vim', {
-    \   'on_source' : ['unite.vim', ],
+    \   'on_source' : ['unite.vim', 'vimfiler', ],
     \ }
 
   NeoBundleLazy 'osyo-manga/unite-filetype', {
@@ -2443,6 +2443,9 @@ if Tap('unite.vim') "{{{
     call Set_default('g:unite_source_alias_aliases', {})
     let g:unite_source_alias_aliases.calc = 'kawaii-calc'
     let g:unite_source_alias_aliases.line_migemo = 'line'
+    if g:is_windows
+      let g:neossh#ssh_config = expand('$HOME/.ssh/config')
+    endif
 
     if executable('jvgrep') "{{{
       let g:unite_source_grep_command = 'jvgrep'
