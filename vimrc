@@ -2084,6 +2084,13 @@ if s:neobundle_is_installed && neobundle#load_cache(g:sfile_path)
     \   'on_ft' : ['cobol'],
     \ }
 
+  NeoBundleLazy 'google/vim-ft-go', {
+    \   'on_ft' : ['go'],
+    \ }
+  NeoBundleLazy 'vim-jp/vim-go-extra', {
+    \   'on_ft' : ['go'],
+    \ }
+
   "hail2u/vim-css3-syntax{
     " \    'on_ft' : ['css', 'html', 'xhtml',],
     " \ }
