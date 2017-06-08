@@ -1447,7 +1447,6 @@ if g:is_windows
   "'~' は<Space>
   nnoremap <M-Space> :simalt ~<CR>
 endif
-nnoremap <silent> <C-r> :<C-u>e<CR>
 nnoremap <silent> <F5> :<C-u>e<CR>
 nnoremap <silent> <S-F5> :<C-u>noautocmd e<CR>
 
