@@ -1069,7 +1069,7 @@ function! s:Init_cmdwin() "{{{
 
   "insert
   inoremap <buffer> jj <Esc>j
-  inoremap <buffer> kk <Esc>k
+  " inoremap <buffer> kk <Esc>k
   inoremap <buffer> <Down> <Esc><Down>
   inoremap <buffer> <Up> <Esc><Up>
   imap <buffer> ;; <Esc>;
