@@ -417,7 +417,6 @@ augroup MyAutoCmd
   let s:path = ['$VIMRUNTIME/**', g:backup_dir.'/**', '$VIMBUNDLE/**', 'ipmsg.log', ]
   exe printf('autocmd BufRead %s setlocal nomodifiable', join(s:path, ','))
   unlet s:path
-  autocmd InsertLeave * if has('gui_running') && &paste | set nopaste | endif
 augroup END
 
 "}}}
