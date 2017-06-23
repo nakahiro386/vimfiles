@@ -20,7 +20,7 @@ if has('vim_starting') "{{{
   lockvar g:is_unix
   let g:is_windows = has("win32") || has("win64")
   lockvar g:is_windows
-  let g:is_android = exists('$ANDRODI_ROOT')
+  let g:is_android = exists('$ANDROID_ROOT')
   lockvar g:is_android
   let g:is_msys = !empty($MSYSTEM)
   lockvar g:is_msys
