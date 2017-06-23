@@ -783,7 +783,7 @@ set guitablabel=%N\ %h%w%q%{GuiTabLabel()}%m%r
 "http://d.hatena.ne.jp/leafcage/20120214/1329183521
 let g:TabLineSep = (has('gui_running') ? ' | ' : '  ') "'┆¦|⋮'
 
-let s:date_string = '['.strftime("%Y/%m/%d(%a)").']'
+" let s:date_string = '['.strftime("%Y/%m/%d(%a)").']'
 function! TabLine() "{{{
   let l:titles = map(range(1, tabpagenr('$')), 's:tabpage_label(v:val)')
   let l:sep = '%#TabLineSep#' . get(g:, 'TabLineSep', ' ')
@@ -793,7 +793,7 @@ function! TabLine() "{{{
   "カレントディレクトリ
   if !g:is_android
     let l:colors_name = get(g:, 'colors_name', '')
-    let l:info .= s:date_string
+    " let l:info .= s:date_string
     let l:info .= empty(l:colors_name) ? '' : '['.l:colors_name.']'
     if !empty(&guifont)
       let l:info .= '['
