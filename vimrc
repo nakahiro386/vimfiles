@@ -794,6 +794,7 @@ function! TabLine() "{{{
   if !g:is_android
     let l:colors_name = get(g:, 'colors_name', '')
     " let l:info .= s:date_string
+    let l:info .= &paste ? '%#TabLineMod#[past]%#TabLineInfo#' : ''
     let l:info .= empty(l:colors_name) ? '' : '['.l:colors_name.']'
     if !empty(&guifont)
       let l:info .= '['
