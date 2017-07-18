@@ -3079,6 +3079,10 @@ if Tap('context_filetype.vim') "{{{
       \       'filetype' : 'css', },
       \   ],
       \ }
+    if !exists('g:context_filetype#same_filetypes')
+      let g:context_filetype#same_filetypes = {}
+    endif
+    let g:context_filetype#same_filetypes.dosbatch = 'dos'
 
  endfunction "}}}
   function! neobundle#hooks.on_post_source(bundle) "{{{
