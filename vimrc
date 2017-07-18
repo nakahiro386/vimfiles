@@ -3058,6 +3058,7 @@ if Tap('context_filetype.vim') "{{{
   function! neobundle#hooks.on_source(bundle) "{{{
     let g:context_filetype#search_offset = 300 "3000
     let g:context_filetype#filetypes = {
+      \   'help': [],
       \   'cobol': [
       \     { 'start' : '^ *EXEC SQL$',
       \       'end' : '^ *END-EXEC$',
