@@ -1991,13 +1991,6 @@ if s:neobundle_is_installed && neobundle#load_cache(g:sfile_path)
 
   NeoBundleLazy 'vim-jp/vital.vim', { 'pre_func' : 'vital#', }
 
-  "gregsexton/VimCalc{{{
-  NeoBundleLazy 'gregsexton/VimCalc', {
-    \   'disabled' : !has('python'),
-    \   'on_cmd' : 'Calc',
-    \ }
-  "}}}
-
   "thinca/vim-scouter{{{
   NeoBundleLazy 'thinca/vim-scouter', {
     \   'on_cmd' : [{ 'name' : 'Scouter', 'complete' : 'file'},],
@@ -3587,7 +3580,7 @@ if Tap('vim-indent-guides') "{{{
     let g:indent_guides_enable_on_vim_startup=1
     let g:indent_guides_guide_size=0
     let g:indent_guides_indent_levels = 10
-    let g:indent_guides_exclude_filetypes = ['help', 'unite', 'vimfiler', 'vimshell', 'log', 'text', 'calendar', 'vimcalc', 'ref', 'quickrun', 'tail']
+    let g:indent_guides_exclude_filetypes = ['help', 'unite', 'vimfiler', 'vimshell', 'log', 'text', 'calendar', 'ref', 'quickrun', 'tail']
     let g:indent_guides_start_level = 1
 
     let g:indent_guides_auto_colors = 0
@@ -3837,20 +3830,6 @@ if Tap('vital.vim') "{{{
 else
   function! VitalWrapper(...) "{{{
     throw 'not exists vital#of'
-  endfunction "}}}
-endif "}}}
-
-if Tap('VimCalc') "{{{
-  function! neobundle#hooks.on_source(bundle) "{{{
-    let g:VCalc_WindowPosition = 'bottom'
-  endfunction "}}}
-  function! neobundle#hooks.on_post_source(bundle) "{{{
-    function! s:vimcalcSetting()
-      nnoremap <buffer> q :<C-U>bw<CR>
-      nnoremap <buffer> Q :<C-U>bw<CR>
-      inoremap <buffer> jj <Esc>j
-      inoremap <buffer> kk <Esc>k
-    endfunction
   endfunction "}}}
 endif "}}}
 
