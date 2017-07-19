@@ -2043,17 +2043,10 @@ if s:neobundle_is_installed && neobundle#load_cache(g:sfile_path)
     \ }
   "}}}
 
-  "mattn/gist-vim{{{
-  NeoBundleLazy 'mattn/gist-vim', {
-    \   'on_cmd' : ['Gist', ],
-    \   'on_source' : ['unite-gist', ],
-    \ }
-  "}}}
-
   "mattn/webapi-vim{{{
   NeoBundleLazy 'mattn/webapi-vim', {
     \   'on_func' : 'webapi#',
-    \   'on_source' : ['gist-vim', 'poshcomplete-vim',],
+    \   'on_source' : ['poshcomplete-vim',],
     \ }
   "}}}
 
@@ -4024,14 +4017,6 @@ if Tap('echodoc') "{{{
   endfunction "}}}
   function! neobundle#hooks.on_post_source(bundle) "{{{
     call echodoc#enable()
-  endfunction "}}}
-endif "}}}
-
-if Tap('gist-vim') "{{{
-  function! neobundle#hooks.on_source(bundle) "{{{
-    let g:gist_show_privates = 1
-    let g:gist_detect_filetype = 1
-    let g:gist_use_password_in_gitconfig = 1
   endfunction "}}}
 endif "}}}
 
