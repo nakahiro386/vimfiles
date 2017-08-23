@@ -1732,13 +1732,6 @@ if s:neobundle_is_installed && neobundle#load_cache(g:sfile_path)
     \ }
   "}}}
 
-  " cd01/poshcomplete-vim"{{{
-  NeoBundleLazy 'cd01/poshcomplete-vim', {
-    \   'on_ft' : ['ps1'],
-    \   'pre_func' : 'poshcomplete#',
-    \ }
-  "}}}
-
   NeoBundleLazy 'Shougo/neco-syntax', { 'on_source': ['neocomplete.vim',], }
 
   NeoBundleLazy 'Shougo/neoinclude.vim', { 'on_source': ['neocomplete.vim',], }
@@ -2039,7 +2032,6 @@ if s:neobundle_is_installed && neobundle#load_cache(g:sfile_path)
   "mattn/webapi-vim{{{
   NeoBundleLazy 'mattn/webapi-vim', {
     \   'on_func' : 'webapi#',
-    \   'on_source' : ['poshcomplete-vim',],
     \ }
   "}}}
 
@@ -3142,15 +3134,6 @@ let s:installed_vim_ambicmd = Tap('vim-ambicmd')
 if s:installed_vim_ambicmd "{{{
   cnoremap <expr> <Space> ambicmd#expand("\<Space>")
   cnoremap <expr> <CR>    ambicmd#expand("\<CR>")
-endif "}}}
-
-if Tap('poshcomplete-vim') "{{{
-  function! neobundle#hooks.on_source(bundle) "{{{
-    autocmd MyAutoCmd FileType ps1 setlocal omnifunc=poshcomplete#CompleteCommand
-  endfunction "}}}
-  function! neobundle#hooks.on_post_source(bundle) "{{{
-    call poshcomplete#StartServer()
-  endfunction "}}}
 endif "}}}
 
 if Tap('neco-syntax') "{{{
