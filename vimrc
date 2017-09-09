@@ -252,8 +252,12 @@ endif
 set clipboard&
 if g:is_windows || has('gui_running') || has('clipboard')
   set clipboard=unnamed
-  if has('unnamedplus')
-    set clipboard+=unnamedplus
+  if has('gui_running')
+    if has('unnamedplus')
+      set clipboard+=unnamedplus
+    endif
+  else
+    set clipboard+=exclude:.*
   endif
   "set clipboard+=html
 endif
