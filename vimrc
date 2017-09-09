@@ -2183,6 +2183,14 @@ if s:neobundle_is_installed && neobundle#load_cache(g:sfile_path)
     \   ],
     \ }
 
+
+  NeoBundleLazy 'haya14busa/vim-poweryank', {
+    \   'disabled' : has('gui_running'),
+    \   'terminal' : 1,
+    \   'on_map' : [['nxo', '<Plug>(operator-poweryank-osc52)']],
+    \   'on_cmd' : 'PowerYankOSC52',
+    \ }
+
   NeoBundleFetch 'sonota/anbt-sql-formatter',{
     \   'base' : expand('$HOME/bin'),
     \ }
@@ -4057,6 +4065,13 @@ endif "}}}
 if Tap('gitignore.vim') "{{{
   function! neobundle#hooks.on_source(bundle) "{{{
     let g:gitignore_dir = expand('$VIMFILES/tmp/.gitignore-boilerplates')
+  endfunction "}}}
+endif "}}}
+
+if Tap('vim-poweryank') "{{{
+  map <Leader>y <Plug>(operator-poweryank-osc52)
+  nmap <Leader>yy 0<Plug>(operator-poweryank-osc52)$
+  function! neobundle#hooks.on_post_source(bundle) "{{{
   endfunction "}}}
 endif "}}}
 
