@@ -552,7 +552,7 @@ if !has('gui_running')
     set t_Co=16
   endif
   set t_BE=
-  " " http://ttssh2.sourceforge.jp/manual/ja/usage/tips/vim.html
+  " " https://ttssh2.osdn.jp/manual/ja/usage/tips/vim.html
   " set t_SI&
   " set t_EI&
   " let &t_SI .= "\e[5 q"
@@ -1026,7 +1026,7 @@ else
 endif
 
 "Vim-users.jp - Hack #161: Command-line windowを使いこなす
-"http://vim-users.jp/2010/07/hack161/
+"http://vim-jp.org/vim-users-jp/2010/07/14/Hack-161.html
 function! s:Init_cmdwin() "{{{
   "Option"{{{
   "Global Option
@@ -1474,7 +1474,7 @@ if has('vim_starting') && HasVersion('7.2') && !g:is_view
   let s:neobundle_path = expand('$VIMBUNDLE/neobundle.vim')
   if !isdirectory(s:neobundle_path)
     if executable('git')
-      exe '!git clone http://github.com/Shougo/neobundle.vim.git' .' '.s:neobundle_path
+      exe '!git clone https://github.com/Shougo/neobundle.vim.git' .' '.s:neobundle_path
       let s:just_installed_neobundle = 1
     endif
   endif
@@ -2107,7 +2107,7 @@ if s:neobundle_is_installed && neobundle#load_cache(g:sfile_path)
   "}}}
 
   "javaid.vim{{{
-  NeoBundleLazy 'http://www.fleiner.com/vim/syntax_60/javaid.vim', {
+  NeoBundleLazy 'https://fleiner.com/vim/syntax_60/javaid.vim', {
     \   'name' : 'javaid.vim',
     \   'frozen' : 1,
     \   'directory' : 'java.vim',
@@ -4356,7 +4356,7 @@ augroup MyAutoCmd
   "autocmd BufRead,BufNewFile *.erb set filetype=eruby.html
   "xxd"{{{
   "Vim-users.jp - Hack #133: バイナリファイルを編集する
-  "http://vim-users.jp/2010/03/hack133/
+  "http://vim-jp.org/vim-users-jp/2010/03/21/Hack-133.html
   "特定の拡張子をバイナリ編集で開始
   "autocmd BufReadPost,BufNewFile *.bin,*.exe,*.dll setlocal filetype=xxd
   "}}}
@@ -4949,7 +4949,7 @@ endif
 "}}}
 
 "Vim-users.jp - Hack #203: 定義されているマッピングを調べる"{{{
-"http://vim-users.jp/2011/02/hack203/
+"http://vim-jp.org/vim-users-jp/2011/02/27/Hack-203.html
 command! -nargs=* -complete=mapping AllMaps map <args> | map! <args>
 "}}}
 
@@ -5059,7 +5059,7 @@ endfunction "}}}
 command! -bang -nargs=+ -complete=command Redir call s:Redir('<bang>',<q-args>)
 
 "Vim-users.jp - Hack #84: バッファの表示設定を保存する"{{{
-"http://vim-users.jp/2009/10/hack84/
+"https://vim-jp.org/vim-users-jp/2009/10/08/Hack-84.html
 function! s:View(bang) "{{{
   try
     if !empty(expand('%')) && empty(&buftype)
@@ -5206,8 +5206,8 @@ function! DecodeJson(url, ...) "{{{
   let l:content = get(l:res, 'content', '')
   return l:V.Web.JSON.decode(l:content)
 endfunction "}}}
-command! VimPatches PP DecodeJson('http://vim-jp.herokuapp.com/patches/json')
-command! RssVimJp PP map(webapi#feed#parseURL('http://vim-jp.org/rss.xml'), 'get(v:val, "title")')
+command! VimPatches PP DecodeJson('https://vim-jp.herokuapp.com/patches/json')
+command! RssVimJp PP map(webapi#feed#parseURL('https://vim-jp.org/rss.xml'), 'get(v:val, "title")')
 
 "TODO replace Vital.Vim.BufferManager
 "let g:m = g:vital.Vim.BufferManager.new()
@@ -5233,8 +5233,8 @@ endfunction "}}}
 "tailread"{{{
 "参考
 "head.vim : ファイルの上か下、限定された行数のみを読み込む — 名無しのvim使い
-"http://nanasi.jp/articles/vim/head_vim.html
-"http://nanasi.jp/articles/code/sample/head.vim.html
+"https://nanasi.jp/articles/vim/head_vim.html
+"https://nanasi.jp/articles/code/sample/head.vim.html
 let g:tailLines = 50
 function! TailRead(path, bang) "{{{
   if exists('b:tail_file_path')
