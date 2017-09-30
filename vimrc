@@ -708,6 +708,7 @@ let s:dict = {
   \   "\<C-v>" : ['V-BLOCK','%#StatusLineModeMsgVB#'],
   \   's'  : ['SELECT','%#StatusLineModeMsgSE#'],
   \   "\<C-s>" : ['S-BLOCK','%#StatusLineModeMsgSB#'],
+  \   "t"  : ['TERMINAL','%#StatusLineModeMsgTE#'],
   \ }
 function! StatuslineGetMode() "{{{
   let l:ret = ['', '', '']
@@ -4252,6 +4253,7 @@ function! Highlight() "{{{
   highlight StatusLineModeMsgVB term=bold ctermfg=14 gui=bold,reverse guifg=DodgerBlue
   highlight StatusLineModeMsgSE term=bold ctermfg=14 gui=bold,reverse guifg=green
   highlight StatusLineModeMsgSB term=bold ctermfg=14 gui=bold,reverse guifg=green
+  highlight StatusLineModeMsgTE term=bold ctermfg=14 gui=bold,reverse guifg=red
 endfunction "}}}
 function! s:morning() "{{{
   highlight StatusLine   guifg=RoyalBlue
