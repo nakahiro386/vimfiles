@@ -4240,6 +4240,9 @@ function! Highlight() "{{{
   "highlight link TabLineMod Error
   highlight TabLineMod gui=underline guifg=fg guibg=Red ctermfg=fg ctermbg=12
 
+  highlight! default link StatusLineTerm StatusLine
+  highlight! default link StatusLineTermNC StatusLineNC
+
   highlight StatusLineBufNum gui=bold guibg=bg
   highlight StatusLineMsg gui=bold guifg=red guibg=NONE
   highlight StatusLineModeMsg   term=bold ctermfg=14 gui=bold,reverse guifg=green
