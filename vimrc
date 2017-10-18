@@ -2156,6 +2156,9 @@ if s:neobundle_is_installed && neobundle#load_cache(g:sfile_path)
 
   NeoBundleLazy 'ekalinin/Dockerfile.vim', { 'on_ft' : ['Dockerfile', 'docker-compose'], }
 
+  NeoBundleLazy 'davidhalter/jedi-vim', { 'on_ft' : ['python'], }
+  NeoBundleLazy 'jmcantrell/vim-virtualenv', { 'on_ft' : ['python'], }
+
   NeoBundleLazy 'vim-jp/vimdoc-ja'
   NeoBundleLazy 'chrisbra/vim_faq'
 
@@ -4018,6 +4021,19 @@ if Tap('previm') "{{{
   function! neobundle#hooks.on_source(bundle) "{{{
     let g:previm_show_header=0
     let g:previm_enable_realtime=0
+  endfunction "}}}
+endif "}}}
+
+if Tap('vim-virtualenv') "{{{
+  function! neobundle#hooks.on_source(bundle) "{{{
+    let g:virtualenv_directory = "."
+    let g:virtualenv_stl_format = '[%n]'
+  endfunction "}}}
+  function! neobundle#hooks.on_post_source(bundle) "{{{
+    function! PyStatusline()
+      return virtualenv#statusline() . MyStatusline()
+    endfunction
+    set statusline=%!PyStatusline()
   endfunction "}}}
 endif "}}}
 
