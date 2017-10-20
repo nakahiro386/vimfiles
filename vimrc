@@ -1013,6 +1013,16 @@ nnoremap <silent> [Plug]? :Mapping [Plug]<CR>
 "}}}
 "}}}
 
+"command-line{{{
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+cnoremap <M-b> <S-Left>
+cnoremap <M-f> <S-Right>
+cnoremap <C-b> <Left>
+cnoremap <C-f> <Right>
+cnoremap <C-d> <Del>
+"}}}
+
 "command-line window{{{
 noremap : ;
 if g:is_android
