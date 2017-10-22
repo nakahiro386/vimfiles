@@ -2128,7 +2128,7 @@ if s:dein_is_installed
   "   \ })
   "}}}
 
-  if !s:has_kaoriya || (s:has_kaoriya && (get(g:, 'vimrc_local_finish', 0) != 0))
+  if g:is_windows && (!s:has_kaoriya || (s:has_kaoriya && (get(g:, 'vimrc_local_finish', 0) != 0)))
     "hz_ja.vim{{{
     let g:bundle_name = 'hz_ja.vim'
     call dein#add('hz_ja.vim', {
