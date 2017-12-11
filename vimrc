@@ -332,7 +332,7 @@ function! s:SetBackupDir() "{{{
 endfunction "}}}
 augroup MyBackup "{{{
   autocmd!
-  for target in split(&backupskip, ',')
+  for target in split(substitute(&backupskip,'\\', '/', 'g'), ',')
     execute ':autocmd BufWritePre '.target.' let b:backup_skip = 1'
   endfor
   unlet target
@@ -1357,11 +1357,9 @@ noremap <Leader>tn :tag<CR>
 "search-commands"{{{
 ":h search-offset
 if !g:is_android
-  noremap / :<C-u>let g:cword = expand('<cword>')<CR>q/
-  noremap q/ /
-  noremap <Leader>/ /\v
-  noremap ? ?\v
-  noremap <Leader>?? q?\v
+  noremap q/ :<C-u>let g:cword = expand('<cword>')<CR>q/
+  noremap <Leader>/ :<C-u>let g:cword = expand('<cword>')<CR>q/
+  noremap <Leader>?? q?
 endif
 "}}}
 
@@ -1479,6 +1477,12 @@ endif
 
 nnoremap <silent> <Leader>sp :<C-u>setlocal spell!<CR>:setlocal spell?<CR>
 
+if has('terminal')
+  "like tmux
+  tnoremap <C-b>[ <C-w>N
+  tnoremap <C-b>] <C-w>"*
+endif
+
 "}}}
 "-----------------------------------------------------------------------------
 "Plugin:"{{{
@@ -1542,8 +1546,8 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
 
   "unite_sources{{{
   call dein#load_dict({
-    \   'Shougo/neomru.vim': {'on_ft' : 'all'},
-    \   'Shougo/neoyank.vim': {'on_ft' : 'all'},
+    \   'Shougo/neomru.vim': {'on_idle' : 1},
+    \   'Shougo/neoyank.vim': {'on_idle' : 1},
     \   'Shougo/unite-build': {},
     \   'thinca/vim-unite-history': {},
     \   'Shougo/neossh.vim': {},
@@ -1611,7 +1615,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   call dein#add('osyo-manga/vim-precious', {
     \   'on_cmd' : ['PreciousSwitch',  'PreciousSwitchAutcmd', ],
     \   'on_func' : 'precious#',
-    \   'on_ft' : 'all',
+    \   'on_idle' : 1,
     \ })
   "}}}
 
@@ -1810,7 +1814,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \   'on_map' : [['n', '<Plug>']],
     \   'on_cmd' : ['MilfeulleDisp', 'MilfeullePrev', 'MilfeulleNext', 'MilfeulleClear',
     \                 'MilfeulleRefreshMilfeulleRefresh', 'MilfeulleOverlay'],
-    \   'on_ft' : 'all',
+    \   'on_idle' : 1,
     \ })
   "}}}
 
@@ -1912,7 +1916,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   call dein#add('Shougo/echodoc', {
     \   'on_cmd' : ['EchoDocEnable'],
     \   'on_func' : 'echodoc#',
-    \   'on_ft' : 'all',
+    \   'on_idle' : 1,
     \ })
   "}}}
 
@@ -2014,6 +2018,8 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   call dein#load_dict({
     \   'davidhalter/jedi-vim': {},
     \   'jmcantrell/vim-virtualenv': {},
+    \   'Vimjas/vim-python-pep8-indent': {},
+    \   'hdima/python-syntax': {},
     \ }, {'on_ft': ['python'],}
     \ )
 
@@ -2047,6 +2053,12 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \   'on_map' : [['nxo', '<Plug>(operator-poweryank-osc52)']],
     \   'on_cmd' : 'PowerYankOSC52',
     \ })
+
+  call dein#add('davidoc/taskpaper.vim', {
+    \   'on_ft' : ['taskpaper'],
+    \ })
+  call dein#add('fuenor/qfixhowm')
+
 
   "javaid.vim{{{
   " call dein#add('https://fleiner.com/vim/syntax_60/javaid.vim', {
@@ -2143,7 +2155,7 @@ if s:dein_is_installed
       \   'default' : 'local',
       \   'disabled' : !IsLocal(),
       \   'on_cmd' : ['VerifyEnc',],
-      \   'on_ft' : 'all',
+      \   'on_idle' : 1,
       \   'on_i' : 1,
       \ })
     "}}}
@@ -2809,6 +2821,16 @@ if Tap('neocomplete.vim') "{{{
       \ 'css' : 'emmet#completeTag',
       \ 'javascript' : 'emmet#completeTag',
       \ }
+    call Set_default('g:neocomplete#sources#omni#input_patterns', {})
+    let g:neocomplete#sources#omni#input_patterns.python = ''
+    let g:neocomplete#sources#omni#input_patterns.java = ''
+
+    call Set_default('g:neocomplete#text_mode_filetypes', {})
+    let g:neocomplete#text_mode_filetypes.gitcommit = 0
+    let g:neocomplete#text_mode_filetypes.java = 0
+
+    call Set_default('g:neocomplete#force_omni_input_patterns', {})
+    let g:neocomplete#force_omni_input_patterns.python = '\h\w*\|[^. \t]\.\w*'
 
     " ディクショナリ定義
     let g:neocomplete#sources#dictionary#dictionaries = { 'default' : '' }
@@ -3017,6 +3039,15 @@ endif "}}}
 if Tap('neco-syntax') "{{{
   function! plugin.on_source() abort "{{{
     let g:necosyntax#min_keyword_length=2
+  endfunction "}}}
+  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+endif "}}}
+if Tap('neoinclude.vim') "{{{
+  function! plugin.on_source() abort "{{{
+    let g:neoinclude#max_processes = 8
+    call Set_default('g:neoinclude#patterns', {})
+    let g:neoinclude#patterns.python = ''
+    let g:neoinclude#patterns.java = ''
   endfunction "}}}
   call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
 endif "}}}
@@ -3802,13 +3833,15 @@ if Tap('vim-quickrun') "{{{
 
     "'java': {'exec': ['javac %o %s', '%c %s:t:r %a'], 'hook/output_encode/encoding': '&termencoding', 'hook/sweep/files': '%S:p:r.class'},
     let g:quickrun_config.java = {'exec': ['javac %o %S', '%C %S:t:r %a']}
-    let g:quickrun_config.checkstyle = {
-      \   'exec': printf('java -cp "%s" com.puppycrawl.tools.checkstyle.Main -f plain -c "%s" "%%S" ', g:checkstyle_classpath, g:checkstyle_xml),
-      \   'outputter': 'quickfix',
-      \   'outputter/quickfix/errorformat': '%f:%l:%v:\ %m,%f:%l:\ %m,%-G%.%#',
-      \   'outputter/quickfix/open_cmd': 'doautocmd QuickFixCmdPost quickrun',
-      \   'hook/output_encode/encoding' : '&termencoding:&encoding',
-      \ }
+    if get(g:, 'checkstyle_classpath', '') != '' && get(g:, 'checkstyle_xml', '') != ''
+      let g:quickrun_config.checkstyle = {
+        \   'exec': printf('java -cp "%s" com.puppycrawl.tools.checkstyle.Main -f plain -c "%s" "%%S" ', g:checkstyle_classpath, g:checkstyle_xml),
+        \   'outputter': 'quickfix',
+        \   'outputter/quickfix/errorformat': '%f:%l:%v:\ %m,%f:%l:\ %m,%-G%.%#',
+        \   'outputter/quickfix/open_cmd': 'doautocmd QuickFixCmdPost quickrun',
+        \   'hook/output_encode/encoding' : '&termencoding:&encoding',
+        \ }
+    endif
     "let g:quickrun_config.ruby = {'hook/output_encode/encoding' : '&termencoding'}
     let g:quickrun_config.dosbatch = {
       \   'command': '',
@@ -3922,6 +3955,14 @@ if Tap('previm') "{{{
   function! plugin.on_source() abort "{{{
     let g:previm_show_header=0
     let g:previm_enable_realtime=0
+  endfunction "}}}
+  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+endif "}}}
+if Tap('jedi-vim') "{{{
+  function! plugin.on_source() abort "{{{
+    let g:jedi#rename_command = '<Leader>rename'
+    let g:jedi#usages_command = '<Leader>usage'
+    let g:jedi#show_call_signatures = 1
   endfunction "}}}
   call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
 endif "}}}
@@ -4393,6 +4434,12 @@ augroup MyAutoCmd "{{{
   endfunction "}}}
   function! s:erubySetting() "{{{
     call s:rubySetting()
+  endfunction "}}}
+  "}}}
+  "python"{{{
+  let g:python_highlight_all = 1
+  function! s:pythonSetting() "{{{
+    setlocal textwidth=79
   endfunction "}}}
   "}}}
   "sql{{{
@@ -5394,6 +5441,21 @@ if has('gui_running')
 else
   nnoremap <Leader>res :<C-u>call EchoWarning('not supported')<Cr>
   nnoremap <Leader>RES :<C-u>call EchoWarning('not supported')<Cr>
+endif
+
+if has('terminal')
+  if executable('bash')
+    command! Bash terminal bash --login -i
+  endif
+  if executable('cmd.exe')
+    command! Cmd terminal cmd.exe
+  endif
+  if executable('powershell')
+    command! Powershell terminal powershell
+  endif
+  if executable('ubuntu.exe')
+    command! Ubuntu terminal ubuntu.exe
+  endif
 endif
 
 "}}}
