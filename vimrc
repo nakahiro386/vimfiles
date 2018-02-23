@@ -129,12 +129,6 @@ endfunction "}}}
 
 " VIM: "{{{
 if has('vim_starting')
-  if g:is_windows
-    if expand('$HOME') ==? expand('$HOMEDRIVE$HOMEPATH')
-      let s:mes = '$HOME is %s. Please check environment variable.'
-      call add(g:messages, printf( s:mes, expand("$HOME")))
-    endif
-  endif
 
   let $VIMFILES = expand('$HOME/' . (g:is_windows ? 'vimfiles' : '.vim'))
   call Mkdir($VIMFILES)
