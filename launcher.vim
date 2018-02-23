@@ -1,9 +1,5 @@
-Unite neobundle	Unite -buffer-name=neobundle neobundle
-Unite neobundle/install	Unite -buffer-name=neobundleinstall neobundle/install
-Unite neobundle/update	Unite -buffer-name=neobundleupdate neobundle/update
-Unite neobundle/log	Unite -buffer-name=neobundlelog neobundle/log
-Unite neobundle/lazy	Unite -buffer-name=neobundlelazy neobundle/lazy
-Unite neobundle/search	Unite -buffer-name=neobundlesearch neobundle/search
+Unite dein	Unite -buffer-name=dein dein
+Unite dein/log	Unite -buffer-name=deinlog dein/log
 Unite quickfix	Unite -buffer-name=quickfix quickfix
 Unite location_list	Unite -buffer-name=location_list location_list
 UniteBeautifulAttack	Unite -auto-preview -buffer-name=colorscheme colorscheme
