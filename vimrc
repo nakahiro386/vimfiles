@@ -1009,20 +1009,15 @@ cnoremap <C-f> <Right>
 
 "command-line window{{{
 noremap : ;
-if g:is_android
-  noremap ; :
-  noremap q; q:
-  noremap <Leader>; q:
-else
-  function! Save_window_value()
-    let g:cword = expand('<cword>')
-    let g:buffer_name = expand('%')
-  endfunction
-  noremap ; :<C-u>call Save_window_value()<CR>q:
-  vnoremap ; q:
-  noremap q; :
-  noremap <Leader>; :
-endif
+function! Save_window_value()
+  let g:cword = expand('<cword>')
+  let g:buffer_name = expand('%')
+endfunction
+noremap ; :
+noremap q; :<C-u>call Save_window_value()<CR>q:
+noremap <Leader>; :<C-u>call Save_window_value()<CR>q:
+vnoremap q; q:
+vnoremap <Leader>; q:
 
 "Vim-users.jp - Hack #161: Command-line windowを使いこなす
 "http://vim-jp.org/vim-users-jp/2010/07/14/Hack-161.html
