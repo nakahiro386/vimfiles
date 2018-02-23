@@ -190,15 +190,6 @@ if has('vim_starting') && g:is_windows
   unlet s:path_list
   unlet s:PATH
 
-  if !exists('$LYNX_CFG') || executable('lynx')
-    let s:lynx_cfg = expand('~/lynx.cfg')
-    if filereadable(s:lynx_cfg)
-      let $LYNX_CFG = ConvEnvPath(s:lynx_cfg)
-    else
-      call add(g:messages, s:lynx_cfg)
-    endif
-  endif
-
 endif
 
 "}}}
