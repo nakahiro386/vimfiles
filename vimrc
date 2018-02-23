@@ -2057,8 +2057,6 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   call dein#add('davidoc/taskpaper.vim', {
     \   'on_ft' : ['taskpaper'],
     \ })
-  call dein#add('fuenor/qfixhowm')
-
 
   "javaid.vim{{{
   " call dein#add('https://fleiner.com/vim/syntax_60/javaid.vim', {
