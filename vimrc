@@ -4465,7 +4465,7 @@ augroup MyAutoCmd "{{{
   let g:java_highlight_functions="style"
   "let java_highlight_functions="indent"
   let g:java_minlines = 30
-  function! s:JavaSetting()
+  function! s:javaSetting()
     setl textwidth=150
     "setl foldmethod=syntax
     "fold-expr
