@@ -1746,6 +1746,16 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \   'on_cmd' : ['IndentGuidesEnable', 'IndentGuidesToggle'],
     \ })
   "}}}
+  "vim-scripts/number-marks{{{
+  call dein#add('vim-scripts/number-marks', {
+    \   'on_map' : [['n', '<Plug>Place_sign',
+    \                     '<Plug>Goto_next_sign',
+    \                     '<Plug>Goto_prev_sign',
+    \                     '<Plug>Remove_all_signs',
+    \                     '<Plug>Move_sign',], ],
+    \   'frozen' : 1,
+    \ })
+  "}}}
 
   "colorsel.vim{{{
   call dein#add('vim-scripts/colorsel.vim', {
@@ -2000,6 +2010,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \   'jmcantrell/vim-virtualenv': {},
     \   'Vimjas/vim-python-pep8-indent': {},
     \   'hdima/python-syntax': {},
+    \   'nvie/vim-flake8': {},
     \ }, {'on_ft': ['python'],}
     \ )
 
@@ -3959,6 +3970,16 @@ if Tap('vim-virtualenv') "{{{
   call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
   call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
 endif "}}}
+if Tap('vim-flake8') "{{{
+  autocmd MyAutoCmd FileType python noremap <buffer> <F7> :call Flake8()<CR>
+  function! plugin.on_source() abort "{{{
+    let g:no_flake8_maps = 1
+  endfunction "}}}
+  function! plugin.on_post_source() abort "{{{
+  endfunction "}}}
+  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+endif "}}}
 
 if Tap('vim-fontzoom') "{{{
   let g:fontzoom_no_default_key_mappings = 1
@@ -4811,7 +4832,7 @@ function! SessionSelect() "{{{
   nnoremap <buffer> <silent> ? :<C-U>map <buffer><CR>
 
 endfunction "}}}
-function! s:Session(bang, session) "{{{
+function! s:Session(bang, session) abort "{{{
   let l:session = empty(a:session) ? g:sessionBaseDir . g:sessionDefaultName : a:session
   let l:session = expand(l:session)
   try
