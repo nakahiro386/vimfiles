@@ -4599,8 +4599,8 @@ function! JavapCurrentBuffer() "{{{
   else
     let l:path = l:V.System.Filepath.realpath(l:abs)
   endif
-  if executable('java') && executable('cfr_0_119.jar')
-    let l:result = System(printf('java -jar "%s" "%s"', exepath('cfr_0_119.jar'), l:path))
+  if executable('java') && executable('cfr.jar')
+    let l:result = System(printf('java -jar "%s" "%s"', exepath('cfr.jar'), l:path))
   elseif executable('jad')
     let l:result = System(printf('jad -8 -p "%s"', l:path))
   else
