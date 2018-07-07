@@ -1661,7 +1661,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \     'VimFilerSplit', 'VimFilerTab',
     \   ],
     \   'on_func' : 'vimfiler#',
-    \   'on_path' : '.*',
+    \   'on_idle' : 1,
     \ })
   "}}}
 
@@ -3069,6 +3069,8 @@ if Tap('neco-vim') "{{{
 endif "}}}
 
 if Tap('vimfiler') "{{{
+
+  let g:vimfiler_as_default_explorer = 1
 
   "vimfiler prefix key.
   nnoremap [vimfiler] <Nop>
