@@ -1937,6 +1937,8 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   call dein#add('othree/html5.vim', {'on_ft': ['html', 'xhtml'], })
   " call dein#add('tpope/vim-rails', {'on_ft': ['ruby', 'eruby'],})
 
+  call dein#add('vifm/vifm.vim')
+
   call dein#add('vim-scripts/cobol.zip', {
     \   'frozen' : 1,
     \   'on_ft' : ['cobol'],
