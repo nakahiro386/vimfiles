@@ -1468,7 +1468,7 @@ endif
 "Plugin:"{{{
 "dein.vim Install"{{{
 let s:just_installed_dein = 0
-if has('vim_starting') && HasVersion('7.4') && !g:is_view
+if has('vim_starting') && (HasVersion('8.0') || has('nvim')) && !g:is_view
   let s:dein_path = expand('$VIMBUNDLE/repos/github.com/Shougo/dein.vim')
   if !isdirectory(s:dein_path)
     if executable('git')
@@ -1573,11 +1573,25 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \ }, {'on_ft': ['vimshell'],}
     \ )
 
+  "Shougo/deoplete.nvim{{{
+  " 起動中はhas('python3')が1とならない。
+  let g:deoplete_enable = has('nvim') || (has('timers') && HasVersion('8.0'))
+  call dein#add('Shougo/deoplete.nvim', {
+    \   'if' : g:deoplete_enable,
+    \   'on_event' : 'InsertEnter',
+    \ })
+  call dein#load_dict({
+    \ 'roxma/nvim-yarp': {},
+    \ 'roxma/vim-hug-neovim-rpc': {},
+    \ }, {'if': !has('nvim'),}
+    \ )
+  "}}}
+
   "Shougo/neocomplete.vim{{{
   call dein#add('Shougo/neocomplete.vim', {
-    \   'if' : has('lua'),
+    \   'if' : (!g:deoplete_enable && has('lua')),
     \   'on_cmd' : ['NeoCompleteBufferMakeCache', 'NeoCompleteEnable'],
-    \   'on_i' : 1,
+    \   'on_event' : 'InsertEnter',
     \ })
   "}}}
 
@@ -1587,7 +1601,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \   'Shougo/neoinclude.vim': {},
     \   'Shougo/neco-vim': {},
     \   'hrsh7th/vim-neco-calc': {},
-    \ }, {'on_source': 'neocomplete.vim'}
+    \ }, {'on_source': ['neocomplete.vim', 'deoplete.nvim'] ,}
     \ )
   "}}}
 
@@ -1603,7 +1617,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   call dein#add('Shougo/context_filetype.vim', {
     \   'on_func' : 'context_filetype#',
     \   'on_source' : ['neocomplete.vim', 'neocomplcache',
-    \                  'vim-precious', 'echodoc', ],
+    \                  'vim-precious', 'echodoc', 'deoplete.nvim',],
     \ })
   "}}}
 
@@ -2778,6 +2792,20 @@ if Tap('vimshell') "{{{
     call extend(g:vimshell_interactive_encodings, {'sqlplus': 'utf-8'})
     call extend(g:vimshell_interactive_encodings, {'git': 'utf-8'})
     call extend(g:vimshell_interactive_encodings, {'vagrant': 'utf-8'})
+  endfunction "}}}
+  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+endif "}}}
+
+if Tap('deoplete.nvim') "{{{
+  function! plugin.on_source() abort "{{{
+    let g:deoplete#enable_at_startup = 1
+    if g:is_windows
+      let g:python3_host_prog = 'python'
+    endif
+  endfunction "}}}
+  function! plugin.on_post_source() abort "{{{
+    call deoplete#enable()
   endfunction "}}}
   call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
   call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
