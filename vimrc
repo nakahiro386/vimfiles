@@ -2803,6 +2803,9 @@ if Tap('deoplete.nvim') "{{{
     if g:is_windows
       let g:python3_host_prog = 'python'
     endif
+    if has('python3')
+      silent! py3 pass
+    endif
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
     call deoplete#enable()
