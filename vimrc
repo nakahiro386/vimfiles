@@ -3984,6 +3984,7 @@ if Tap('previm') "{{{
 endif "}}}
 if Tap('jedi-vim') "{{{
   function! plugin.on_source() abort "{{{
+    py3 import os; sys.executable=os.path.join(sys.prefix, 'python.exe')
     let g:jedi#rename_command = '<Leader>rename'
     let g:jedi#usages_command = '<Leader>usage'
     let g:jedi#show_call_signatures = 1
