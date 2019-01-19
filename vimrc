@@ -4578,7 +4578,7 @@ augroup MyAutoCmd "{{{
   "markdown{{{
   function! s:markdownSetting() "{{{
     setlocal formatoptions+=w
-    call IndentSet(2)
+    call IndentSet(4)
   endfunction "}}}
   "}}}
   "yaml{{{
