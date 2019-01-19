@@ -82,11 +82,7 @@ endfunction "}}}
 "}}}
 "-----------------------------------------------------------------------------
 "Encoding:"{{{
-set fileformats=unix,dos,mac
 if has('vim_starting')
-  if !g:is_view || &modifiable
-    set fileformat=unix
-  endif
   set encoding=utf-8
 endif
 scriptencoding utf-8
