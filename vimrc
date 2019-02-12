@@ -2813,6 +2813,30 @@ if Tap('deoplete.nvim') "{{{
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
     call deoplete#enable()
+
+    " 選択している候補を確定
+    imap <expr><C-y> pumvisible() ? deoplete#close_popup() : "\<C-y>"
+    imap <expr><CR> neosnippet#expandable() ? "\<Plug>(neosnippet_expand)<Esc>gv" :
+      \ neosnippet#jumpable() ? "\<Plug>(neosnippet_jump)" :
+      \ pumvisible() ? deoplete#close_popup() :
+      \ "\<CR>"
+    imap <expr><C-k> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" :
+      \ pumvisible() ? deoplete#close_popup() :
+      \ "\<Del>"
+
+    "C-h, BSで補完ウィンドウを確実に閉じる
+    inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
+    inoremap <expr><BS> deoplete#smart_close_popup()."\<BS>"
+    " " 現在選択している候補をキャンセルし、ポップアップを閉じます
+    inoremap <expr><C-e> pumvisible() ? deoplete#cancel_popup() : "\<C-e>"
+    inoremap <expr><C-g> deoplete#refresh()
+
+    " 共通部分を確定させる
+    inoremap <expr><C-l> deoplete#complete_common_string()
+
+    "vim標準のキーワード補完を置き換える
+    inoremap <expr><C-n> pumvisible() ? "\<C-n>" : deoplete#manual_complete()
+
   endfunction "}}}
   call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
   call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
