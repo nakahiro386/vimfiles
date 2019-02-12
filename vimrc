@@ -1579,7 +1579,10 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   call dein#load_dict({
     \ 'roxma/nvim-yarp': {},
     \ 'roxma/vim-hug-neovim-rpc': {},
-    \ }, {'if': !has('nvim'),}
+    \ }, {
+    \   'if': !has('nvim'),
+    \   'on_source' : ['deoplete.nvim', ],
+    \ }
     \ )
   "}}}
 
@@ -1672,6 +1675,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \   ],
     \   'on_func' : 'vimfiler#',
     \   'on_idle' : 1,
+    \   'on_event' : 'InsertEnter',
     \ })
   "}}}
 
@@ -2265,7 +2269,6 @@ if Tap('unite.vim') "{{{
   nnoremap <silent> [unite]R :<C-u>Unite resume<CR>
   nnoremap <silent> [unite]r :<C-u>Unite -buffer-name=register -default-action=yank -truncate register history/yank history/search history/command<CR>
   nnoremap <silent> [unite]m :<C-u>Unite -default-action=tabopen -buffer-name=files file_mru bookmark<CR>
-  " nnoremap <silent> [unite]D :<C-u>Unite -default-action=tabvimfilerFF -buffer-name=directory_mru directory_mru bookmark:directory<CR>
   nnoremap <silent> [unite]D :<C-u>Unite -buffer-name=directory_mru directory_mru bookmark:directory<CR>
   nnoremap <silent> [unite]h :<C-u>Unite -buffer-name=help help<CR>
   nnoremap <silent> [unite]H :<C-u>UniteWithCursorWord -immediately -buffer-name=help help<CR>
@@ -2274,7 +2277,6 @@ if Tap('unite.vim') "{{{
   nnoremap <silent><expr> [unite]/  ":\<C-u>Unite -max-multi-lines=1 -truncate -toggle -no-quit -buffer-name=search" . bufnr('%'). " line:all\<CR>"
   nnoremap <silent><expr> [unite]g/ ":\<C-u>Unite -max-multi-lines=1 -truncate -toggle -no-quit -buffer-name=search" . bufnr('%'). " line_migemo:all\<CR>"
   nnoremap <silent> [unite]c :<C-u>Unite -buffer-name=bookmark -default-action=tabopen bookmark:default<CR>
-  " nnoremap <silent> [unite]d :<C-u>Unite -default-action=tabVimFilerFF bookmark:directory<CR>
   nnoremap <silent> [unite]d :<C-u>Unite bookmark:directory<CR>
   nnoremap <silent> [unite]a :<C-u>UniteBookmarkAdd<CR>
 
@@ -2793,14 +2795,20 @@ if Tap('vimshell') "{{{
   call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
 endif "}}}
 
+if Tap('vim-hug-neovim-rpc') "{{{
+  function! plugin.on_source() abort "{{{
+    if has('python3')
+      silent! py3 pass
+    endif
+  endfunction "}}}
+  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+endif "}}}
+
 if Tap('deoplete.nvim') "{{{
   function! plugin.on_source() abort "{{{
     let g:deoplete#enable_at_startup = 1
     if g:is_windows
       let g:python3_host_prog = 'python'
-    endif
-    if has('python3')
-      silent! py3 pass
     endif
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
