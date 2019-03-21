@@ -39,6 +39,8 @@ set guioptions-=T
 set guioptions-=e
 "ポップアップダイアログでなくコンソールダイアログを使う。
 set guioptions+=c
+"外部コマンドを端末ウィンドウで実行する
+set guioptions+=!
 
 " 右スクロールバーを常に表示。
 set guioptions-=r
