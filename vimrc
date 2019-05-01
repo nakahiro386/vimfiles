@@ -4152,14 +4152,22 @@ elseif s:has_kaoriya && isdirectory(expand('$VIM/switches/'))
         call l:V.System.File.copy(l:catalog, l:enabled)
       endif
     endfunction "}}}
-    if !dein#check_install('vimdoc-ja')
-      call s:switchEnabled('disable-vimdoc-ja.vim')
-    endif
-    if !dein#check_install('vimproc') && dein#get('vimproc').if
-      call s:switchEnabled('disable-vimproc.vim')
-    endif
-    call s:switchEnabled('disable-go-extra.vim')
-    delfunction s:switchEnabled
+    function! s:callSwitchEnabled() abort
+      if !dein#check_install('vimdoc-ja')
+        call s:switchEnabled('disable-vimdoc-ja.vim')
+      endif
+      if !dein#check_install('vimproc') && dein#get('vimproc').if
+        call s:switchEnabled('disable-vimproc.vim')
+      endif
+      call s:switchEnabled('disable-go-extra.vim')
+      delfunction s:switchEnabled
+    endfunction
+    augroup call-switch-enabled
+      autocmd!
+      autocmd CursorHold,CursorHoldI,FocusLost * call s:callSwitchEnabled()
+        \| delfunction s:callSwitchEnabled
+        \| exe 'autocmd! call-switch-enabled'
+    augroup END
   endif
 
   function! s:writeVimrc_local(name, line) "{{{
