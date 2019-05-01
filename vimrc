@@ -4219,7 +4219,7 @@ let g:html_prevent_copy = "fntd"
 let g:hlightHankakuSpaceLight = 'term=undercurl ctermbg=0 gui=underline guifg=grey70'
 let g:hlightZenkakuSpaceLight = 'term=undercurl ctermbg=0 gui=underline guifg=Red guibg=grey90'
 
-let g:hlightHankakuSpaceDark = 'term=undercurl ctermbg=0 gui=underline guifg=grey30'
+let g:hlightHankakuSpaceDark = 'term=undercurl ctermbg=0 gui=underline guifg=grey30 guibg=background'
 let g:hlightZenkakuSpaceDark = 'term=undercurl ctermbg=0 gui=underline guifg=Red guibg=grey30'
 
 function! SpaceHighlight() "{{{
@@ -4319,6 +4319,18 @@ function! s:desert() "{{{
   " highlight Type term=underline ctermfg=2 gui=bold guifg=darkkhaki
   highlight Type guifg=#5f7f3f
   highlight StatusLineNC guibg=grey30
+  highlight Comment guibg=grey10
+  highlight Statement guibg=grey10
+  highlight PreProc guibg=grey10
+  highlight Type guibg=grey10
+  highlight Identifier guibg=grey10
+  highlight Constant guibg=grey10
+  highlight Special guibg=grey10
+  highlight ModeMsg guibg=grey10
+  highlight MoreMsg guibg=grey10
+  highlight Question guibg=grey10
+  highlight SpecialKey guibg=grey10
+  highlight Title guibg=grey10
 endfunction "}}}
 "}}}
 
