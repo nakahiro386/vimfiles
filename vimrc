@@ -2806,12 +2806,21 @@ endif "}}}
 
 if Tap('deoplete.nvim') "{{{
   function! plugin.on_source() abort "{{{
-    let g:deoplete#enable_at_startup = 1
     if g:is_windows
       let g:python3_host_prog = 'python'
     endif
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
+    call deoplete#custom#option({
+      \ 'skip_multibyte': v:true,
+      \ 'max_list': 100,
+      \ 'auto_refresh_delay': 10,
+      \ })
+    call deoplete#custom#option('keyword_patterns', {
+      \ '_': '[0-9a-zA-Z_]\k*',
+      \})
+    autocmd MyAutoCmd FileType markdown,log,text,tail
+      \ call deoplete#custom#buffer_option('auto_complete', v:false)
     call deoplete#enable()
 
     " 選択している候補を確定
