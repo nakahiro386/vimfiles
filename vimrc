@@ -861,7 +861,6 @@ set tabline=%!TabLine()
 let &foldcolumn = (g:is_android ? 0 : 1)
 set foldlevel=0
 set foldlevelstart=0
-set foldmethod=marker
 "set foldtext=MyFoldText(78)
 set foldtext=MyFoldText(0)
 set foldnestmax=8
