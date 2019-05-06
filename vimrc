@@ -4620,6 +4620,7 @@ augroup MyAutoCmd "{{{
   endfunction "}}}
   "}}}
   "markdown{{{
+  let g:vim_markdown_folding_disabled = 1
   function! s:markdownSetting() "{{{
     setlocal formatoptions+=w
     call IndentSet(4)
