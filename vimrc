@@ -5527,14 +5527,21 @@ if has('terminal')
   if executable('bash')
     command! Bash terminal bash --login -i
   endif
-  if executable('cmd.exe')
+
+  if g:is_windows
     command! Cmd terminal cmd.exe
-  endif
-  if executable('powershell')
     command! Powershell terminal powershell
-  endif
-  if executable('ubuntu.exe')
-    command! Ubuntu terminal ubuntu.exe
+    function! GitBash() abort
+      if !g:is_msys
+        let $MSYSTEM = 'MINGW64'
+      endif
+      let l:git_bash_path = ConvEnvPath("$ProgramFiles/Git/usr/bin/bash")
+      call term_start(l:git_bash_path . " --login -i")
+      if !g:is_msys
+        unlet $MSYSTEM
+      endif
+    endfunction
+    command! GitBash call GitBash()
   endif
 endif
 
