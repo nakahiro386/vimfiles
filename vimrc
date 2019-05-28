@@ -716,6 +716,9 @@ function! MyStatusline() "{{{
   " let l:ret.='[%{GetShortPath2(@%,3,30)}]'
   let l:ret.='%#Error#%h%w%q%r%m%*'
   let l:ret.=StatuslineGetMode()
+  if s:dein_is_installed
+    let l:ret.=dein#get_progress()
+  endif
   let l:ret.=' '
   let l:ret.='%<'
   let l:ret.='%='
@@ -1482,6 +1485,7 @@ let s:dein_is_installed = (&rtp =~? 'dein\.vim')
 if s:dein_is_installed "{{{
   "dein{{{
   let g:dein#install_log_filename = expand('$VIMFILES/tmp/dein.log')
+  let g:dein#install_progress_type = "none"
   " if g:is_windows
     " let s:numberOfProcessors = str2float($NUMBER_OF_PROCESSORS)
     " let g:dein#install_max_processes = float2nr(ceil(s:numberOfProcessors / 2))
