@@ -4328,6 +4328,8 @@ function! s:desert() "{{{
   highlight Special guibg=grey10
   highlight ModeMsg guibg=grey10
   highlight MoreMsg guibg=grey10
+  highlight WarningMsg guibg=grey10
+  highlight Ignore guibg=grey10
   highlight Question guibg=grey10
   highlight SpecialKey guibg=grey10
   highlight Title guibg=grey10
