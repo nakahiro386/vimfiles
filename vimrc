@@ -126,7 +126,11 @@ endfunction "}}}
 " VIM: "{{{
 if has('vim_starting')
 
-  let $VIMFILES = expand('$HOME/' . (g:is_windows ? 'vimfiles' : '.vim'))
+  if has('nvim')
+    let $VIMFILES = expand('$XDG_CONFIG_HOME/nvim')
+  else
+    let $VIMFILES = expand('$HOME/' . (g:is_windows ? 'vimfiles' : '.vim'))
+  endif
   call Mkdir($VIMFILES)
   let $VIMBUNDLE = expand('$VIMFILES/bundle')
   call Mkdir($VIMBUNDLE)
@@ -237,7 +241,7 @@ if g:is_windows || has('gui_running') || has('clipboard')
     if has('unnamedplus')
       set clipboard+=unnamedplus
     endif
-  else
+  elseif !has('nvim')
     set clipboard+=exclude:.*
   endif
   "set clipboard+=html
@@ -358,7 +362,11 @@ else
   if g:is_windows
     set viminfo+=rA:,rB:,rX:,rS:,rT:,rQ:,rU:,rJ:
   endif
-  set viminfo+=n$VIMFILES/tmp/.viminfo
+  if has('nvim')
+    set viminfo+=n$VIMFILES/tmp/.nviminfo
+  else
+    set viminfo+=n$VIMFILES/tmp/.viminfo
+  endif
 endif
 
 "}}}
@@ -501,8 +509,7 @@ else
 endif
 set list
 
-"set fillchars=stlnc:_,vert:+
-set fillchars=
+set fillchars=stlnc:\ ,stlnc:\ ,vert:\ ,fold:\ ,diff:\ 
 
 set lazyredraw
 
@@ -514,7 +521,7 @@ set lazyredraw
 set novisualbell
 set t_vb=
 if !has('gui_running')
-  if has('mouse')
+  if has('mouse') && !has('nvim')
     set ttymouse=xterm2
   endif
   execute 'set <xUp>='   ."\<Esc>OA"
@@ -1574,7 +1581,8 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
 
   "Shougo/deoplete.nvim{{{
   " 起動中はhas('python3')が1とならない。
-  let g:deoplete_enable = has('nvim') || (has('timers') && HasVersion('8.0'))
+  let g:deoplete_enable = has('nvim') ||
+    \ (!g:is_windows && has('timers') && HasVersion('8.0'))
   call dein#add('Shougo/deoplete.nvim', {
     \   'if' : g:deoplete_enable,
     \   'on_event' : 'InsertEnter',
@@ -1873,6 +1881,12 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \ })
   "}}}
 
+  "pepo-le/win-ime-con.nvim{{{
+  call dein#add('pepo-le/win-ime-con.nvim', {
+    \   'if': has('nvim'),
+    \ })
+  "}}}
+
   "tpope/vim-capslock {{{
   let g:capslock_filetype = ['sql', 'cobol', 'dosbatch']
   call dein#add('tpope/vim-capslock', {
@@ -2148,7 +2162,7 @@ if s:dein_is_installed
   "   \ })
   "}}}
 
-  if g:is_windows && (!s:has_kaoriya || (s:has_kaoriya && (get(g:, 'vimrc_local_finish', 0) != 0)))
+  if g:is_windows && !has('nvim') && (!s:has_kaoriya || (s:has_kaoriya && (get(g:, 'vimrc_local_finish', 0) != 0)))
     "hz_ja.vim{{{
     let g:bundle_name = 'hz_ja.vim'
     call dein#add('hz_ja.vim', {
@@ -3778,6 +3792,13 @@ if Tap('im_control.vim') "{{{
     augroup END
   endfunction "}}}
   call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+endif "}}}
+
+if Tap('win-ime-con.nvim') "{{{
+  function! plugin.on_source() abort "{{{
+    let g:win_ime_con_mode = 0
+  endfunction "}}}
+  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
 endif "}}}
 
 if Tap('vim-capslock') "{{{
@@ -5578,8 +5599,12 @@ else
   endif
 endif
 
-call Source('$VIMFILES/.vimrc_local.vim', 1)
-call Source('$VIMFILES/vimrc_local.vim', 1)
+if has('nvim')
+  call Source('$VIMFILES/init_local.vim', 1)
+else
+  call Source('$VIMFILES/.vimrc_local.vim', 1)
+  call Source('$VIMFILES/vimrc_local.vim', 1)
+endif
 
 if len(g:messages) > 0
   augroup lazy-starting-msg
