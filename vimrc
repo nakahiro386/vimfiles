@@ -2680,6 +2680,13 @@ if Tap('neoyank.vim') "{{{
   call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
 endif "}}}
 
+if Tap('unite-fold') "{{{
+  function! plugin.on_source() abort "{{{
+    let g:unite_fold_indent_space = ''
+  endfunction "}}}
+  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+endif "}}}
+
 if Tap('unite-everything') "{{{
   function! plugin.on_source() abort "{{{
     let g:unite_source_everything_full_path_search=1
