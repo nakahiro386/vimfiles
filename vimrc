@@ -3791,13 +3791,14 @@ if Tap('im_control.vim') "{{{
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
     let l:V = VitalWrapper('Vim.ScriptLocal')
-    let s:sfuncs = l:V.Vim.ScriptLocal.sfuncs((a:bundle.rtp).'/plugin/im_control.vim')
+    let s:sfuncs = l:V.Vim.ScriptLocal.sfuncs((g:dein#plugin.rtp).'/plugin/im_control.vim')
     augroup InsertHookIM_Cmdwin
       autocmd!
       autocmd CmdwinEnter * call s:sfuncs.BufEnter()
       autocmd CmdwinLeave * call s:sfuncs.BufLeave()
     augroup END
   endfunction "}}}
+  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
   call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
 endif "}}}
 
