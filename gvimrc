@@ -52,9 +52,9 @@ else
   set guioptions+=R
 endif
 " 常に左スクロールバーを表示
-set guioptions+=l
+set guioptions-=l
 " 垂直分割されたウィンドウがあるときのみ、左スクロールバーを表示
-set guioptions+=L
+set guioptions-=L
 
 " 水平スクロールバーを非表示
 set guioptions-=b
