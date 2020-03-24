@@ -13,3 +13,4 @@ launcher_local.vim
 vimrc_local.vim
 .vimrc_local.vim
 init_local.vim
+vimrc_init_local.vim

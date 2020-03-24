@@ -191,6 +191,18 @@ if has('vim_starting') && g:is_windows
   unlet s:PATH
 
 endif
+function! Source(file, ...) "{{{
+  if filereadable(expand(a:file))
+    execute 'source '.a:file
+  elseif empty(a:000) || a:1 isnot 1
+    call add(g:messages, a:file)
+  endif
+endfunction "}}}
+if has('vim_starting') "{{{
+  " set pythonthreedll
+  call Source('$VIMFILES/vimrc_init_local.vim', 1)
+endif
+
 
 "}}}
 "-----------------------------------------------------------------------------
@@ -5498,14 +5510,6 @@ function! EchoError(msg) "{{{
   execute 'echohl ErrorMsg'
   execute 'echomsg "[.vimrc]"'.string(a:msg)
   execute 'echohl None'
-endfunction "}}}
-
-function! Source(file, ...) "{{{
-  if filereadable(expand(a:file))
-    execute 'source '.a:file
-  elseif empty(a:000) || a:1 isnot 1
-    call add(g:messages, a:file)
-  endif
 endfunction "}}}
 
 command! RestoreUpdatetime let &updatetime = g:update_time
