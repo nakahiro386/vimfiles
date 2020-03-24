@@ -1592,9 +1592,8 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \ )
 
   "Shougo/deoplete.nvim{{{
-  " 起動中はhas('python3')が1とならない。
   let g:deoplete_enable = has('nvim') ||
-    \ (!g:is_windows && has('timers') && HasVersion('8.0'))
+    \ (has('python3') && has('timers') && HasVersion('8.0'))
   call dein#add('Shougo/deoplete.nvim', {
     \   'if' : g:deoplete_enable,
     \   'on_event' : 'InsertEnter',
@@ -2843,7 +2842,7 @@ endif "}}}
 if Tap('deoplete.nvim') "{{{
   function! plugin.on_source() abort "{{{
     if g:is_windows
-      let g:python3_host_prog = 'python'
+      let g:python3_host_prog = get(g:, 'python3_host_prog','python.exe')
     endif
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
