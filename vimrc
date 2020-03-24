@@ -2121,16 +2121,16 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   let s:sqlformatter_path = expand('$HOME/bin/anbt-sql-formatter')
   call dein#add('sonota/anbt-sql-formatter',{
     \   'path' : s:sqlformatter_path,
-    \   'rtp': ''
     \ })
+    " \   'rtp': ''
 
   let s:mysqlformatter_path = expand('$HOME/bin/my-sql-formatter.rb')
   call dein#add('https://gist.github.com/nakahiro386/1f32bbaf59ae4b2987dc',{
     \   'name' : 'my-sql-formatter.rb',
-    \   'rtp': '',
     \   'normalized_name' : 'my-sql-formatter',
     \   'path' : s:mysqlformatter_path,
     \ })
+    " \   'rtp': '',
 
   "sqlformatter.vim{{{
   call dein#add('https://bitbucket.org/nakahiro386/sqlformatter.vim.git', {
