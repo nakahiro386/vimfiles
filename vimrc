@@ -1637,7 +1637,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   "Shougo/context_filetype.vim"{{{
   call dein#add('Shougo/context_filetype.vim', {
     \   'on_func' : 'context_filetype#',
-    \   'on_source' : ['neocomplete.vim', 'neocomplcache',
+    \   'on_source' : ['neocomplete.vim',
     \                  'vim-precious', 'echodoc', 'deoplete.nvim',],
     \ })
   "}}}
@@ -2159,19 +2159,6 @@ if s:dein_is_installed
   "   \   'on_map': [['n', '<Plug>', ]],
   "   \ })
   " "}}}
-
-  "emmet_complete.vim{{{
-  "neocomplcache で zencoding.vim 内の snippets を補完する - cooldaemonの備忘録
-  "http://d.hatena.ne.jp/cooldaemon/20100709/1278675260
-  "neocomplcache + zencoding
-  "https://gist.github.com/cooldaemon/469369
-  " let g:bundle_name = 'emmet_complete.vim'
-  " call dein#add('emmet_complete.vim', {
-  "   \   'default' : 'local',
-  "   \   'disabled' : !IsLocal(),
-  "   \   'on_ft' : ['html', 'css', 'javascript'],
-  "   \ })
-  "}}}
 
   if g:is_windows && !has('nvim') && (!s:has_kaoriya || (s:has_kaoriya && (get(g:, 'vimrc_local_finish', 0) != 0)))
     "hz_ja.vim{{{
