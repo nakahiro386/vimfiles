@@ -2121,6 +2121,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   let s:sqlformatter_path = expand('$HOME/bin/anbt-sql-formatter')
   call dein#add('sonota/anbt-sql-formatter',{
     \   'path' : s:sqlformatter_path,
+    \   'lazy': 1,
     \ })
     " \   'rtp': ''
 
@@ -2129,6 +2130,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \   'name' : 'my-sql-formatter.rb',
     \   'normalized_name' : 'my-sql-formatter',
     \   'path' : s:mysqlformatter_path,
+    \   'lazy': 1,
     \ })
     " \   'rtp': '',
 
