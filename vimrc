@@ -550,7 +550,7 @@ if !has('gui_running')
   execute 'set <xF4>='   ."\<Esc>OS"
   execute 'set <xHome>=' ."\<Esc>OH"
   execute 'set <xEnd>='  ."\<Esc>OF"
-  if &term =~? "^xterm" || &term =~? "^.*256.*$"
+  if &term =~? "^(xterm|screen)" || &term =~? "^.*256.*$"
     set t_Co=256
   else
     set t_Co=16
