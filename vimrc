@@ -201,8 +201,7 @@ endfunction "}}}
 if has('vim_starting') "{{{
   " set pythonthreedll
   call Source('$VIMFILES/vimrc_init_local.vim', 1)
-endif
-
+endif "}}}
 
 "}}}
 "-----------------------------------------------------------------------------
