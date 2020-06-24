@@ -76,7 +76,6 @@ function! HasVersion(version) abort "{{{
   let l:version = l:major + l:minor
   return v:version > l:version ||
     \ (v:version == l:version && (empty(l:patch) || has('patch' . l:patch)))
-  endif
 endfunction "}}}
 
 "}}}
