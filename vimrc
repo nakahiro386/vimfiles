@@ -1546,8 +1546,8 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
 
   "unite_sources{{{
   call dein#load_dict({
-    \   'Shougo/neomru.vim': {'on_idle' : 1},
-    \   'Shougo/neoyank.vim': {'on_idle' : 1},
+    \   'Shougo/neomru.vim': {'on_event' : ['FocusLost', 'CursorHold',],},
+    \   'Shougo/neoyank.vim': {'on_event' : ['FocusLost', 'CursorHold',],},
     \   'Shougo/unite-build': {},
     \   'thinca/vim-unite-history': {},
     \   'Shougo/neossh.vim': {},
@@ -1616,7 +1616,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   call dein#add('osyo-manga/vim-precious', {
     \   'on_cmd' : ['PreciousSwitch',  'PreciousSwitchAutcmd', ],
     \   'on_func' : 'precious#',
-    \   'on_idle' : 1,
+    \   'on_event' : ['FocusLost', 'CursorHold',],
     \ })
   "}}}
 
@@ -1630,7 +1630,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
 
   "Shougo/neosnippet{{{
   call dein#add('Shougo/neosnippet', {
-    \   'on_i' : 1,
+    \   'on_event' : ['InsertEnter',],
     \   'depends' : 'neosnippet-snippets',
     \   'on_ft' : ['snippet'],
     \   'on_source' : ['unite.vim', ],
@@ -1667,7 +1667,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
 
   "thinca/vim-ambicmd{{{
   call dein#add('thinca/vim-ambicmd', {
-    \   'on_i' : 1,
+    \   'on_event' : ['InsertEnter',],
     \   'on_ft' : 'vim',
     \   'on_func' : 'ambicmd#',
     \ })
@@ -1682,8 +1682,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \     'VimFilerSplit', 'VimFilerTab',
     \   ],
     \   'on_func' : 'vimfiler#',
-    \   'on_idle' : 1,
-    \   'on_event' : 'InsertEnter',
+    \   'on_event' : ['FocusLost', 'CursorHold', 'InsertEnter',],
     \ })
   "}}}
 
@@ -1826,7 +1825,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \   'on_map' : [['n', '<Plug>']],
     \   'on_cmd' : ['MilfeulleDisp', 'MilfeullePrev', 'MilfeulleNext', 'MilfeulleClear',
     \                 'MilfeulleRefreshMilfeulleRefresh', 'MilfeulleOverlay'],
-    \   'on_idle' : 1,
+    \   'on_event' : ['FocusLost', 'CursorHold',],
     \ })
   "}}}
 
@@ -2049,7 +2048,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   "haya14busa/vim-migemo{{{
   call dein#add('haya14busa/vim-migemo', {
     \   'on_map' : [['n', '<Plug>(migemo-searchchar)']],
-    \   'on_i' : 1,
+    \   'on_event' : ['InsertEnter',],
     \   'if' : has('migemo')
     \ })
   "}}}
@@ -2158,8 +2157,7 @@ if s:dein_is_installed
       \   'default' : 'local',
       \   'disabled' : !IsLocal(),
       \   'on_cmd' : ['VerifyEnc',],
-      \   'on_idle' : 1,
-      \   'on_i' : 1,
+      \   'on_event' : ['FocusLost', 'CursorHold', 'InsertEnter',],
       \ })
     "}}}
     "memo.vim{{{
