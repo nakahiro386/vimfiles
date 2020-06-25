@@ -1527,7 +1527,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   "}}}
 
   call dein#add('Shougo/tabpagebuffer.vim', {
-    \   'on_source' : ['unite.vim', 'vimfiler', 'vimshell', ],
+    \   'on_source' : ['unite.vim', 'vimfiler', ],
     \ })
 
   call dein#add('vim-jp/vimdoc-ja', {'lazy': 1,})
@@ -1566,28 +1566,12 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \ )
   "}}}
 
-  "Shougo/vimshell{{{
-  call dein#add('Shougo/vimshell', {
-    \   'on_ft' : ['vimshrc'],
-    \   'on_cmd' : ['VimShell', 'VimShellBufferDir', 'VimShellPop',
-    \               'VimShellCurrentDir', 'VimShellTab',
-    \               'VimShellExecute', 'VimShellInteractive',
-    \   ],
-    \ })
-  "}}}
-
   "sudo.vim{{{
   call dein#add('vim-scripts/sudo.vim', {
     \   'frozen' : 1,
     \   'on_cmd' : ['SudoRead', 'SudoWrite', ],
     \ })
   "}}}
-
-  call dein#load_dict({
-    \   'yomi322/vim-gitcomplete': {},
-    \   'https://bitbucket.org/nakahiro386/vagrant-complete.vim.git': {},
-    \ }, {'on_ft': ['vimshell'],}
-    \ )
 
   "Shougo/deoplete.nvim{{{
   let g:deoplete_enable = has('nvim') ||
@@ -2694,129 +2678,6 @@ if Tap('unite-everything') "{{{
   call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
 endif "}}}
 
-if Tap('vimshell') "{{{
-
-  nnoremap [Plug]ss :<C-u>VimShell -buffer-name=vimshell -toggle -popup<CR>
-  nnoremap [Plug]sS :<C-u>VimShell -buffer-name=vimshell -toggle<CR>
-  nnoremap [Plug]sb :<C-u>VimShellBufferDir -buffer-name=vimshell -toggle -popup<CR>
-  nnoremap [Plug]sc :<C-u>VimShellCurrentDir -buffer-name=vimshell -toggle -popup<CR>
-
-  nnoremap <Leader>ss :<C-u>VimShell -buffer-name=vimshell -toggle -popup<CR>
-  nnoremap <Leader>sS :<C-u>VimShell -buffer-name=vimshell -toggle -split<CR>
-  nnoremap <Leader>sb :<C-u>VimShellBufferDir -buffer-name=vimshell -toggle -popup<CR>
-  nnoremap <Leader>sc :<C-u>VimShellCurrentDir -buffer-name=vimshell -toggle -popup<CR>
-  nnoremap <Leader>st :<C-u>VimShellTab -buffer-name=vimshell -toggle<CR>
-
-  function! plugin.on_source() abort "{{{
-    let g:vimshell_prompt='%>'
-    let g:vimshell_secondary_prompt = '%%>'
-    let g:vimshell_user_prompt = '"[".GetShortPath(getcwd(),4,40)."]"'
-    let g:vimshell_right_prompt = '(exists("b:vimshell.system_variables.status")?b:vimshell.system_variables.status:"")."  ".strftime("%Y/%m/%d\ %X")'
-    let g:vimshell_data_directory = expand('$VIMFILES/tmp/.vimshell')
-    let g:vimshell_temporary_directory = g:vimshell_data_directory
-    let g:vimshell_max_command_history = 2000
-    " let g:vimshell_use_terminal_command='sh -il'
-    let g:vimshell_vimshrc_path = expand('$VIMFILES/vimshrc')
-    if filereadable(expand('$HOME/.zsh_history'))
-      let g:unite_source_vimshell_external_history_path=expand('$HOME/.zsh_history')
-    elseif filereadable(expand('$HOME/.bash_history'))
-      let g:unite_source_vimshell_external_history_path=expand('$HOME/.bash_history')
-    endif
-    let g:vimshell_popup_height = 50
-    let g:vimshell_scrollback_limit = 10000
-    let g:vimshell_enable_stay_insert = 1
-    let g:vimshell_force_overwrite_statusline = 0
-
-    "vimshel StatusLine Settings"{{{
-    function! VimshellGetPath() "{{{
-      if !exists('b:vimshell')
-        return ''
-      endif
-      return GetShortPath(get(b:vimshell, 'current_dir', ''), 4, 20)
-    endfunction "}}}
-    function! VimshellContinuation() "{{{
-      if !exists('b:vimshell')
-        return ''
-      endif
-      return empty(get(b:vimshell, 'continuation', {})) ? '' : '[async]'
-    endfunction "}}}
-    function! VimshellStatusLine() "{{{
-      let l:ret =' '
-      let l:ret.=StatusLineBufNum()
-      let l:ret.='%#StatusLineModeMsgVl#[*%{Bufpath()}*]%*'
-      let l:ret.='['
-      let l:ret.='%{VimshellGetPath()}'
-      let l:ret.=']'
-      let l:ret.='%#Error#%{VimshellContinuation()}%*'
-      let l:ret.='%#Error#%h%w%q%r%m%*'
-      let l:ret.=StatuslineGetMode()
-      let l:ret.='%<'
-      let l:ret.='%='
-      let l:ret.=StatuslineSuffix()
-      return l:ret
-    endfunction "}}}
-    "}}}
-
-    function! s:vimshell_settings() "{{{
-      setlocal statusline=%!VimshellStatusLine()
-
-      call UnmapBuffer('<C-n>', 'n')
-      call UnmapBuffer('<C-p>', 'n')
-      nnoremap <buffer> ? :<C-u>Mapping vimshell<CR>
-      nmap <buffer> gj <Plug>(vimshell_next_prompt)
-      nmap <buffer> gk <Plug>(vimshell_previous_prompt)
-
-      nmap <buffer> <C-r> <Plug>(vimshell_clear)
-      nmap <buffer> <C-b> <Plug>(vimshell_execute_by_background)
-      nnoremap <silent><buffer> J <C-u>:Unite -default-action=lcd -no-split -buffer-name=directory_mru bookmark:directory directory_mru<CR>
-      nnoremap <silent><buffer> <C-J> <C-u>:Unite -default-action=lcd -winheight=5 -buffer-name=directory_mru bookmark:directory directory_mru<CR>
-      nmap <buffer> K <Plug>(vimshell_delete_previous_output)
-
-      imap <buffer> <C-b> <Plug>(vimshell_execute_by_background)
-      imap <buffer> jj <Esc>
-      imap <buffer> kk <Esc>
-      imap <buffer> <C-z> <Plug>(vimshell_zsh_complete)
-
-      call vimshell#set_alias('ll', 'ls -lh')
-      call vimshell#set_alias('la', 'ls -Ah')
-      call vimshell#set_alias('l.', 'ls -d .*')
-      call vimshell#set_alias('lla', 'ls -lAh')
-      call vimshell#set_galias('$?', '$$status')
-
-      call vimshell#altercmd#define('jv', 'jvgrep --exclude ''\.(git|svn|hg|bzr|jar$|zip$|exe$)'' -in8  param file')
-      call vimshell#altercmd#define('be', 'bundle exec')
-      call vimshell#altercmd#define('bi', 'bundle install --path vendor/bundler')
-      call vimshell#altercmd#define('bgd', 'less --encoding=utf-8 --syntax=diff git diff')
-      if g:is_windows
-        call vimshell#set_alias('gitdiff', 'exe --encoding=cp932 git difftool --tool=gvimdiff --no-prompt')
-      else
-        call vimshell#set_alias('gitdiff', 'exe git difftool --tool=gvimdiff --no-prompt')
-      endif
-
-    endfunction "}}}
-    autocmd MyAutoCmd FileType vimshell call s:vimshell_settings()
-    autocmd MyAutoCmd FileType int-sqlplus call IndentSet(8)
-    function! s:vimshell_less_Setting()
-      call UnmapBuffer('<Space>', 'n')
-    endfunction
-    autocmd MyAutoCmd FileType vimshell-less call s:vimshell_less_Setting()
-  endfunction "}}}
-  function! plugin.on_post_source() abort "{{{
-    call Set_default('g:vimshell_terminal_commands', {})
-    call extend(g:vimshell_terminal_commands, {'sh' : 1})
-
-    call Set_default('g:vimshell_no_save_history_commands', {})
-    call extend(g:vimshell_no_save_history_commands, {'cdup' : 1, 'pwd' : 1})
-
-    call Set_default('g:vimshell_interactive_encodings', {})
-    call extend(g:vimshell_interactive_encodings, {'sqlplus': 'utf-8'})
-    call extend(g:vimshell_interactive_encodings, {'git': 'utf-8'})
-    call extend(g:vimshell_interactive_encodings, {'vagrant': 'utf-8'})
-  endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
-endif "}}}
-
 if Tap('vim-hug-neovim-rpc') "{{{
   function! plugin.on_source() abort "{{{
     if has('python3')
@@ -2888,7 +2749,7 @@ if Tap('neocomplete.vim') "{{{
     let g:neocomplete#enable_fuzzy_completion = 1
 
     " 自動補完を行わないバッファ名
-    let g:neocomplete#lock_buffer_name_pattern = '\.log\|.*quickrun.*\|.*vimshell.*\|.*;tail'
+    let g:neocomplete#lock_buffer_name_pattern = '\.log\|.*quickrun.*\|.*;tail'
     " キャッシュしないファイル名
     let g:neocomplete#sources#buffer#disabled_pattern = g:neocomplete#lock_buffer_name_pattern
     let g:neocomplete#sources#buffer#disabled_pattern .= '\|__scratch__.*'
@@ -2927,9 +2788,6 @@ if Tap('neocomplete.vim') "{{{
     let g:neocomplete#sources#vim#complete_functions = {
       \ 'Unite' : 'unite#complete_source',
       \ 'Ref' : 'ref#complete',
-      \ 'VimShellExecute' : 'vimshell#vimshell_execute_complete',
-      \ 'VimShellInteractive' : 'vimshell#vimshell_execute_complete',
-      \ 'VimShell' : 'vimshell#complete',
       \ 'VimFiler' : 'vimfiler#complete',
       \ 'VimFilerBufferDir' : 'vimfiler#complete',
       \ 'VimFilerCurrentDir' : 'vimfiler#complete',
@@ -3138,9 +2996,6 @@ if Tap('neco-vim') "{{{
     let g:necovim#complete_functions = {
       \ 'Unite' : 'unite#complete_source',
       \ 'Ref' : 'ref#complete',
-      \ 'VimShellExecute' : 'vimshell#vimshell_execute_complete',
-      \ 'VimShellInteractive' : 'vimshell#vimshell_execute_complete',
-      \ 'VimShell' : 'vimshell#complete',
       \ 'VimFiler' : 'vimfiler#complete',
       \ 'VimFilerBufferDir' : 'vimfiler#complete',
       \ 'VimFilerCurrentDir' : 'vimfiler#complete',
@@ -3568,7 +3423,7 @@ if Tap('vim-indent-guides') "{{{
     let g:indent_guides_enable_on_vim_startup=1
     let g:indent_guides_guide_size=0
     let g:indent_guides_indent_levels = 10
-    let g:indent_guides_exclude_filetypes = ['help', 'unite', 'vimfiler', 'vimshell', 'log', 'text', 'calendar', 'ref', 'quickrun', 'tail']
+    let g:indent_guides_exclude_filetypes = ['help', 'unite', 'vimfiler', 'log', 'text', 'calendar', 'ref', 'quickrun', 'tail']
     let g:indent_guides_start_level = 1
 
     let g:indent_guides_auto_colors = 0
