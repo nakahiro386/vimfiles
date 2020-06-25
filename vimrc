@@ -1564,8 +1564,8 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \   'basyura/outline-cs': {},
     \   'shiena/unite-path': {},
     \   'mattn/unite-gist': {},
-    \   'sgur/unite-everything': {},
-    \   'ujihisa/unite-locate': {},
+    \   'sgur/unite-everything': {'if': executable('es.exe')},
+    \   'ujihisa/unite-locate': {'if': executable('locate')},
     \ }, {'on_source': 'unite.vim'}
     \ )
   "}}}
