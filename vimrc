@@ -1518,6 +1518,10 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   "Shougo/vimproc{{{
   call dein#add('Shougo/vimproc', {
     \   'if' : !g:is_android,
+    \   'on_source' : ['unite.vim', 'vimfiler', ],
+    \   'on_cmd' : [ 'VimProcInstall', 'VimProcBang', 'VimProcRead',],
+    \   'on_func' : 'vimproc#',
+    \   'on_event' : ['FocusLost', 'CursorHold', 'InsertEnter',],
     \ })
   if g:is_windows
     let g:vimproc#download_windows_dll = 1
@@ -1961,7 +1965,10 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   call dein#add('othree/html5.vim', {'on_ft': ['html', 'xhtml'], })
   " call dein#add('tpope/vim-rails', {'on_ft': ['ruby', 'eruby'],})
 
-  call dein#add('vifm/vifm.vim')
+  call dein#add('vifm/vifm.vim', {
+    \   'on_ft' : ['vifm'],
+    \   'on_cmd' : ['Vifm', 'EditVifm', 'VsplitVifm', 'SplitVifm', 'DiffVifm', 'TabVifm'],
+    \ })
 
   call dein#add('vim-scripts/cobol.zip', {
     \   'frozen' : 1,
