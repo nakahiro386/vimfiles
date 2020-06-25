@@ -1624,7 +1624,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   call dein#add('Shougo/context_filetype.vim', {
     \   'on_func' : 'context_filetype#',
     \   'on_source' : ['neocomplete.vim',
-    \                  'vim-precious', 'echodoc', 'deoplete.nvim',],
+    \                  'vim-precious', 'deoplete.nvim',],
     \ })
   "}}}
 
@@ -1927,14 +1927,6 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \     'on_cmd' : ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch'],
     \     'on_func' : 'openbrowser#',
     \     'on_source': ['previm',],
-    \ })
-  "}}}
-
-  "Shougo/echodoc{{{
-  call dein#add('Shougo/echodoc', {
-    \   'on_cmd' : ['EchoDocEnable'],
-    \   'on_func' : 'echodoc#',
-    \   'on_idle' : 1,
     \ })
   "}}}
 
@@ -3870,17 +3862,6 @@ if Tap('open-browser.vim') "{{{
   let g:openbrowser_no_default_menus = 1
   nmap gx <Plug>(openbrowser-open)
   vmap gx <Plug>(openbrowser-open)
-endif "}}}
-
-if Tap('echodoc') "{{{
-  function! plugin.on_source() abort "{{{
-    " let g:echodoc_enable_at_startup = 1
-  endfunction "}}}
-  function! plugin.on_post_source() abort "{{{
-    call echodoc#enable()
-  endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
 endif "}}}
 
 if Tap('vim-ruby') "{{{
