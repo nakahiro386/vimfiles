@@ -2920,6 +2920,7 @@ if Tap('sonictemplate-vim') "{{{
     " disabled default mapping.
     let g:sonictemplate_key = '<plug>(sonictemplate)'
     let g:sonictemplate_intelligent_key = '<plug>(sonictemplate-intelligent)'
+    let g:sonictemplate_postfix_key = '<plug>(sonictemplate-postfix)'
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
     " imap <c-t>t <plug>(sonictemplate)
