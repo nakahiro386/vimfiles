@@ -1577,41 +1577,6 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \ })
   "}}}
 
-  "Shougo/deoplete.nvim{{{
-  let g:deoplete_enable = has('nvim') ||
-    \ (has('python3') && has('timers') && HasVersion('8.0'))
-  call dein#add('Shougo/deoplete.nvim', {
-    \   'if' : g:deoplete_enable,
-    \   'on_event' : 'InsertEnter',
-    \ })
-  call dein#load_dict({
-    \ 'roxma/nvim-yarp': {},
-    \ 'roxma/vim-hug-neovim-rpc': {},
-    \ }, {
-    \   'if': !has('nvim'),
-    \   'on_source' : ['deoplete.nvim', ],
-    \ }
-    \ )
-  "}}}
-
-  "Shougo/neocomplete.vim{{{
-  call dein#add('Shougo/neocomplete.vim', {
-    \   'if' : (!g:deoplete_enable && has('lua')),
-    \   'on_cmd' : ['NeoCompleteBufferMakeCache', 'NeoCompleteEnable'],
-    \   'on_event' : 'InsertEnter',
-    \ })
-  "}}}
-
-  " neocomplete sources{{{
-  call dein#load_dict({
-    \   'Shougo/neco-syntax': {},
-    \   'Shougo/neoinclude.vim': {},
-    \   'Shougo/neco-vim': {},
-    \   'hrsh7th/vim-neco-calc': {},
-    \ }, {'on_source': ['neocomplete.vim', 'deoplete.nvim'] ,}
-    \ )
-  "}}}
-
   "osyo-manga/vim-precious"{{{
   call dein#add('osyo-manga/vim-precious', {
     \   'on_cmd' : ['PreciousSwitch',  'PreciousSwitchAutcmd', ],
@@ -1623,8 +1588,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   "Shougo/context_filetype.vim"{{{
   call dein#add('Shougo/context_filetype.vim', {
     \   'on_func' : 'context_filetype#',
-    \   'on_source' : ['neocomplete.vim',
-    \                  'vim-precious', 'deoplete.nvim',],
+    \   'on_source' : ['vim-precious', ],
     \ })
   "}}}
 
@@ -2444,34 +2408,6 @@ if Tap('unite.vim') "{{{
     call unite#custom#profile('location_list', 'context', l:qc)
     "}}}
 
-    "unite-source"{{{
-    "emmet{{{
-    let s:unite_source = { 'name': 'emmet', 'max_candidates': 100 }
-    function! s:unite_source.gather_candidates(args, context) "{{{
-      let snips = emmet#getSnippets(neocomplete#get_context_filetype())
-      if empty(snips)
-        return []
-      endif
-
-      let l:abbr_pattern = printf('%%.%ds..%%s', g:neocomplete#max_keyword_width-10)
-
-      let list = []
-      for trig in keys(snips)
-        let s:triger = snips[trig]
-        let l:abbr = substitute( substitute(s:triger, '\n', '', 'g'), '\s', ' ', 'g')
-        let list += [{'word' : trig, 'abbr' : trig . '   ' . l:abbr, 'source' : 'emmet', 'kind' : 'word'}]
-      endfor
-      unlet trig
-
-      return list
-    endfunction "}}}
-    "登録
-    call unite#define_source(s:unite_source)
-    unlet s:unite_source
-    "}}}
-
-    "}}}
-
     "unite-custom_action"{{{
     if g:is_windows "{{{
       " explorer.exe"{{{
@@ -2690,183 +2626,6 @@ if Tap('vim-hug-neovim-rpc') "{{{
   call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
 endif "}}}
 
-if Tap('deoplete.nvim') "{{{
-  function! plugin.on_source() abort "{{{
-    if g:is_windows
-      let g:python3_host_prog = get(g:, 'python3_host_prog','python.exe')
-    endif
-  endfunction "}}}
-  function! plugin.on_post_source() abort "{{{
-    call deoplete#custom#option({
-      \ 'skip_multibyte': v:true,
-      \ 'max_list': 100,
-      \ 'auto_refresh_delay': 10,
-      \ })
-    call deoplete#custom#option('keyword_patterns', {
-      \ '_': '[0-9a-zA-Z_]\k*',
-      \})
-    call deoplete#custom#option('omni_patterns', {
-      \ 'ruby': ['[^. *\t]\.\w*', '[a-zA-Z_]\w*::'],
-      \ 'java': '[^. *\t]\.\w*',
-      \ 'xhtml': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
-      \ 'xml': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
-      \ })
-      " \ 'html': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
-    call deoplete#custom#source('omni', 'functions', {
-        \ 'html': ['htmlcomplete#CompleteTags', 'emmet#completeTag']
-        \})
-    autocmd MyAutoCmd FileType markdown,log,text,tail
-      \ call deoplete#custom#buffer_option('auto_complete', v:false)
-    call deoplete#enable()
-
-    " 選択している候補を確定
-    imap <expr><C-y>
-      \ pumvisible() ?
-      \   (neosnippet#expandable() ?
-      \     "\<Plug>(neosnippet_expand)<Esc>gv" :
-      \     (neosnippet#jumpable() ?
-      \       "\<Plug>(neosnippet_jump)" :
-      \       deoplete#close_popup())) :
-      \ "\<C-y>"
-    " " 現在選択している候補をキャンセルし、ポップアップを閉じます
-    inoremap <expr><C-e> pumvisible() ? deoplete#cancel_popup() : "\<C-e>"
-
-    " imap <expr><CR> neosnippet#expandable() ? "\<Plug>(neosnippet_expand)<Esc>gv" :
-      " \ neosnippet#jumpable() ? "\<Plug>(neosnippet_jump)" :
-      " \ pumvisible() ? deoplete#close_popup() :
-      " \ "\<CR>"
-    imap <expr><C-k> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" :
-      \ pumvisible() ? deoplete#close_popup() :
-      \ "\<Del>"
-
-    "C-h, BSで補完ウィンドウを確実に閉じる
-    inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
-    inoremap <expr><BS> deoplete#smart_close_popup()."\<BS>"
-
-    " 共通部分を確定させる
-    inoremap <expr><C-l> deoplete#complete_common_string()
-
-    "vim標準のキーワード補完を置き換える
-    inoremap <expr><C-n> pumvisible() ? "\<C-n>" : deoplete#manual_complete()
-
-  endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
-endif "}}}
-
-if Tap('neocomplete.vim') "{{{
-  function! plugin.on_source() abort "{{{
-    let g:neocomplete#enable_at_startup = 1
-
-    let g:neocomplete#max_list = 30
-    let g:neocomplete#max_keyword_width = 50
-    let g:neocomplete#data_directory = expand('$VIMFILES/tmp/.neocomplete')
-    let g:neocomplete#enable_ignore_case = 1
-    let g:neocomplete#enable_smart_case = 0
-    let g:neocomplete#sources#syntax#min_keyword_length = 2
-    " Use camel case completion.
-    "let g:neocomplete#enable_camel_case = 1
-    let g:neocomplete#enable_fuzzy_completion = 1
-
-    " 自動補完を行わないバッファ名
-    let g:neocomplete#lock_buffer_name_pattern = '\.log\|.*quickrun.*\|.*;tail'
-    " キャッシュしないファイル名
-    let g:neocomplete#sources#buffer#disabled_pattern = g:neocomplete#lock_buffer_name_pattern
-    let g:neocomplete#sources#buffer#disabled_pattern .= '\|__scratch__.*'
-
-    if has('reltime')
-      let g:neocomplete#skip_auto_completion_time = '0.5'
-    endif
-    call Set_default('g:neocomplete#sources#omni#functions', {})
-    let g:neocomplete#sources#omni#functions = {
-      \ 'html' : 'emmet#completeTag',
-      \ 'css' : 'emmet#completeTag',
-      \ 'javascript' : 'emmet#completeTag',
-      \ }
-    call Set_default('g:neocomplete#sources#omni#input_patterns', {})
-    let g:neocomplete#sources#omni#input_patterns.python = ''
-    let g:neocomplete#sources#omni#input_patterns.java = ''
-
-    call Set_default('g:neocomplete#text_mode_filetypes', {})
-    let g:neocomplete#text_mode_filetypes.gitcommit = 0
-    let g:neocomplete#text_mode_filetypes.java = 0
-
-    call Set_default('g:neocomplete#force_omni_input_patterns', {})
-    let g:neocomplete#force_omni_input_patterns.python = '\h\w*\|[^. \t]\.\w*'
-
-    " ディクショナリ定義
-    let g:neocomplete#sources#dictionary#dictionaries = { 'default' : '' }
-    call extend(g:neocomplete#sources#dictionary#dictionaries, { 'html' : $VIMDICT.'/html.dict'.','.$VIMDICT.'/jquery.dict'.','.$VIMDICT.'/javascript.dict'.','.$VIMDICT.'/css.dict'})
-    call extend(g:neocomplete#sources#dictionary#dictionaries, { 'javascript' : $VIMDICT.'/jquery.dict'.','.$VIMDICT.'/javascript.dict' })
-    call extend(g:neocomplete#sources#dictionary#dictionaries, { 'css' : $VIMDICT.'/css.dict' })
-    call extend(g:neocomplete#sources#dictionary#dictionaries, { 'autohotkey' : $VIMDICT.'/ahk.dict' })
-    call extend(g:neocomplete#sources#dictionary#dictionaries, { 'dosbatch' : $VIMDICT.'/dosbatch.dict' })
-    call extend(g:neocomplete#sources#dictionary#dictionaries, { 'sql' : $VIMDICT.'/sql.dict' })
-    call extend(g:neocomplete#sources#dictionary#dictionaries, { 'cobol' : $VIMDICT.'/COBOL.dict' })
-    call extend(g:neocomplete#sources#dictionary#dictionaries, { 'ruby' : $VIMDICT.'/ruby.dict' })
-
-    let g:neocomplete#sources#vim#complete_functions = {
-      \ 'Unite' : 'unite#complete_source',
-      \ 'Ref' : 'ref#complete',
-      \ 'VimFiler' : 'vimfiler#complete',
-      \ 'VimFilerBufferDir' : 'vimfiler#complete',
-      \ 'VimFilerCurrentDir' : 'vimfiler#complete',
-      \ 'VimFilerDouble' : 'vimfiler#complete',
-      \ 'VimFilerExplorer' : 'vimfiler#complete',
-      \ 'VimFilerSimple' : 'vimfiler#complete',
-      \ 'VimFilerSplit' : 'vimfiler#complete',
-      \ 'VimFilerTab' : 'vimfiler#complete',
-      \ 'Edit' : 'vimfiler#complete',
-      \ 'QuickRun' : 'quickrun#complete',
-      \ 'Template' : 'sonictemplate#complete',
-      \ 'PP' : 'var',
-      \ 'PrettyPrint' : 'var',
-      \ 'Capture' : 'command',
-      \ 'Ipmsg' : 'GetHostName',
-      \ }
-
-  endfunction "}}}
-  function! plugin.on_post_source() abort "{{{
-    " 選択している候補を確定
-    imap <expr><C-y> pumvisible() ? neocomplete#close_popup() : "\<C-y>"
-    "imap <expr><CR> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? neocomplete#close_popup() : "\<CR>"
-    imap <expr><CR> neosnippet#expandable() ? "\<Plug>(neosnippet_expand)<Esc>gv" :
-      \ neosnippet#jumpable() ? "\<Plug>(neosnippet_jump)" :
-      \ pumvisible() ? neocomplete#close_popup() :
-      \ "\<CR>"
-    imap <expr><C-k> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? neocomplete#close_popup() : "\<Del>"
-
-    "C-h, BSで補完ウィンドウを確実に閉じる
-    inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
-    inoremap <expr><BS> neocomplete#smart_close_popup()."\<BS>"
-    " 現在選択している候補をキャンセルし、ポップアップを閉じます
-    inoremap <expr><C-e> pumvisible() ? neocomplete#cancel_popup() : "\<C-e>"
-    " 共通部分を確定させる
-    inoremap <expr><C-l> neocomplete#complete_common_string()
-
-    " uniteによる保管を行う
-    imap <C-f> <Plug>(neocomplete_start_unite_complete)
-    imap <C-Space> <Plug>(neocomplete_start_unite_complete)
-
-    "vim標準のキーワード補完を置き換える
-    inoremap <expr><C-n> pumvisible() ? "\<C-n>" : neocomplete#start_manual_complete()
-    "inoremap <expr><C-x><C-n> pumvisible() ? "\<C-n>" : neocomplete#manual_keyword_complete()
-    "inoremap <expr><C-Space> neocomplete#manual_keyword_complete()
-    "オムニ補完の手動呼び出し
-    "inoremap <expr><C-x><C-o> neocomplete#manual_omni_complete()
-    "inoremap <expr><C-x><C-o> &filetype == 'vim' ? "\<C-x><C-v><C-p>" : neocomplete#manual_omni_complete()
-
-    "inoremap <expr><TAB> pumvisible() ? "\<Down>" : neocomplete#start_manual_complete()
-
-    "tabで補完候補の選択を行う
-    inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<S-TAB>"
-
-  endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
-endif "}}}
-
 if Tap('vim-precious') "{{{
   function! plugin.on_source() abort "{{{
     let g:precious_enable_switch_CursorMoved = {
@@ -3004,46 +2763,6 @@ if Tap('lexima.vim') "{{{
   endfunction "}}}
   call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
   call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
-endif "}}}
-
-if Tap('neco-syntax') "{{{
-  function! plugin.on_source() abort "{{{
-    let g:necosyntax#min_keyword_length=2
-  endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-endif "}}}
-if Tap('neoinclude.vim') "{{{
-  function! plugin.on_source() abort "{{{
-    let g:neoinclude#max_processes = 8
-    call Set_default('g:neoinclude#patterns', {})
-    let g:neoinclude#patterns.python = ''
-    let g:neoinclude#patterns.java = ''
-  endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-endif "}}}
-
-if Tap('neco-vim') "{{{
-  function! plugin.on_source() abort "{{{
-    let g:necovim#complete_functions = {
-      \ 'Unite' : 'unite#complete_source',
-      \ 'Ref' : 'ref#complete',
-      \ 'VimFiler' : 'vimfiler#complete',
-      \ 'VimFilerBufferDir' : 'vimfiler#complete',
-      \ 'VimFilerCurrentDir' : 'vimfiler#complete',
-      \ 'VimFilerDouble' : 'vimfiler#complete',
-      \ 'VimFilerExplorer' : 'vimfiler#complete',
-      \ 'VimFilerSimple' : 'vimfiler#complete',
-      \ 'VimFilerSplit' : 'vimfiler#complete',
-      \ 'VimFilerTab' : 'vimfiler#complete',
-      \ 'Edit' : 'vimfiler#complete',
-      \ 'QuickRun' : 'quickrun#complete',
-      \ 'Template' : 'sonictemplate#complete',
-      \ 'PP' : 'var',
-      \ 'PrettyPrint' : 'var',
-      \ 'Capture' : 'command',
-      \ }
-  endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
 endif "}}}
 
 if Tap('vimfiler') "{{{
