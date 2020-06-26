@@ -1673,6 +1673,12 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \ })
   "}}}
 
+  "cohama/lexima.vim{{{
+  call dein#add('cohama/lexima.vim', {
+    \   'on_event' : ['InsertEnter',],
+    \ })
+  "}}}
+
   "Shougo/vimfiler{{{
   call dein#add('Shougo/vimfiler', {
     \   'depends' : 'unite.vim',
@@ -2699,16 +2705,36 @@ if Tap('deoplete.nvim') "{{{
     call deoplete#custom#option('keyword_patterns', {
       \ '_': '[0-9a-zA-Z_]\k*',
       \})
+    call deoplete#custom#option('omni_patterns', {
+      \ 'ruby': ['[^. *\t]\.\w*', '[a-zA-Z_]\w*::'],
+      \ 'java': '[^. *\t]\.\w*',
+      \ 'xhtml': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
+      \ 'xml': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
+      \ })
+      " \ 'html': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
+    call deoplete#custom#source('omni', 'functions', {
+        \ 'html': ['htmlcomplete#CompleteTags', 'emmet#completeTag']
+        \})
     autocmd MyAutoCmd FileType markdown,log,text,tail
       \ call deoplete#custom#buffer_option('auto_complete', v:false)
     call deoplete#enable()
 
     " 選択している候補を確定
-    imap <expr><C-y> pumvisible() ? deoplete#close_popup() : "\<C-y>"
-    imap <expr><CR> neosnippet#expandable() ? "\<Plug>(neosnippet_expand)<Esc>gv" :
-      \ neosnippet#jumpable() ? "\<Plug>(neosnippet_jump)" :
-      \ pumvisible() ? deoplete#close_popup() :
-      \ "\<CR>"
+    imap <expr><C-y>
+      \ pumvisible() ?
+      \   (neosnippet#expandable() ?
+      \     "\<Plug>(neosnippet_expand)<Esc>gv" :
+      \     (neosnippet#jumpable() ?
+      \       "\<Plug>(neosnippet_jump)" :
+      \       deoplete#close_popup())) :
+      \ "\<C-y>"
+    " " 現在選択している候補をキャンセルし、ポップアップを閉じます
+    inoremap <expr><C-e> pumvisible() ? deoplete#cancel_popup() : "\<C-e>"
+
+    " imap <expr><CR> neosnippet#expandable() ? "\<Plug>(neosnippet_expand)<Esc>gv" :
+      " \ neosnippet#jumpable() ? "\<Plug>(neosnippet_jump)" :
+      " \ pumvisible() ? deoplete#close_popup() :
+      " \ "\<CR>"
     imap <expr><C-k> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" :
       \ pumvisible() ? deoplete#close_popup() :
       \ "\<Del>"
@@ -2716,9 +2742,6 @@ if Tap('deoplete.nvim') "{{{
     "C-h, BSで補完ウィンドウを確実に閉じる
     inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
     inoremap <expr><BS> deoplete#smart_close_popup()."\<BS>"
-    " " 現在選択している候補をキャンセルし、ポップアップを閉じます
-    inoremap <expr><C-e> pumvisible() ? deoplete#cancel_popup() : "\<C-e>"
-    inoremap <expr><C-g> deoplete#refresh()
 
     " 共通部分を確定させる
     inoremap <expr><C-l> deoplete#complete_common_string()
@@ -2971,6 +2994,16 @@ let s:installed_vim_ambicmd = Tap('vim-ambicmd')
 if s:installed_vim_ambicmd "{{{
   cnoremap <expr> <Space> ambicmd#expand("\<Space>")
   cnoremap <expr> <CR>    ambicmd#expand("\<CR>")
+endif "}}}
+if Tap('lexima.vim') "{{{
+  function! plugin.on_source() abort "{{{
+    " let g:lexima_enable_newline_rules = 0
+  endfunction "}}}
+  function! plugin.on_post_source() abort "{{{
+    call lexima#init()
+  endfunction "}}}
+  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
 endif "}}}
 
 if Tap('neco-syntax') "{{{
