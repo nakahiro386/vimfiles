@@ -1515,6 +1515,24 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   call dein#begin(expand('$VIMBUNDLE')) "filetype off
 
   call dein#add('Shougo/dein.vim')
+
+  call dein#add('prabirshrestha/asyncomplete.vim',{
+    \   'merged': 0,
+    \   'on_event' : 'InsertEnter',
+    \ })
+  call dein#load_dict({
+    \   'prabirshrestha/asyncomplete-buffer.vim': {},
+    \   'prabirshrestha/asyncomplete-file.vim': {},
+    \   'prabirshrestha/asyncomplete-neosnippet.vim': {},
+    \   'prabirshrestha/asyncomplete-emmet.vim': {},
+    \   'Shougo/neco-syntax': {},
+    \   'prabirshrestha/asyncomplete-necosyntax.vim': {},
+    \   'Shougo/neco-vim': {},
+    \   'prabirshrestha/asyncomplete-necovim.vim': {},
+    \   'yami-beta/asyncomplete-omni.vim': {},
+    \ }, {'on_source': 'asyncomplete.vim', 'lazy' : 0}
+    \ )
+
   "Shougo/vimproc{{{
   call dein#add('Shougo/vimproc', {
     \   'if' : !g:is_android,
@@ -1597,7 +1615,7 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \   'on_event' : ['InsertEnter',],
     \   'depends' : 'neosnippet-snippets',
     \   'on_ft' : ['snippet'],
-    \   'on_source' : ['unite.vim', ],
+    \   'on_source' : ['unite.vim', 'asyncomplete.vim', ],
     \   'on_func' : 'neosnippet#expandable_or_jumpable',
     \ })
   "}}}
@@ -2213,6 +2231,125 @@ if Tap('vimproc') "{{{
   endfunction "}}}
   " echo Download_vimproc_dll('9.3')
   " echo vimproc#util#try_download_windows_dll('9.3')
+endif "}}}
+
+if Tap('asyncomplete.vim') "{{{
+  function! plugin.on_source() abort "{{{
+    let g:asyncomplete_enable_for_all = 1
+    " let g:asyncomplete_auto_completeopt = 0
+
+    let g:asyncomplete_disable_filetype = ['help', 'unite', 'vimfiler', 'log', 'text', 'calendar', 'quickrun', 'tail']
+    execute ':autocmd MyAutoCmd FileType '.join(g:asyncomplete_disable_filetype, ',').' call asyncomplete#disable_for_buffer()'
+    " TODO deoplete#mapping#_complete_common_string()
+
+    "tabで補完候補の選択を行う
+    inoremap <expr><Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+    inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    imap <expr><C-y>
+      \ pumvisible() ?
+      \   (neosnippet#expandable() ?
+      \     "\<Plug>(neosnippet_expand)<Esc>gv" :
+      \     (neosnippet#jumpable() ?
+      \       "\<Plug>(neosnippet_jump)" :
+      \       asyncomplete#close_popup())) :
+      \ "\<C-y>"
+    inoremap <expr><C-e> pumvisible() ? asyncomplete#cancel_popup() : "\<C-e>"
+    imap <expr><C-k> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" :
+      \ pumvisible() ? asyncomplete#close_popup() :
+      \ "\<Del>"
+
+    inoremap <expr><C-n> pumvisible() ? "\<C-n>" : asyncomplete#force_refresh()
+
+  endfunction "}}}
+  function! plugin.on_post_source() abort "{{{
+  endfunction "}}}
+  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+endif "}}}
+
+if Tap('asyncomplete-buffer.vim') "{{{
+  autocmd User asyncomplete_setup
+    \ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+    \ 'name': 'buffer',
+    \ 'whitelist': ['*'],
+    \ 'completor': function('asyncomplete#sources#buffer#completor'),
+    \ 'config': {
+    \    'max_buffer_size': 5000000,
+    \  },
+    \ }))
+endif "}}}
+if Tap('asyncomplete-file.vim') "{{{
+  autocmd User asyncomplete_setup
+    \ call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+    \ 'name': 'file',
+    \ 'whitelist': ['*'],
+    \ 'completor': function('asyncomplete#sources#file#completor'),
+    \ 'priority': 10,
+    \ }))
+endif "}}}
+if Tap('asyncomplete-emmet.vim') "{{{
+  autocmd User asyncomplete_setup
+    \ call asyncomplete#register_source(asyncomplete#sources#emmet#get_source_options({
+    \ 'name': 'emmet',
+    \ 'whitelist': ['html'],
+    \ 'completor': function('asyncomplete#sources#emmet#completor'),
+    \ }))
+endif "}}}
+if Tap('asyncomplete-neosnippet.vim') "{{{
+  autocmd User asyncomplete_setup
+    \ call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
+    \ 'name': 'neosnippet',
+    \ 'whitelist': ['*'],
+    \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
+    \ }))
+endif "}}}
+if Tap('neco-syntax') "{{{
+  let g:necosyntax#min_keyword_length=2
+endif "}}}
+if Tap('asyncomplete-necosyntax.vim') "{{{
+  autocmd User asyncomplete_setup
+    \ call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
+    \ 'name': 'necosyntax',
+    \ 'whitelist': ['*'],
+    \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
+    \ }))
+endif "}}}
+if Tap('neco-vim') "{{{
+  let g:necovim#complete_functions = {
+    \ 'Unite' : 'unite#complete_source',
+    \ 'Ref' : 'ref#complete',
+    \ 'VimFiler' : 'vimfiler#complete',
+    \ 'VimFilerBufferDir' : 'vimfiler#complete',
+    \ 'VimFilerCurrentDir' : 'vimfiler#complete',
+    \ 'VimFilerDouble' : 'vimfiler#complete',
+    \ 'VimFilerExplorer' : 'vimfiler#complete',
+    \ 'VimFilerSimple' : 'vimfiler#complete',
+    \ 'VimFilerSplit' : 'vimfiler#complete',
+    \ 'VimFilerTab' : 'vimfiler#complete',
+    \ 'Edit' : 'vimfiler#complete',
+    \ 'QuickRun' : 'quickrun#complete',
+    \ 'Template' : 'sonictemplate#complete',
+    \ 'PP' : 'var',
+    \ 'PrettyPrint' : 'var',
+    \ 'Capture' : 'command',
+    \ }
+endif "}}}
+if Tap('asyncomplete-necovim.vim') "{{{
+  autocmd User asyncomplete_setup
+    \ call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+    \ 'name': 'necovim',
+    \ 'whitelist': ['vim'],
+    \ 'completor': function('asyncomplete#sources#necovim#completor'),
+    \ }))
+endif "}}}
+if Tap('asyncomplete-omni.vim') "{{{
+  autocmd User asyncomplete_setup
+    \ call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+    \ 'name': 'omni',
+    \ 'whitelist': ['*'],
+    \ 'blacklist': ['c', 'cpp', 'html', 'ruby'],
+    \ 'completor': function('asyncomplete#sources#omni#completor')
+    \  }))
 endif "}}}
 
 if Tap('unite.vim') "{{{
