@@ -1575,20 +1575,15 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \   'Shougo/neoyank.vim': {'on_event' : ['FocusLost', 'CursorHold',],},
     \   'Shougo/unite-build': {},
     \   'thinca/vim-unite-history': {},
-    \   'Shougo/neossh.vim': {},
-    \   'osyo-manga/unite-filetype': {},
     \   'osyo-manga/unite-fold': {},
     \   'osyo-manga/unite-quickfix': {},
     \   'pasela/unite-webcolorname': {},
     \   'Shougo/unite-help': {},
-    \   'tsukkee/unite-tag': {},
     \   'ujihisa/unite-colorscheme': {},
     \   'zhaocai/unite-scriptnames': {},
     \   'Shougo/unite-outline': {},
     \   'basyura/outline-cobol': {},
     \   'basyura/outline-cs': {},
-    \   'shiena/unite-path': {},
-    \   'mattn/unite-gist': {},
     \   'sgur/unite-everything': {'if': executable('es.exe')},
     \   'ujihisa/unite-locate': {'if': executable('locate')},
     \ }, {'on_source': 'unite.vim'}
@@ -1905,14 +1900,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \ })
   "}}}
 
-  "thinca/vim-ref{{{
-  call dein#add('thinca/vim-ref', {
-    \   'on_cmd' : ['Ref'],
-    \   'pre_func' : 'ref#',
-    \   'on_source' : ['unite.vim', ],
-    \ })
-  "}}}
-
   "thinca/vim-quickrun{{{
   call dein#add('thinca/vim-quickrun', {
     \   'on_cmd' : ['QuickRun', ],
@@ -2054,14 +2041,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
   "}}}
 
   call dein#add('mopp/layoutplugin.vim', { 'on_cmd' : 'LayoutPlugin', })
-
-  call dein#add('iwataka/gitignore.vim', {
-    \   'on_func' : 'gitignore#',
-    \   'on_cmd' : [
-    \     'Gitignore',
-    \     'GitignoreUpdate',
-    \   ],
-    \ })
 
   call dein#add('haya14busa/vim-poweryank', {
     \   'if' : !has('gui_running'),
@@ -3777,34 +3756,6 @@ if Tap('calendar-vim') "{{{
   call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
 endif "}}}
 
-if Tap('vim-ref') "{{{
-  function! plugin.on_source() abort "{{{
-    call unite#custom_default_action('ref', 'split')
-    let g:ref_use_vimproc = 1
-    let g:ref_no_default_key_mappings = 1
-    let g:ref_open = 'vsplit'
-    let g:ref_use_cache =1
-    let g:ref_cache_dir = expand('$VIMFILES/tmp/.vim_ref_cache')
-    let g:manual_dir = expand('$HOME/Documents/Manual')
-    let g:ref_refe_cmd = g:manual_dir . '/ruby-refm-1.9.3-dynamic-20120829/refe-1_9_3.cmd'
-    let g:ref_phpmanual_path = g:manual_dir . '/php-chunked-xhtml'
-    function! s:refSetting() "{{{
-      setl wrap
-      setl nofoldenable
-      setl number
-
-      map <buffer> <silent> <CR> <Plug>(ref-keyword)
-      map <buffer> <silent> <C-]> <Plug>(ref-keyword)
-      map <buffer> <silent> <C-t> <Plug>(ref-back)
-      map <buffer> <silent> <C-o> <Plug>(ref-back)
-      map <buffer> <silent> <C-i> <Plug>(ref-forward)
-      nnoremap <buffer> q :<C-U>bw<CR>
-      nnoremap <buffer> Q :<C-U>bw<CR>
-    endfunction "}}}
-  endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-endif "}}}
-
 if Tap('vim-quickrun') "{{{
   function! plugin.on_source() abort "{{{
     let g:quickrun_no_default_key_mappings = 1
@@ -4007,13 +3958,6 @@ if Tap('vim-migemo') "{{{
     call migemo#system('')
   endfunction "}}}
   call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
-endif "}}}
-
-if Tap('gitignore.vim') "{{{
-  function! plugin.on_source() abort "{{{
-    let g:gitignore_dir = expand('$VIMFILES/tmp/.gitignore-boilerplates')
-  endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
 endif "}}}
 
 if Tap('vim-poweryank') "{{{
