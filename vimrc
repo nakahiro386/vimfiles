@@ -733,8 +733,11 @@ function! MyStatusline() "{{{
   " let l:ret.='[%{GetShortPath2(@%,3,30)}]'
   let l:ret.='%#Error#%h%w%q%r%m%*'
   let l:ret.=StatuslineGetMode()
-  if s:dein_is_installed
+  if g:_dein_is_installed
     let l:ret.=dein#get_progress()
+  endif
+  if exists('*LpsStatusLine')
+    let l:ret.=LpsStatusLine()
   endif
   let l:ret.=' '
   let l:ret.='%<'
@@ -1496,10 +1499,10 @@ if has('vim_starting') && (HasVersion('8.0') || has('nvim')) && !g:is_view
   endif
 endif
 
-let s:dein_is_installed = (&rtp =~? 'dein\.vim')
+let g:_dein_is_installed = (&rtp =~? 'dein\.vim')
 "}}}
 
-if s:dein_is_installed "{{{
+if g:_dein_is_installed "{{{
   "dein{{{
   let g:dein#install_log_filename = expand('$VIMFILES/tmp/dein.log')
   let g:dein#install_progress_type = "none"
@@ -1511,7 +1514,7 @@ if s:dein_is_installed "{{{
 endif "}}}
 
 " dein "{{{
-if s:dein_is_installed && dein#load_state(g:sfile_path)
+if g:_dein_is_installed && dein#load_state(g:sfile_path)
   call dein#begin(expand('$VIMBUNDLE')) "filetype off
 
   call dein#add('Shougo/dein.vim')
@@ -1525,11 +1528,14 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
     \   'prabirshrestha/asyncomplete-file.vim': {},
     \   'prabirshrestha/asyncomplete-neosnippet.vim': {},
     \   'prabirshrestha/asyncomplete-emmet.vim': {},
-    \   'Shougo/neco-syntax': {},
+    \   'Shougo/neco-syntax': {'lazy' : 1},
     \   'prabirshrestha/asyncomplete-necosyntax.vim': {},
-    \   'Shougo/neco-vim': {},
+    \   'Shougo/neco-vim': {'lazy' : 1},
     \   'prabirshrestha/asyncomplete-necovim.vim': {},
     \   'yami-beta/asyncomplete-omni.vim': {},
+    \   'prabirshrestha/vim-lsp': {'lazy' : 1, 'augroup': 'lsp_auto_enable'},
+    \   'mattn/vim-lsp-settings': {'lazy' : 1},
+    \   'prabirshrestha/asyncomplete-lsp.vim': {'lazy' : 1},
     \ }, {'on_source': 'asyncomplete.vim', 'lazy' : 0}
     \ )
 
@@ -1657,6 +1663,11 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
 
   "cohama/lexima.vim{{{
   call dein#add('cohama/lexima.vim', {
+    \   'on_event' : ['InsertEnter',],
+    \ })
+  "}}}
+  "tpope/vim-endwise{{{
+  call dein#add('tpope/vim-endwise', {
     \   'on_event' : ['InsertEnter',],
     \ })
   "}}}
@@ -2110,10 +2121,10 @@ if s:dein_is_installed && dein#load_state(g:sfile_path)
   "}}}
 
   " call dein#save_state()
-endif "if s:dein_is_installed && dein#load_state(g:sfile_path)"}}}
+endif "if g:_dein_is_installed && dein#load_state(g:sfile_path)"}}}
 
 " dein Local "{{{
-if s:dein_is_installed
+if g:_dein_is_installed
   let g:bundle_name = ''
   function! IsLocal() abort
     return isdirectory(expand('$VIMBUNDLELOCAL/'.g:bundle_name))
@@ -2163,7 +2174,7 @@ endif "}}}
 "Tap"{{{
 let g:plugins = {}
 let g:plugin = {}
-if s:dein_is_installed "{{{
+if g:_dein_is_installed "{{{
   function! Tap(name) "{{{
     let l:tap = dein#tap(a:name)
     if l:tap
@@ -2195,7 +2206,7 @@ else
     call UnTap()
     return 0
   endfunction "}}}
-endif "if s:dein_is_installed"}}}
+endif "if g:_dein_is_installed"}}}
 
 if Tap('vimproc') "{{{
   function! Download_vimproc_dll(version) abort "{{{
@@ -2236,7 +2247,8 @@ endif "}}}
 if Tap('asyncomplete.vim') "{{{
   function! plugin.on_source() abort "{{{
     let g:asyncomplete_enable_for_all = 1
-    " let g:asyncomplete_auto_completeopt = 0
+    set completeopt=menuone,noselect
+    let g:asyncomplete_auto_completeopt = 0
 
     let g:asyncomplete_disable_filetype = ['help', 'unite', 'vimfiler', 'log', 'text', 'calendar', 'quickrun', 'tail']
     execute ':autocmd MyAutoCmd FileType '.join(g:asyncomplete_disable_filetype, ',').' call asyncomplete#disable_for_buffer()'
@@ -2247,18 +2259,51 @@ if Tap('asyncomplete.vim') "{{{
     inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
     imap <expr><C-y>
       \ pumvisible() ?
+      \ asyncomplete#close_popup() :
+      \ "\<C-y>"
+    imap <expr><Cr>
+      \ pumvisible() ?
       \   (neosnippet#expandable() ?
       \     "\<Plug>(neosnippet_expand)<Esc>gv" :
       \     (neosnippet#jumpable() ?
       \       "\<Plug>(neosnippet_jump)" :
       \       asyncomplete#close_popup())) :
-      \ "\<C-y>"
+      \ "\<Cr>\<Plug>DiscretionaryEnd"
     inoremap <expr><C-e> pumvisible() ? asyncomplete#cancel_popup() : "\<C-e>"
     imap <expr><C-k> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" :
       \ pumvisible() ? asyncomplete#close_popup() :
       \ "\<Del>"
 
     inoremap <expr><C-n> pumvisible() ? "\<C-n>" : asyncomplete#force_refresh()
+
+    " Sort precessor in the document breaks triggering completion menu with different sources · Issue #162 · prabirshrestha/asyncomplete.vim
+    " https://github.com/prabirshrestha/asyncomplete.vim/issues/162
+    function! s:sort_by_priority_preprocessor(options, matches) abort
+        let l:items = []
+        let l:startcols = []
+        for [l:source_name, l:matches] in items(a:matches)
+            let l:startcol = l:matches['startcol']
+            let l:base = a:options['typed'][l:startcol - 1:]
+            for l:item in l:matches['items']
+                if stridx(l:item['word'], l:base) == 0
+                    let l:startcols += [l:startcol]
+                    if l:source_name =~? '^asyncomplete_lsp_'
+                      let l:item['priority'] = 999
+                    else
+                      let l:item['priority'] = get(asyncomplete#get_source_info(l:source_name), 'priority', 0)
+                    endif
+                    call add(l:items, l:item)
+                endif
+            endfor
+        endfor
+
+        let a:options['startcol'] = min(l:startcols)
+        let l:items = sort(l:items, {a, b -> b['priority'] - a['priority']})
+
+        call asyncomplete#preprocess_complete(a:options, l:items)
+    endfunction
+
+    let g:asyncomplete_preprocessor = [function('s:sort_by_priority_preprocessor')]
 
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
@@ -2271,36 +2316,56 @@ if Tap('asyncomplete-buffer.vim') "{{{
   autocmd User asyncomplete_setup
     \ call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
     \ 'name': 'buffer',
-    \ 'whitelist': ['*'],
+    \ 'allowlist': ['*'],
     \ 'completor': function('asyncomplete#sources#buffer#completor'),
     \ 'config': {
-    \    'max_buffer_size': 5000000,
+    \    'max_buffer_size': 5000,
     \  },
+    \ 'priority': 10,
     \ }))
 endif "}}}
 if Tap('asyncomplete-file.vim') "{{{
   autocmd User asyncomplete_setup
     \ call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
     \ 'name': 'file',
-    \ 'whitelist': ['*'],
+    \ 'allowlist': ['*'],
     \ 'completor': function('asyncomplete#sources#file#completor'),
     \ 'priority': 10,
     \ }))
 endif "}}}
 if Tap('asyncomplete-emmet.vim') "{{{
+
+  function! Asyncomplete_sources_emmet_completor(opt, ctx) abort
+    let l:col = a:ctx['col']
+    let l:typed = a:ctx['typed']
+
+    let l:startcol = emmet#completeTag(1, '')
+    if l:startcol < 0
+      return
+    elseif l:startcol > l:col
+      let l:startcol = l:col
+    endif
+    let l:base = l:typed[l:startcol : l:col]
+    let l:words = emmet#completeTag(0, l:base)
+    let l:matches = map(l:words,'{"word":v:val,"dup":1,"icase":1,"menu": "[emmet]"}')
+    call asyncomplete#complete(a:opt['name'], a:ctx, l:startcol + 1, l:matches)
+  endfunction
   autocmd User asyncomplete_setup
     \ call asyncomplete#register_source(asyncomplete#sources#emmet#get_source_options({
     \ 'name': 'emmet',
-    \ 'whitelist': ['html'],
-    \ 'completor': function('asyncomplete#sources#emmet#completor'),
+    \ 'allowlist': ['html'],
+    \ 'completor': function('Asyncomplete_sources_emmet_completor'),
+    \ 'priority': 5,
     \ }))
 endif "}}}
 if Tap('asyncomplete-neosnippet.vim') "{{{
   autocmd User asyncomplete_setup
     \ call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
     \ 'name': 'neosnippet',
-    \ 'whitelist': ['*'],
+    \ 'allowlist': ['*'],
+    \ 'blocklist': ['html'],
     \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
+    \ 'priority': 1,
     \ }))
 endif "}}}
 if Tap('neco-syntax') "{{{
@@ -2310,7 +2375,7 @@ if Tap('asyncomplete-necosyntax.vim') "{{{
   autocmd User asyncomplete_setup
     \ call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
     \ 'name': 'necosyntax',
-    \ 'whitelist': ['*'],
+    \ 'allowlist': ['*'],
     \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
     \ }))
 endif "}}}
@@ -2338,7 +2403,7 @@ if Tap('asyncomplete-necovim.vim') "{{{
   autocmd User asyncomplete_setup
     \ call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
     \ 'name': 'necovim',
-    \ 'whitelist': ['vim'],
+    \ 'allowlist': ['vim'],
     \ 'completor': function('asyncomplete#sources#necovim#completor'),
     \ }))
 endif "}}}
@@ -2346,10 +2411,57 @@ if Tap('asyncomplete-omni.vim') "{{{
   autocmd User asyncomplete_setup
     \ call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
     \ 'name': 'omni',
-    \ 'whitelist': ['*'],
-    \ 'blacklist': ['c', 'cpp', 'html', 'ruby'],
-    \ 'completor': function('asyncomplete#sources#omni#completor')
+    \ 'allowlist': ['*'],
+    \ 'blocklist': ['c', 'cpp', 'ruby'],
+    \ 'completor': function('asyncomplete#sources#omni#completor'),
+    \ 'priority': 5,
     \  }))
+endif "}}}
+if Tap('vim-lsp') "{{{
+  function! plugin.on_source() abort "{{{
+    nmap [Plug]. <plug>(lsp-previous-diagnostic-nowrap)
+    nmap [Plug], <plug>(lsp-next-diagnostic-nowrap)
+    nmap <C-S-f> <plug>(lsp-document-format)
+    vmap <C-S-f> <plug>(lsp-document-range-format)
+  endfunction "}}}
+  function! plugin.on_post_source() abort "{{{
+    " call lsp#enable()
+    function! LpsStatusLine() abort "{{{
+      let l:ret =''
+      if !exists('*lsp#get_buffer_diagnostics_counts()')
+        return l:ret
+      endif
+      let l:diagnostics = lsp#get_buffer_diagnostics_counts()
+      let l:err_count = l:diagnostics["error"]
+      if l:err_count > 0
+        let l:ret.='%#Error#[E:'
+        let l:ret.=l:err_count
+        let l:ret.=']%*'
+      endif
+      let l:warn_count = l:diagnostics["warning"]
+      if l:warn_count > 0
+        let l:ret.='%Todo[W:'
+        let l:ret.=l:warn_count
+        let l:ret.=']%*'
+      endif
+      let l:info_count = l:diagnostics["information"]
+      if l:info_count > 0
+        let l:ret.='[I:'
+        let l:ret.=l:info_count
+        let l:ret.=']'
+      endif
+      let l:hint_count = l:diagnostics["hint"]
+      if l:hint_count > 0
+        let l:ret.='[I:'
+        let l:ret.=l:hint_count
+        let l:ret.=']'
+      endif
+      return l:ret
+    endfunction "}}}
+
+  endfunction "}}}
+  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
 endif "}}}
 
 if Tap('unite.vim') "{{{
@@ -2765,6 +2877,20 @@ endif "}}}
 
 if Tap('vim-precious') "{{{
   function! plugin.on_source() abort "{{{
+    let g:precious_enable_switchers = {
+      \ "*" : {
+      \   "setfiletype" : 0
+      \ },
+      \ "html" : {
+      \   "setfiletype" : 0
+      \ },
+      \ "vue" : {
+      \   "setfiletype" : 0
+      \ },
+      \ "vim" : {
+      \   "setfiletype" : 1
+      \ },
+      \}
     let g:precious_enable_switch_CursorMoved = {
       \   '*' : 0,
       \   'html' : 1,
@@ -2774,6 +2900,7 @@ if Tap('vim-precious') "{{{
       \   'javascript' : 1,
       \   'cobol' : 1,
       \   'vim' : 1,
+      \   'vue' : 0,
       \ }
     let g:precious_enable_switch_CursorMoved_i = g:precious_enable_switch_CursorMoved
   endfunction "}}}
@@ -2803,6 +2930,17 @@ if Tap('context_filetype.vim') "{{{
       \     { 'start' : '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
       \       'end' : '</style>',
       \       'filetype' : 'css', },
+      \   ],
+      \   'vue': [
+      \     { 'start' : '<template>',
+      \       'end' : '</template>',
+      \       'filetype' : 'vue.html', },
+      \     { 'start' : '<script>',
+      \       'end' : '</script>',
+      \       'filetype' : 'vue.javascript', },
+      \     { 'start' : '<style>',
+      \       'end' : '</style>',
+      \       'filetype' : 'vue.css', },
       \   ],
       \ }
     if !exists('g:context_filetype#same_filetypes')
@@ -2861,6 +2999,12 @@ if Tap('emmet-vim') "{{{
   nnoremap <silent> [emmet]? :Mapping [emmet]<CR>
   autocmd MyAutoCmd FileType xhtml,html,css,javascript setlocal omnifunc=emmet#completeTag
 
+  " closePopupしないで展開する
+  imap <Plug>(emmet-expand-abbr-popup) <C-R>=emmet#expandAbbr(0,"")<CR>
+  imap [emmet], <Plug>(emmet-expand-abbr-popup)
+  imap <Plug>(emmet-expand-word-popup) <C-R>=emmet#expandAbbr(1,"")<CR>
+  imap [emmet]; <Plug>(emmet-expand-word-popup)
+
   function! plugin.on_source() abort "{{{
     let g:user_emmet_leader_key = '[emmet]'
     let g:use_emmet_complete_tag = 1
@@ -2893,10 +3037,20 @@ if s:installed_vim_ambicmd "{{{
 endif "}}}
 if Tap('lexima.vim') "{{{
   function! plugin.on_source() abort "{{{
-    " let g:lexima_enable_newline_rules = 0
+    let g:lexima_enable_newline_rules = 0
+    let g:lexima_enable_endwise_rules = 0
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
     call lexima#init()
+  endfunction "}}}
+  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+endif "}}}
+if Tap('vim-endwise') "{{{
+  function! plugin.on_source() abort "{{{
+    let g:endwise_no_mappings = 1
+  endfunction "}}}
+  function! plugin.on_post_source() abort "{{{
   endfunction "}}}
   call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
   call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
@@ -3958,7 +4112,7 @@ elseif s:has_kaoriya && isdirectory(expand('$VIM/switches/'))
 endif
 "}}}
 
-if has('vim_starting') && s:dein_is_installed && s:just_installed_dein
+if has('vim_starting') && g:_dein_is_installed && s:just_installed_dein
   if dein#check_install('vimproc')
     call dein#install('vimproc')
   endif
@@ -5281,7 +5435,7 @@ endfunction "}}}
 " Restart
 if has('gui_running')
   nnoremap <Leader>res :<C-u>:wviminfo!<Cr>:silent !start gvim<Cr>:qall<Cr>
-  if s:dein_is_installed
+  if g:_dein_is_installed
     nnoremap <Leader>RES :<C-u>call dein#clear_state()<Cr>:wviminfo!<Cr>:silent !start gvim<Cr>:qall<Cr>
   else
     nnoremap <Leader>RES :<C-u>wviminfo!<Cr>:silent !start gvim<Cr>:qall<Cr>
@@ -5322,7 +5476,7 @@ if has('vim_starting')
     cd $HOME
   endif
 else
-  if s:dein_is_installed
+  if g:_dein_is_installed
     call dein#call_hook('hook_source')
     call dein#call_hook('hook_post_source')
   endif
