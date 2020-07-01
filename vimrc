@@ -736,8 +736,8 @@ function! MyStatusline() "{{{
   if g:_dein_is_installed
     let l:ret.=dein#get_progress()
   endif
-  if exists('*LpsStatusLine')
-    let l:ret.=LpsStatusLine()
+  if exists('*LspStatusLine')
+    let l:ret.=LspStatusLine()
   endif
   let l:ret.=' '
   let l:ret.='%<'
@@ -2406,7 +2406,7 @@ if Tap('vim-lsp') "{{{
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
     " call lsp#enable()
-    function! LpsStatusLine() abort "{{{
+    function! LspStatusLine() abort "{{{
       let l:ret =''
       if !exists('*lsp#get_buffer_diagnostics_counts()')
         return l:ret
@@ -2420,7 +2420,7 @@ if Tap('vim-lsp') "{{{
       endif
       let l:warn_count = l:diagnostics["warning"]
       if l:warn_count > 0
-        let l:ret.='%Todo[W:'
+        let l:ret.='%#Todo[W:'
         let l:ret.=l:warn_count
         let l:ret.=']%*'
       endif
