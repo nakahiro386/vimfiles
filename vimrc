@@ -510,6 +510,8 @@ set equalalways
 set synmaxcol=1000
 set colorcolumn=+1
 
+set signcolumn=number
+
 if has('gui_running') && &encoding ==? 'utf-8'
   "echo char2nr('↵', 1)
   "echo nr2char(8629, 1)
@@ -1050,6 +1052,7 @@ function! s:Init_cmdwin() "{{{
   set noruler
   "local to the current buffer or window
   setlocal nonumber
+  setlocal signcolumn=no
   "setlocal norelativenumber
   "setlocal colorcolumn&
   setlocal textwidth=0
