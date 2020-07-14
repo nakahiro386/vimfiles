@@ -1972,6 +1972,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \   'PProvost/vim-ps1': {'on_ft': ['ps1']},
     \   'vim-scripts/Windows-PowerShell-indent-enhanced': {'on_ft': ['ps1']},
     \   'plasticboy/vim-markdown': {'on_ft': ['markdown']},
+    \   'posva/vim-vue': {'on_ft': ['vue']},
     \ }, {'lazy': 0}
     \ )
 
@@ -3301,6 +3302,26 @@ if Tap('nerdcommenter') "{{{
       \   'sql' : {'left': '--', 'leftAlt': '/*', 'rightAlt': '*/', },
       \   'autohotkey' : {'left': ';', 'leftAlt': '/*', 'rightAlt': '*/'},
       \ }
+
+    let g:ft = ''
+    function! NERDCommenter_before() abort "{{{
+      if &ft == 'vue'
+        let g:ft = 'vue'
+        let stack = synstack(line('.'), col('.'))
+        if len(stack) > 0
+          let syn = synIDattr((stack)[0], 'name')
+          if len(syn) > 0
+            exe 'setf ' . substitute(tolower(syn), '^vue_', '', '')
+          endif
+        endif
+      endif
+    endfunction "}}}
+    function! NERDCommenter_after() abort "{{{
+      if g:ft == 'vue'
+        setf vue
+        let g:ft = ''
+      endif
+    endfunction "}}}
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
     doautoall NERDCommenter BufEnter
