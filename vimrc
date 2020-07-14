@@ -1562,7 +1562,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \   'on_source' : ['unite.vim', 'vimfiler', ],
     \ })
 
-  call dein#add('vim-jp/vimdoc-ja', {'lazy': 1,})
+  call dein#add('vim-jp/vimdoc-ja', {'lazy': 0,})
   call dein#add('chrisbra/vim_faq', {'lazy': 1,})
 
   "Shougo/unite.vim{{{
@@ -1919,45 +1919,12 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \ })
   "}}}
 
-  "mattn/webapi-vim{{{
-  call dein#add('mattn/webapi-vim', {
-    \   'on_func' : 'webapi#',
-    \ })
-  "}}}
-
-  "thinca/vim-openbuf{{{
-  call dein#add('thinca/vim-openbuf', {
-    \   'on_func' : 'openbuf#',
-    \ })
-  "}}}
-
-  "mattn/wwwrenderer-vim{{{
-  call dein#add('mattn/wwwrenderer-vim', {
-    \   'on_func' : 'wwwrenderer#',
-    \ })
-  "}}}
-
-  "vim-ruby/vim-ruby{{{
-  call dein#add('vim-ruby/vim-ruby', {
-    \   'on_ft' : ['ruby', 'eruby'],
-    \ })
-  "}}}
-
-  call dein#add('othree/html5.vim', {'on_ft': ['html', 'xhtml'], })
-  " call dein#add('tpope/vim-rails', {'on_ft': ['ruby', 'eruby'],})
-
   call dein#add('vifm/vifm.vim', {
     \   'on_ft' : ['vifm'],
     \   'on_cmd' : ['Vifm', 'EditVifm', 'VsplitVifm', 'SplitVifm', 'DiffVifm', 'TabVifm'],
     \ })
 
-  call dein#add('vim-scripts/cobol.zip', {
-    \   'frozen' : 1,
-    \   'on_ft' : ['cobol'],
-    \ })
-
   call dein#load_dict({
-    \   'google/vim-ft-go': {},
     \   'vim-jp/vim-go-extra': {},
     \ }, {'on_ft': ['go'],}
     \ )
@@ -1984,12 +1951,36 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
   "    \ })
 
   call dein#load_dict({
-    \   'jelera/vim-javascript-syntax': {},
-    \   'vim-scripts/jQuery': {'frozen' : 1},
-    \ }, {'on_ft': ['javascript'],}
+    \   'vim-scripts/cobol.zip': {'on_ft' : ['cobol']},
+    \   'vim-scripts/JavaScript-Indent': {'on_ft' : ['html'], 'merged': 0},
+    \   'vim-scripts/jQuery': {'on_ft' : ['javascript'], 'merged': 0},
+    \ }, {'lazy': 0, 'frozen' : 1}
     \ )
 
-  call dein#add('vim-scripts/JavaScript-Indent', { 'frozen' : 1, 'on_ft': ['html'], })
+  call dein#load_dict({
+    \   'vim-ruby/vim-ruby': {'on_ft': ['ruby', 'eruby']},
+    \   'othree/html5.vim': {'on_ft': ['html', 'xhtml'], 'merged': 0},
+    \   'jelera/vim-javascript-syntax': {'on_ft': ['javascript'], 'merged': 0},
+    \   'chr4/nginx.vim': {'on_ft': ['nginx']},
+    \   'hdima/python-syntax': {'on_ft': ['python']},
+    \   'Vimjas/vim-python-pep8-indent': {'on_ft': ['python']},
+    \   'pearofducks/ansible-vim': {'on_ft': ['ansible', 'ansible_template', 'ansible_hosts']},
+    \   'ekalinin/Dockerfile.vim': {'on_ft': ['Dockerfile', 'docker-compose']},
+    \   'stephpy/vim-yaml': {'on_ft': ['yaml']},
+    \   'davidoc/taskpaper.vim': {'on_ft': ['taskpaper']},
+    \   'google/vim-ft-go': {'on_ft': ['go']},
+    \   'PProvost/vim-ps1': {'on_ft': ['ps1']},
+    \   'vim-scripts/Windows-PowerShell-indent-enhanced': {'on_ft': ['ps1']},
+    \   'plasticboy/vim-markdown': {'on_ft': ['markdown']},
+    \ }, {'lazy': 0}
+    \ )
+
+  call dein#load_dict({
+    \   'mattn/webapi-vim': {'on_func' : 'webapi#'},
+    \   'mattn/wwwrenderer-vim': {'on_func' : 'wwwrenderer#'},
+    \   'thinca/vim-openbuf': {'on_func' : 'openbuf#'},
+    \ }, {'lazy': 0}
+    \ )
 
   "javacomplete{{{
   "call dein#add('javacomplete', {
@@ -2001,29 +1992,15 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   call dein#add('vim-scripts/java_fold', { 'frozen' : 1, 'on_ft' : ['java'], })
 
-  call dein#add('vim-scripts/Windows-PowerShell-indent-enhanced')
-  call dein#add('PProvost/vim-ps1', { 'on_ft' : ['ps1'], })
-
-  call dein#add('pearofducks/ansible-vim', { 'on_ft' : ['ansible', 'ansible_template', 'ansible_hosts'], })
-
-  call dein#add('plasticboy/vim-markdown', { 'on_ft' : ['markdown'], })
   call dein#add('kannokanno/previm', {
     \   'on_ft': ['markdown'],
     \   'on_cmd': ['PrevimOpen', ],
     \   'augroup': 'previm',
     \ })
 
-  call dein#add('stephpy/vim-yaml', { 'on_ft' : ['yaml'], })
-
-  call dein#add('chr4/nginx.vim', { 'on_ft' : ['nginx'], })
-
-  call dein#add('ekalinin/Dockerfile.vim', { 'on_ft' : ['Dockerfile', 'docker-compose'], })
-
   call dein#load_dict({
     \   'davidhalter/jedi-vim': {},
     \   'jmcantrell/vim-virtualenv': {},
-    \   'Vimjas/vim-python-pep8-indent': {},
-    \   'hdima/python-syntax': {},
     \   'nvie/vim-flake8': {},
     \ }, {'on_ft': ['python'],}
     \ )
@@ -2049,10 +2026,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \   'if' : !has('gui_running'),
     \   'on_map' : [['nxo', '<Plug>(operator-poweryank-osc52)']],
     \   'on_cmd' : 'PowerYankOSC52',
-    \ })
-
-  call dein#add('davidoc/taskpaper.vim', {
-    \   'on_ft' : ['taskpaper'],
     \ })
 
   "javaid.vim{{{
