@@ -2028,6 +2028,8 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \   'on_cmd' : 'PowerYankOSC52',
     \ })
 
+  call dein#add('editorconfig/editorconfig-vim', {'on_cmd': 'EditorConfigEnable'})
+
   "javaid.vim{{{
   " call dein#add('https://fleiner.com/vim/syntax_60/javaid.vim', {
     " \   'name' : 'javaid.vim',
