@@ -1604,7 +1604,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
   call dein#add('osyo-manga/vim-precious', {
     \   'on_cmd' : ['PreciousSwitch',  'PreciousSwitchAutcmd', ],
     \   'on_func' : 'precious#',
-    \   'on_event' : ['FocusLost', 'CursorHold',],
     \ })
   "}}}
 
@@ -2841,6 +2840,12 @@ if Tap('vim-precious') "{{{
       \ "html" : {
       \   "setfiletype" : 0
       \ },
+      \ "javascript" : {
+      \   "setfiletype" : 0
+      \ },
+      \ "css" : {
+      \   "setfiletype" : 0
+      \ },
       \ "vue" : {
       \   "setfiletype" : 0
       \ },
@@ -2850,11 +2855,11 @@ if Tap('vim-precious') "{{{
       \}
     let g:precious_enable_switch_CursorMoved = {
       \   '*' : 0,
-      \   'html' : 1,
-      \   'xhtml' : 1,
+      \   'html' : 0,
+      \   'xhtml' : 0,
       \   'markdown' : 1,
-      \   'css' : 1,
-      \   'javascript' : 1,
+      \   'css' : 0,
+      \   'javascript' : 0,
       \   'cobol' : 1,
       \   'vim' : 1,
       \   'vue' : 0,
