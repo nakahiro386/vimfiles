@@ -4487,6 +4487,11 @@ augroup MyAutoCmd "{{{
     call s:htmlSetting()
   endfunction "}}}
   "}}}
+  "vue{{{
+  function! s:vueSetting() "{{{
+    call IndentSet(2)
+  endfunction "}}}
+  "}}}
   "xml{{{
   function! s:xmlSetting() "{{{
     compiler xmllint
