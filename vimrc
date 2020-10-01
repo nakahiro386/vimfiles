@@ -4842,6 +4842,23 @@ endif
 
 "}}}
 
+"sql-format"{{{
+if executable('sql-formatter-cli')
+  " npm i -g sql-formatter-cli
+
+  function! s:SqlLineFormat(first,last) "{{{
+    let l:cmd = 'sql-formatter-cli'
+    let l:input = join(getline(a:first, a:last), "\n")
+    let l:result = system(l:cmd, l:input)
+    silent execute a:first . ',' . a:last . 'del _'
+    execute string(a:first - 1) . 'put =l:result'
+    redraw
+  endfunction "}}}
+  command! -range=% SqlLineFormat call s:SqlLineFormat(<line1>, <line2>)
+
+endif
+"}}}
+
 "xmllint-format"{{{
 if executable('xmllint')
 
