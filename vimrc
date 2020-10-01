@@ -510,7 +510,9 @@ set equalalways
 set synmaxcol=1000
 set colorcolumn=+1
 
-set signcolumn=number
+if HasVersion('8.1.1564')
+  set signcolumn=number
+endif
 
 if has('gui_running') && &encoding ==? 'utf-8'
   "echo char2nr('↵', 1)
