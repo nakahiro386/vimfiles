@@ -2269,10 +2269,7 @@ if Tap('asyncomplete.vim') "{{{
     let g:asyncomplete_preprocessor = [function('s:sort_by_priority_preprocessor')]
 
   endfunction "}}}
-  function! plugin.on_post_source() abort "{{{
-  endfunction "}}}
   call Set_hook('hook_source', 'on_source')
-  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('asyncomplete-buffer.vim') "{{{
@@ -2917,11 +2914,8 @@ if Tap('context_filetype.vim') "{{{
     endif
     let g:context_filetype#same_filetypes.dosbatch = 'dos'
 
- endfunction "}}}
-  function! plugin.on_post_source() abort "{{{
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
-  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('neosnippet') "{{{
@@ -3019,10 +3013,7 @@ if Tap('vim-endwise') "{{{
   function! plugin.on_source() abort "{{{
     let g:endwise_no_mappings = 1
   endfunction "}}}
-  function! plugin.on_post_source() abort "{{{
-  endfunction "}}}
   call Set_hook('hook_source', 'on_source')
-  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('vimfiler') "{{{
@@ -3924,10 +3915,7 @@ if Tap('vim-flake8') "{{{
   function! plugin.on_source() abort "{{{
     let g:no_flake8_maps = 1
   endfunction "}}}
-  function! plugin.on_post_source() abort "{{{
-  endfunction "}}}
   call Set_hook('hook_source', 'on_source')
-  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('vim-fontzoom') "{{{
