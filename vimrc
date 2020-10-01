@@ -2145,6 +2145,9 @@ if g:_dein_is_installed "{{{
     endif
     return l:tap
   endfunction "}}}
+  function! Set_hook(hook_name, hoo_func) "{{{
+    return dein#set_hook(g:dein#name, a:hook_name, printf('call g:plugins["%s"]["%s"]()', g:dein#name, a:hoo_func))
+  endfunction "}}}
   function! UnTap() "{{{
     unlet g:plugin
     return 0
@@ -2268,8 +2271,8 @@ if Tap('asyncomplete.vim') "{{{
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('asyncomplete-buffer.vim') "{{{
@@ -2420,8 +2423,8 @@ if Tap('vim-lsp') "{{{
     endfunction "}}}
 
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('unite.vim') "{{{
@@ -2787,8 +2790,8 @@ if Tap('unite.vim') "{{{
     "}}}
 
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('neomru.vim') "{{{
@@ -2799,7 +2802,7 @@ if Tap('neomru.vim') "{{{
     let g:neomru#file_mru_path = expand('$VIMFILES/tmp/.unite/file')
     let g:neomru#directory_mru_path = expand('$VIMFILES/tmp/.unite/directory')
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('neoyank.vim') "{{{
@@ -2807,14 +2810,14 @@ if Tap('neoyank.vim') "{{{
     let g:neoyank#file = expand('$VIMFILES/tmp/.neoyank/history_yank')
     let g:neoyank#limit = 30
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('unite-fold') "{{{
   function! plugin.on_source() abort "{{{
     let g:unite_fold_indent_space = ''
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('unite-everything') "{{{
@@ -2823,7 +2826,7 @@ if Tap('unite-everything') "{{{
     let g:unite_source_everything_ignore_pattern = '\.\%(git\|hg\|svn\)'
     let g:unite_source_everything_limit = 1000
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-hug-neovim-rpc') "{{{
@@ -2832,7 +2835,7 @@ if Tap('vim-hug-neovim-rpc') "{{{
       silent! py3 pass
     endif
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-precious') "{{{
@@ -2870,7 +2873,7 @@ if Tap('vim-precious') "{{{
       \ }
     let g:precious_enable_switch_CursorMoved_i = g:precious_enable_switch_CursorMoved
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('context_filetype.vim') "{{{
@@ -2917,8 +2920,8 @@ if Tap('context_filetype.vim') "{{{
  endfunction "}}}
   function! plugin.on_post_source() abort "{{{
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('neosnippet') "{{{
@@ -2932,8 +2935,8 @@ if Tap('neosnippet') "{{{
   function! plugin.on_post_source() abort "{{{
     imap <C-s> <Plug>(neosnippet_start_unite_snippet)*
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('sonictemplate-vim') "{{{
@@ -2951,8 +2954,8 @@ if Tap('sonictemplate-vim') "{{{
     " imap <c-t>T <plug>(sonictemplate-intelligent)
     imap <c-t>t <plug>(sonictemplate)
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('emmet-vim') "{{{
@@ -2993,7 +2996,7 @@ if Tap('emmet-vim') "{{{
       \ }
     "}}}
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 let s:installed_vim_ambicmd = Tap('vim-ambicmd')
@@ -3009,8 +3012,8 @@ if Tap('lexima.vim') "{{{
   function! plugin.on_post_source() abort "{{{
     call lexima#init()
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 if Tap('vim-endwise') "{{{
   function! plugin.on_source() abort "{{{
@@ -3018,8 +3021,8 @@ if Tap('vim-endwise') "{{{
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('vimfiler') "{{{
@@ -3223,8 +3226,8 @@ if Tap('vimfiler') "{{{
 
     call vimfiler#set_execute_file('_', 'vim')
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('which.vim') "{{{
@@ -3235,14 +3238,14 @@ if Tap('which.vim') "{{{
     call s:defWhichCommand()
   endfunction "}}}
   call s:defWhichCommand()
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('capture.vim') "{{{
   function! plugin.on_source() abort "{{{
     let g:capture_open_command = 'vert new'
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('nerdcommenter') "{{{
@@ -3335,8 +3338,8 @@ if Tap('nerdcommenter') "{{{
   function! plugin.on_post_source() abort "{{{
     doautoall NERDCommenter BufEnter
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('vim-rectinsert') "{{{
@@ -3357,7 +3360,7 @@ if Tap('switch.vim') "{{{
       \   ['public', 'protected', 'private'],
       \ ]
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-surround') "{{{
@@ -3377,7 +3380,7 @@ if Tap('Align') "{{{
     let g:DrChipTopLvlMenu = ""
     let g:Align_xstrlen = 3
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-quickhl') "{{{
@@ -3396,7 +3399,7 @@ if Tap('vim-quickhl') "{{{
     "To highlight some keyword always,
     "let g:quickhl_keywords = [ "TODO", "CAUTION", "ERROR" ]
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-textmanip') "{{{
@@ -3421,7 +3424,7 @@ if Tap('vim-textmanip') "{{{
     let g:textmanip_startup_mode='insert'
     let g:textmanip_current_mode='insert'
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-choosewin') "{{{
@@ -3440,7 +3443,7 @@ if Tap('vim-choosewin') "{{{
       \ }
 
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-indent-guides') "{{{
@@ -3467,7 +3470,7 @@ if Tap('vim-indent-guides') "{{{
     call s:indentGuidesColor()
 
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('number-marks') "{{{
@@ -3501,15 +3504,15 @@ if Tap('number-marks') "{{{
     unlet l:V
     command! ThisSign exe 'sign place buffer=' . winbufnr(0)
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('colorizer') "{{{
   function! plugin.on_source() abort "{{{
     let g:colorizer_nomap = 1
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-anzu') "{{{
@@ -3535,7 +3538,7 @@ if Tap('vim-anzu') "{{{
       nnoremap <silent> <Esc><Esc> :<C-u>AnzuClearSearchStatus<CR>:nohlsearch<CR><Esc>
     endif
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('vim-easymotion') "{{{
@@ -3546,7 +3549,7 @@ if Tap('vim-easymotion') "{{{
     let g:EasyMotion_keys='jkhlasdfgyuiopqwertnmzxcvb'
     let g:EasyMotion_use_migemo = 1
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('clever-f.vim') "{{{
@@ -3559,15 +3562,15 @@ if Tap('clever-f.vim') "{{{
   function! plugin.on_post_source() abort "{{{
     map : <Plug>(clever-f-repeat-forward)
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('matchit.zip') "{{{
   function! plugin.on_post_source() abort "{{{
     silent! execute 'doautocmd Filetype ' &filetype
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('vim-milfeulle') "{{{
@@ -3583,8 +3586,8 @@ if Tap('vim-milfeulle') "{{{
     nmap <C-d> <Plug>(milfeulle-overlay)<Plug>(dzz)
     nmap <C-u> <Plug>(milfeulle-overlay)<Plug>(uzz)
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('vim-textobj-fold') "{{{
@@ -3595,7 +3598,7 @@ if Tap('vim-textobj-fold') "{{{
   function! plugin.on_source() abort "{{{
     let g:textobj_fold_no_default_key_mappings = 1
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-textobj-indent') "{{{
@@ -3610,7 +3613,7 @@ if Tap('vim-textobj-indent') "{{{
   function! plugin.on_source() abort "{{{
     let g:textobj_indent_no_default_key_mappings = 1
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-textobj-multiblock') "{{{
@@ -3631,7 +3634,7 @@ if Tap('vim-textobj-multiblock') "{{{
       \   [ '【', '】', 1],
       \ ]
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-textobj-between') "{{{
@@ -3642,7 +3645,7 @@ if Tap('vim-textobj-between') "{{{
   function! plugin.on_source() abort "{{{
     let g:textobj_between_no_default_key_mappings=1
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-operator-replace') "{{{
@@ -3678,15 +3681,15 @@ if Tap('im_control.vim') "{{{
       autocmd CmdwinLeave * call s:sfuncs.BufLeave()
     augroup END
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('win-ime-con.nvim') "{{{
   function! plugin.on_source() abort "{{{
     let g:win_ime_con_mode = 0
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-capslock') "{{{
@@ -3706,8 +3709,8 @@ if Tap('vim-capslock') "{{{
     autocmd! capslock InsertLeave
     autocmd! capslock CursorHold
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('vital.vim') "{{{
@@ -3759,7 +3762,7 @@ if Tap('calendar-vim') "{{{
     endfunction
 
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-quickrun') "{{{
@@ -3854,8 +3857,8 @@ if Tap('vim-quickrun') "{{{
     unlet s:hook
     "}}}
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('open-browser.vim') "{{{
@@ -3869,7 +3872,7 @@ if Tap('vim-ruby') "{{{
     setlocal formatoptions-=r
     setlocal formatoptions-=o
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 "if Tap('css_color.vim') "{{{
@@ -3882,7 +3885,7 @@ if Tap('java_fold') "{{{
   function! plugin.on_post_source() abort "{{{
     autocmd MyAutoCmd Filetype java setlocal foldmethod=expr foldexpr=GetJavaFold(v:lnum) foldtext=JavaFoldText()
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('previm') "{{{
@@ -3890,7 +3893,7 @@ if Tap('previm') "{{{
     let g:previm_show_header=0
     let g:previm_enable_realtime=0
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 if Tap('jedi-vim') "{{{
   function! plugin.on_source() abort "{{{
@@ -3899,7 +3902,7 @@ if Tap('jedi-vim') "{{{
     let g:jedi#usages_command = '<Leader>usage'
     let g:jedi#show_call_signatures = 1
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vim-virtualenv') "{{{
@@ -3913,8 +3916,8 @@ if Tap('vim-virtualenv') "{{{
     endfunction
     set statusline=%!PyStatusline()
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 if Tap('vim-flake8') "{{{
   autocmd MyAutoCmd FileType python noremap <buffer> <F7> :call Flake8()<CR>
@@ -3923,8 +3926,8 @@ if Tap('vim-flake8') "{{{
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('vim-fontzoom') "{{{
@@ -3941,7 +3944,7 @@ if Tap('vim-qfreplace') "{{{
     function! s:qfreplaceSetting()
     endfunction
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('sqlformatter.vim') "{{{
@@ -3951,7 +3954,7 @@ if Tap('sqlformatter.vim') "{{{
     let g:sqlformatter_dir = s:sqlformatter_path.'/lib'
     let g:sqlformatter_cmd = s:mysqlformatter_path.'/my-sql-formatter.rb'
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_source', plugin.on_source)
+  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 let g:migemodict = expand(printf('$VIMFILES/dict/migemo/%s/migemo-dict', &encoding))
@@ -3963,7 +3966,7 @@ if Tap('vim-migemo') "{{{
   function! plugin.on_post_source() abort "{{{
     call migemo#system('')
   endfunction "}}}
-  call dein#set_hook(g:dein#name, 'hook_post_source', plugin.on_post_source)
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('vim-poweryank') "{{{
