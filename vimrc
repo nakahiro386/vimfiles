@@ -1755,6 +1755,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
   call dein#add('t9md/vim-choosewin', {
     \   'on_map' : '<Plug>',
     \   'on_cmd' : 'ChooseWin',
+    \   'augroup': 'plugin-choosewin',
     \ })
   "}}}
 
