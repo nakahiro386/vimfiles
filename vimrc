@@ -1545,6 +1545,13 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \ }, {'on_source': 'asyncomplete.vim', 'lazy' : 0}
     \ )
 
+  call dein#add('mattn/vim-molder')
+  call dein#load_dict({
+    \   'mattn/vim-molder-operations': {},
+    \   'mattn/vim-molder-preview': {},
+    \ }, {'on_source': 'vim-molder', 'lazy' : 0}
+    \ )
+
   "Shougo/vimproc{{{
   call dein#add('Shougo/vimproc', {
     \   'if' : !g:is_android,
@@ -1682,6 +1689,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \   ],
     \   'on_func' : 'vimfiler#',
     \   'on_event' : ['FocusLost', 'CursorHold', 'InsertEnter',],
+    \   'if' : 0,
     \ })
   "}}}
 
