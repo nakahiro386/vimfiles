@@ -4990,15 +4990,17 @@ command! AutoLCD echo AutoLCD()
 command! -nargs=0 CdCurrent lcd %:p:h|let w:pwd = getcwd()
 nnoremap gc :<C-u>CdCurrent<CR>
 
-function! s:CdProjectDirectory() "{{{
+function! s:CdProjectDirectory() abort "{{{
   let l:V = VitalWrapper('Prelude')
   let l:dir = l:V.Prelude.path2project_directory(expand('%:p'), 1)
+  let l:cd = exists(':tcd') is 2 ? 'tcd' : 'lcd'
   if !empty(l:dir)
-    execute 'lcd ' .l:dir
-    echo l:dir
+    execute l:cd .' ' .l:dir
+    verbose pwd
   endif
 endfunction "}}}
 command! -nargs=0 CdProjectDirectory call s:CdProjectDirectory()
+nnoremap gC :<C-u>CdProjectDirectory<CR>
 
 "SynCheck"{{{
 function! s:SynCheck() "{{{
