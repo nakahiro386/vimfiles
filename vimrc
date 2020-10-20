@@ -4696,6 +4696,40 @@ command! -nargs=* -complete=file LVimGrep
 command! -nargs=* -complete=file Grep call s:Grep('grep! %s %s', <f-args>)
 command! -nargs=* -complete=file LGrep call s:Grep('lgrep! %s %s', <f-args>)
 
+function! s:GitGrep(cmd, ...) abort "{{{
+  let l:cmd = a:cmd
+  let l:pattern = get(a:000, 0, '')
+  let l:target = get(a:000, 1, '')
+  let l:option = get(a:000, 2, '')
+
+  call inputsave()
+  if empty(l:pattern)
+    let l:pattern = input('pattern : ' )
+  endif
+  if empty(l:target)
+    let l:target = input('target : ', expand('%'.(g:is_windows ? ':p' : '')), "file")
+  endif
+  if empty(l:option)
+    let l:option = input('option : ', '-I -i')
+  endif
+  call inputrestore()
+
+  if !empty(l:cmd) && !empty(l:pattern)
+    let l:cmd = printf(l:cmd, l:option, l:pattern, l:target)
+    let l:fname = matchstr(l:cmd, '\v^\w+')
+
+    let l:grepprg_ = &l:grepprg
+    try
+      let &l:grepprg = 'git grep --line-number'
+      execute printf('noautocmd %s |doautocmd QuickFixCmdPost %s', l:cmd, l:fname)
+    finally
+      let &l:grepprg = l:grepprg_
+    endtry
+
+  endif
+endfunction "}}}
+command! -nargs=* -complete=file GitGrep call s:GitGrep('grep! %s %s %s', <f-args>)
+
 function! s:UGrepFunc() "{{{
   exe 'Unite -buffer-name=grep -no-quit -default-action=tabopen grep'
 endfunction "}}}
