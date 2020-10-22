@@ -1666,11 +1666,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \   'on_event' : ['InsertEnter',],
     \ })
   "}}}
-  "tpope/vim-endwise{{{
-  call dein#add('tpope/vim-endwise', {
-    \   'on_event' : ['InsertEnter',],
-    \ })
-  "}}}
 
   "Shougo/vimfiler{{{
   call dein#add('Shougo/vimfiler', {
@@ -3002,7 +2997,7 @@ endif "}}}
 if Tap('lexima.vim') "{{{
   function! plugin.on_source() abort "{{{
     let g:lexima_enable_newline_rules = 0
-    let g:lexima_enable_endwise_rules = 0
+    " let g:lexima_enable_endwise_rules = 0
     let g:lexima_map_escape = ''
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
@@ -3015,12 +3010,6 @@ if Tap('lexima.vim') "{{{
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
   call Set_hook('hook_post_source', 'on_post_source')
-endif "}}}
-if Tap('vim-endwise') "{{{
-  function! plugin.on_source() abort "{{{
-    let g:endwise_no_mappings = 1
-  endfunction "}}}
-  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('vimfiler') "{{{
