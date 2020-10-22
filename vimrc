@@ -2053,29 +2053,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     " \ })
   "}}}
 
-  let s:sqlformatter_path = expand('$HOME/bin/anbt-sql-formatter')
-  call dein#add('sonota/anbt-sql-formatter',{
-    \   'path' : s:sqlformatter_path,
-    \   'lazy': 1,
-    \ })
-    " \   'rtp': ''
-
-  let s:mysqlformatter_path = expand('$HOME/bin/my-sql-formatter.rb')
-  call dein#add('https://gist.github.com/nakahiro386/1f32bbaf59ae4b2987dc',{
-    \   'name' : 'my-sql-formatter.rb',
-    \   'normalized_name' : 'my-sql-formatter',
-    \   'path' : s:mysqlformatter_path,
-    \   'lazy': 1,
-    \ })
-    " \   'rtp': '',
-
-  "sqlformatter.vim{{{
-  call dein#add('https://bitbucket.org/nakahiro386/sqlformatter.vim.git', {
-    \   'on_cmd' : 'Sqlformatter',
-    \   'on_map' : '<Plug>(Sqlformatter)',
-    \ })
-  "}}}
-
   " call dein#save_state()
 endif "if g:_dein_is_installed && dein#load_state(g:sfile_path)"}}}
 
@@ -3931,16 +3908,6 @@ if Tap('vim-qfreplace') "{{{
   call Set_hook('hook_source', 'on_source')
 endif "}}}
 
-if Tap('sqlformatter.vim') "{{{
-  nmap <Leader>1 <Plug>(Sqlformatter)
-  vmap <Leader>1 <Plug>(Sqlformatter)
-  function! plugin.on_source() abort "{{{
-    let g:sqlformatter_dir = s:sqlformatter_path.'/lib'
-    let g:sqlformatter_cmd = s:mysqlformatter_path.'/my-sql-formatter.rb'
-  endfunction "}}}
-  call Set_hook('hook_source', 'on_source')
-endif "}}}
-
 let g:migemodict = expand(printf('$VIMFILES/dict/migemo/%s/migemo-dict', &encoding))
 if has('migemo')
   let &migemodict = g:migemodict
@@ -4878,6 +4845,9 @@ if executable('sql-formatter-cli')
     redraw
   endfunction "}}}
   command! -range=% SqlLineFormat call s:SqlLineFormat(<line1>, <line2>)
+
+  nnoremap <Leader>1 :SqlLineFormat<CR>
+  vnoremap <Leader>1 :SqlLineFormat<CR>
 
 endif
 "}}}
