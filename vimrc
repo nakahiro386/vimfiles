@@ -1588,7 +1588,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \   'zhaocai/unite-scriptnames': {},
     \   'Shougo/unite-outline': {},
     \   'basyura/outline-cobol': {},
-    \   'basyura/outline-cs': {},
     \   'sgur/unite-everything': {'if': executable('es.exe')},
     \   'ujihisa/unite-locate': {'if': executable('locate')},
     \ }, {'on_source': 'unite.vim'}
