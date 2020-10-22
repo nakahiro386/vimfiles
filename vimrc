@@ -3007,6 +3007,11 @@ if Tap('lexima.vim') "{{{
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
     call lexima#init()
+    " https://snap.hyuki.net/20150712123156/
+    call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:]', 'char': '{', 'input': '{'})
+    call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:]', 'char': '(', 'input': '('})
+    call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:]', 'char': '"', 'input': '"'})
+    call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:]', 'char': "'", 'input': "'"})
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
   call Set_hook('hook_post_source', 'on_post_source')
