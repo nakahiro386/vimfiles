@@ -3700,7 +3700,7 @@ if Tap('vital.vim') "{{{
   function! VitalWrapper(...) "{{{
     if !exists('g:vital')
       call dein#source('vital.vim')
-      let g:vital = vital#of('vital')
+      let g:vital = vital#vital#new()
     endif
     for l:module in a:000
       if !empty(l:module) && !has_key(g:vital, l:module)
