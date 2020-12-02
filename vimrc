@@ -31,6 +31,8 @@ if has('vim_starting') "{{{
     endif
   endfunction
 
+  let g:inside_tmux = !empty($TMUX)
+  lockvar g:inside_tmux
   " -RMn --servername VIEW --remote-tab-silent --literal 
   let g:is_view = (v:servername ==? 'VIEW') || (get(g:, 'no_plugin_maps', 0) is 1)
   lockvar g:is_view
@@ -5451,6 +5453,16 @@ if has('terminal')
     command! GitBash call GitBash()
   endif
 endif
+
+if g:inside_tmux
+  command! TmuxNewWindow call system('tmux new-window')
+  nnoremap <Leader>sh :<C-u>TmuxNewWindow<CR>
+  command! TmuxVSplitWindow call system('tmux split-window -h')
+  nnoremap <Leader>sv :<C-u>TmuxVSplitWindow<CR>
+  command! TmuxSplitWindow call system('tmux split-window -v')
+  nnoremap <Leader>ss :<C-u>TmuxSplitWindow<CR>
+endif
+
 
 "}}}
 "-----------------------------------------------------------------------------
