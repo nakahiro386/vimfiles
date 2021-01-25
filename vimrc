@@ -3326,6 +3326,7 @@ endif "}}}
 if Tap('switch.vim') "{{{
   nnoremap [Plug]to :<C-u>Switch<CR>
   function! plugin.on_source() abort "{{{
+    let g:switch_mapping = ""
     let g:switch_custom_definitions = [
       \   ['yes', 'no'],
       \   ['on', 'off'],
