@@ -2007,7 +2007,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \ })
 
   call dein#load_dict({
-    \   'davidhalter/jedi-vim': {},
     \   'jmcantrell/vim-virtualenv': {},
     \   'nvie/vim-flake8': {},
     \ }, {'on_ft': ['python'],}
@@ -2360,10 +2359,32 @@ if Tap('asyncomplete-omni.vim') "{{{
 endif "}}}
 if Tap('vim-lsp') "{{{
   function! plugin.on_source() abort "{{{
+    let g:lsp_use_lua = has('nvim-0.4.0') || (has('lua') && has('patch-8.2.0775'))
     nmap [Plug]. <plug>(lsp-previous-diagnostic-nowrap)
     nmap [Plug], <plug>(lsp-next-diagnostic-nowrap)
     nmap <C-S-f> <plug>(lsp-document-format)
     vmap <C-S-f> <plug>(lsp-document-range-format)
+
+    function! s:on_lsp_buffer_enabled() abort
+      setlocal omnifunc=lsp#complete
+      if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+      nmap <buffer> gd <plug>(lsp-definition)
+      nmap <buffer> gs <plug>(lsp-document-symbol-search)
+      nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+      nmap <buffer> gr <plug>(lsp-references)
+      nmap <buffer> gi <plug>(lsp-implementation)
+      " nmap <buffer> gt <plug>(lsp-type-definition)
+      nmap <buffer> <leader>rn <plug>(lsp-rename)
+      nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
+      nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
+      nmap <buffer> K <plug>(lsp-hover)
+    endfunction
+
+    augroup lsp_install
+      au!
+      autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+    augroup END
+
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
     " call lsp#enable()
