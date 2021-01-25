@@ -1729,6 +1729,10 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \ })
   "}}}
 
+  call dein#add('tpope/vim-fugitive', {
+    \   'on_cmd' : ['Git']
+    \ })
+
   "Align "{{{
   call dein#add('vim-scripts/Align', {
     \   'frozen' : 1,
