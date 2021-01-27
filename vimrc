@@ -1719,9 +1719,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   call dein#add('AndrewRadev/switch.vim', { 'on_cmd' : 'Switch', })
 
-  call dein#add('tpope/vim-fugitive', {
-    \   'on_cmd' : ['Git']
-    \ })
+  call dein#add('lambdalisue/gina.vim', {'on_cmd': ['Gina']})
 
   "Align "{{{
   call dein#add('vim-scripts/Align', {
@@ -3354,6 +3352,25 @@ if Tap('switch.vim') "{{{
       \ ]
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
+endif "}}}
+
+if Tap('gina.vim') "{{{
+  nnoremap [Plug]to :<C-u>Switch<CR>
+  function! plugin.on_source() abort "{{{
+  endfunction "}}}
+  function! plugin.on_post_source() abort "{{{
+    call gina#custom#command#option('branch', '--opener', 'vsplit')
+    call gina#custom#command#option('changes', '--opener', 'vsplit')
+    call gina#custom#command#option('commit', '--opener', 'vsplit')
+    call gina#custom#command#option('log', '--opener', 'vsplit')
+    call gina#custom#command#option('show', '--opener', 'vsplit')
+    call gina#custom#command#option('stash', '--opener', 'vsplit')
+    call gina#custom#command#option('status', '--opener', 'tabedit')
+
+    call gina#custom#command#option('commit', '-v|--verbose')
+  endfunction "}}}
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('Align') "{{{
