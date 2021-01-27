@@ -1927,6 +1927,8 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \ }, {'on_ft': ['go'],}
     \ )
 
+  call dein#add('vim-jp/syntax-vim-ex')
+
   " call dein#add(hail2u/vim-css3-syntax, {
     " \    'on_ft' : ['css', 'html', 'xhtml',],
     " \ })
