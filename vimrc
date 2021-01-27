@@ -1719,16 +1719,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   call dein#add('AndrewRadev/switch.vim', { 'on_cmd' : 'Switch', })
 
-  "tpope/vim-surround{{{
-  call dein#add('tpope/vim-surround', {
-    \   'on_map' : [
-    \     ['nx', '<Plug>Dsurround', '<Plug>Csurround',
-    \            '<Plug>Ysurround', '<Plug>Yssurround'],
-    \     ['vx', '<Plug>VgSurround', '<Plug>VSurround'],
-    \   ]
-    \ })
-  "}}}
-
   call dein#add('tpope/vim-fugitive', {
     \   'on_cmd' : ['Git']
     \ })
@@ -1865,6 +1855,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   call dein#load_dict({
     \   'kana/vim-operator-replace': {},
+    \   'rhysd/vim-operator-surround': {},
     \   'tyru/operator-camelize.vim': {},
     \   'tyru/operator-html-escape.vim': {
     \     'on_map' : '<Plug>(operator-html-'
@@ -3363,18 +3354,6 @@ if Tap('switch.vim') "{{{
   call Set_hook('hook_source', 'on_source')
 endif "}}}
 
-if Tap('vim-surround') "{{{
-  xmap S   <Plug>VSurround
-  nmap cs  <Plug>Csurround
-  nmap ds  <Plug>Dsurround
-  xmap gS  <Plug>VgSurround
-  nmap ySS <Plug>YSsurround
-  nmap ySs <Plug>YSsurround
-  nmap yss <Plug>Yssurround
-  nmap yS  <Plug>YSurround
-  nmap ys  <Plug>Ysurround
-endif "}}}
-
 if Tap('Align') "{{{
   function! plugin.on_source() abort "{{{
     let g:DrChipTopLvlMenu = ""
@@ -3650,6 +3629,12 @@ endif "}}}
 
 if Tap('vim-operator-replace') "{{{
   map <LocalLeader>r <Plug>(operator-replace)
+endif "}}}
+
+if Tap('vim-operator-surround') "{{{
+  map S  <Plug>(operator-surround-append)
+  map ds <Plug>(operator-surround-delete)
+  map cs <Plug>(operator-surround-replace)
 endif "}}}
 
 if Tap('operator-camelize.vim') "{{{
