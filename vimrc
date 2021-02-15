@@ -1991,7 +1991,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   call dein#add('vim-scripts/java_fold', { 'frozen' : 1, 'on_ft' : ['java'], })
 
-  call dein#add('kannokanno/previm', {
+  call dein#add('previm/previm', {
     \   'on_ft': ['markdown'],
     \   'on_cmd': ['PrevimOpen', ],
     \   'augroup': 'previm',
