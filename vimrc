@@ -525,7 +525,7 @@ else
 endif
 set list
 
-set fillchars=stlnc:\ ,stlnc:\ ,vert:\ ,fold:\ ,diff:\ 
+set fillchars=stl:\ ,stlnc:\ ,vert:\ ,fold:\ ,diff:\ 
 
 set lazyredraw
 
