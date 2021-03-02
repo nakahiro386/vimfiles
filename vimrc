@@ -1529,7 +1529,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   call dein#add('prabirshrestha/asyncomplete.vim',{
     \   'merged': 0,
-    \   'on_event' : 'InsertEnter',
+    \   'on_event' : ['FocusLost', 'CursorHold', 'InsertEnter',],
     \ })
   call dein#load_dict({
     \   'prabirshrestha/asyncomplete-buffer.vim': {},
