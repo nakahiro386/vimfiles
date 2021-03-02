@@ -1589,7 +1589,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \   'ujihisa/unite-colorscheme': {},
     \   'zhaocai/unite-scriptnames': {},
     \   'Shougo/unite-outline': {},
-    \   'basyura/outline-cobol': {},
     \   'sgur/unite-everything': {'if': executable('es.exe')},
     \   'ujihisa/unite-locate': {'if': executable('locate')},
     \ }, {'on_source': 'unite.vim'}
@@ -1879,7 +1878,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
   "}}}
 
   "tpope/vim-capslock {{{
-  let g:capslock_filetype = ['sql', 'cobol', 'dosbatch']
+  let g:capslock_filetype = ['sql', 'dosbatch']
   call dein#add('tpope/vim-capslock', {
     \   'on_map' : [['n', '<Plug>CapsLockToggle', ], ],
     \   'on_ft' : g:capslock_filetype,
@@ -1950,7 +1949,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
   "    \ })
 
   call dein#load_dict({
-    \   'vim-scripts/cobol.zip': {'on_ft' : ['cobol']},
     \   'vim-scripts/JavaScript-Indent': {'on_ft' : ['html'], 'merged': 0},
     \   'vim-scripts/jQuery': {'on_ft' : ['javascript'], 'merged': 0},
     \ }, {'lazy': 0, 'frozen' : 1}
@@ -2858,7 +2856,6 @@ if Tap('vim-precious') "{{{
       \   'markdown' : 1,
       \   'css' : 0,
       \   'javascript' : 0,
-      \   'cobol' : 1,
       \   'vim' : 1,
       \   'vue' : 0,
       \ }
@@ -2872,14 +2869,6 @@ if Tap('context_filetype.vim') "{{{
     let g:context_filetype#search_offset = 300 "3000
     let g:context_filetype#filetypes = {
       \   'help': [],
-      \   'cobol': [
-      \     { 'start' : '^ *EXEC SQL$',
-      \       'end' : '^ *END-EXEC$',
-      \       'filetype' : 'sqloracle', },
-      \     { 'start' : '^ *EXEC SQL.*CURSOR FOR$',
-      \       'end' : '^ *END-EXEC$',
-      \       'filetype' : 'sqloracle', },
-      \   ],
       \   'html': [
       \     { 'start' : '<script\%( [^>]*\)\? type="text/\(\h\w*\)"\%( [^>]*\)\?>',
       \       'end' : '</script>',
@@ -4297,8 +4286,6 @@ augroup MyAutoCmd
   autocmd BufRead,BufNewFile *.js setlocal filetype=javascript syntax=jquery
   autocmd BufRead,BufNewFile *.wlst setlocal filetype=python
   " autocmd BufRead,BufNewFile *.log setlocal filetype=messages
-  "Pro cobol
-  autocmd BufRead,BufNewFile *.pco setlocal filetype=cobol
   "autocmd BufRead,BufNewFile *.erb set filetype=eruby.html
   "xxd"{{{
   "Vim-users.jp - Hack #133: バイナリファイルを編集する
@@ -4348,40 +4335,6 @@ augroup MyAutoCmd "{{{
     setlocal formatoptions-=o
     nnoremap <buffer> <C-F2> :<C-u>Set<CR>
     nnoremap <buffer> <C-F3> :<C-u>SetH<CR>
-  endfunction "}}}
-  "}}}
-  "cobol{{{
-  function! s:cobolSetting() "{{{
-    setlocal expandtab
-    call IndentSet(4)
-    setlocal autoindent
-    setlocal smartindent
-    setlocal dictionary+=$VIMDICT/COBOL.dict
-    setlocal cc=+1
-    highlight ColorColumn guibg=grey30
-    "syntax
-    syn clear cobolBadLine
-    syn match cobolBadLine "[^ D\*$/-].*" contained
-    syn match cobolBadLine "\s\+\*.*" contained
-    if exists("cobol_legacy_code")
-      syn match cobolBadLine "\%73v.*" containedin=ALLBUT,cobolComment
-    else
-      syn match cobolBadLine "\%73v.*" containedin=ALL
-    endif
-    "mapping
-    nnoremap <buffer> [COBOL] <Nop>
-    inoremap <buffer> [COBOL] <Nop>
-    vnoremap <buffer> [COBOL] <Nop>
-    nmap <buffer> <C-Return> [COBOL]
-    imap <buffer> <C-Return> [COBOL]
-    vmap <buffer> <C-Return> [COBOL]
-    nmap <silent> <buffer> [COBOL]t  <Plug>Traditional
-    nmap <silent> <buffer> [COBOL]cd  <Plug>Comment
-    nmap <silent> <buffer> [COBOL]cc  <Plug>DeComment
-    vmap <silent> <buffer> [COBOL]t <Plug>VisualTraditional
-    vmap <silent> <buffer> [COBOL]cd  <Plug>VisualComment
-    vmap <silent> <buffer> [COBOL]cc  <Plug>VisualDeComment
-    nnoremap <silent> [COBOL]? :Mapping [COBOL]<CR>
   endfunction "}}}
   "}}}
   "Ruby"{{{
