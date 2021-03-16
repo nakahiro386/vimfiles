@@ -1523,13 +1523,16 @@ endif "}}}
 
 " dein "{{{
 if g:_dein_is_installed && dein#load_state(g:sfile_path)
+  let s:event_idle = ['FocusLost', 'CursorHold']
+  let s:event_i = ['InsertEnter']
+
   call dein#begin(expand('$VIMBUNDLE')) "filetype off
 
   call dein#add('Shougo/dein.vim')
 
   call dein#add('prabirshrestha/asyncomplete.vim',{
     \   'merged': 0,
-    \   'on_event' : ['FocusLost', 'CursorHold', 'InsertEnter',],
+    \   'on_event' : s:event_idle + s:event_i
     \ })
   call dein#load_dict({
     \   'prabirshrestha/asyncomplete-buffer.vim': {},
@@ -1553,7 +1556,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \   'on_source' : ['unite.vim', 'vimfiler', ],
     \   'on_cmd' : [ 'VimProcInstall', 'VimProcBang', 'VimProcRead',],
     \   'on_func' : 'vimproc#',
-    \   'on_event' : ['FocusLost', 'CursorHold', 'InsertEnter',],
+    \   'on_event' : s:event_idle + s:event_i
     \ })
   if g:is_windows
     let g:vimproc#download_windows_dll = 1
@@ -1578,8 +1581,8 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   "unite_sources{{{
   call dein#load_dict({
-    \   'Shougo/neomru.vim': {'on_event' : ['FocusLost', 'CursorHold',],},
-    \   'Shougo/neoyank.vim': {'on_event' : ['FocusLost', 'CursorHold',],},
+    \   'Shougo/neomru.vim': {'on_event' : s:event_idle},
+    \   'Shougo/neoyank.vim': {'on_event' : s:event_idle},
     \   'Shougo/unite-build': {},
     \   'thinca/vim-unite-history': {},
     \   'osyo-manga/unite-fold': {},
@@ -1618,7 +1621,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   "Shougo/neosnippet{{{
   call dein#add('Shougo/neosnippet', {
-    \   'on_event' : ['InsertEnter',],
+    \   'on_event' : s:event_i,
     \   'depends' : 'neosnippet-snippets',
     \   'on_ft' : ['snippet'],
     \   'on_source' : ['unite.vim', 'asyncomplete.vim', ],
@@ -1655,7 +1658,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   "thinca/vim-ambicmd{{{
   call dein#add('thinca/vim-ambicmd', {
-    \   'on_event' : ['InsertEnter',],
+    \   'on_event' : s:event_i,
     \   'on_ft' : 'vim',
     \   'on_func' : 'ambicmd#',
     \ })
@@ -1663,18 +1666,18 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   "cohama/lexima.vim{{{
   call dein#add('cohama/lexima.vim', {
-    \   'on_event' : ['InsertEnter',],
+    \   'on_event' : s:event_i,
     \   'disabled' : 1,
     \ })
   "}}}
   "tpope/vim-endwise{{{
   call dein#add('tpope/vim-endwise', {
-    \   'on_event' : ['InsertEnter',],
+    \   'on_event' : s:event_i,
     \   'disabled' : 1,
     \ })
   "}}}
   call dein#add('raimondi/delimitmate', {
-    \   'on_event' : ['InsertEnter',],
+    \   'on_event' : s:event_i,
     \ })
 
   "Shougo/vimfiler{{{
@@ -1686,7 +1689,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \     'VimFilerSplit', 'VimFilerTab',
     \   ],
     \   'on_func' : 'vimfiler#',
-    \   'on_event' : ['FocusLost', 'CursorHold', 'InsertEnter',],
+    \   'on_event' : s:event_idle + s:event_i,
     \ })
   "}}}
 
@@ -1823,7 +1826,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \   'on_map' : [['n', '<Plug>']],
     \   'on_cmd' : ['MilfeulleDisp', 'MilfeullePrev', 'MilfeulleNext', 'MilfeulleClear',
     \                 'MilfeulleRefreshMilfeulleRefresh', 'MilfeulleOverlay'],
-    \   'on_event' : ['FocusLost', 'CursorHold',],
+    \   'on_event' : s:event_idle,
     \ })
   "}}}
 
@@ -2017,7 +2020,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
   "haya14busa/vim-migemo{{{
   call dein#add('haya14busa/vim-migemo', {
     \   'on_map' : [['n', '<Plug>(migemo-searchchar)']],
-    \   'on_event' : ['InsertEnter',],
+    \   'on_event' : s:event_i,
     \   'if' : has('migemo')
     \ })
   "}}}
@@ -2091,7 +2094,7 @@ if g:_dein_is_installed
       \   'default' : 'local',
       \   'disabled' : !IsLocal(),
       \   'on_cmd' : ['VerifyEnc',],
-      \   'on_event' : ['FocusLost', 'CursorHold', 'InsertEnter',],
+      \   'on_event' : s:event_idle + s:event_i,
       \ })
     "}}}
     "memo.vim{{{
