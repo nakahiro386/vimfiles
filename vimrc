@@ -3011,6 +3011,18 @@ if Tap('vim-endwise') "{{{
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
 endif "}}}
+if Tap('delimitmate') "{{{
+  function! plugin.on_source() abort "{{{
+    autocmd MyAutoCmd Filetype markdown
+      \  let b:delimitMate_expand_cr = 2
+      \| let b:delimitMate_expand_inside_quotes = 1
+      \| let b:delimitMate_expand_space = 0
+      \| let b:delimitMate_nesting_quotes = ['`']
+    autocmd MyAutoCmd Filetype dosbatch
+      \  let b:delimitMate_matchpairs = substitute(&l:matchpairs, ',%:%', '', '')
+  endfunction "}}}
+  call Set_hook('hook_source', 'on_source')
+endif "}}}
 
 if Tap('vimfiler') "{{{
 
