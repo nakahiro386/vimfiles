@@ -2017,9 +2017,9 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   "haya14busa/vim-migemo{{{
   call dein#add('haya14busa/vim-migemo', {
-    \   'on_map' : [['n', '<Plug>(migemo-searchchar)']],
-    \   'on_event' : s:event_i,
-    \   'if' : has('migemo')
+    \   'on_map' : [['n', '<Plug>(migemo-migemosearch)']],
+    \   'on_event' : s:event_idle + s:event_i,
+    \   'if' : has('migemo') || executable('cmigemo')
     \ })
   "}}}
 
@@ -3975,6 +3975,9 @@ if has('migemo')
 endif
 
 if Tap('vim-migemo') "{{{
+  if !has('migemo')
+    nmap <silent> g/ <Plug>(migemo-migemosearch)
+  endif
   function! plugin.on_post_source() abort "{{{
     call migemo#system('')
   endfunction "}}}
