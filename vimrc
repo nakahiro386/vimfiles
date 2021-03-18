@@ -1794,7 +1794,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   "osyo-manga/vim-anzu{{{
   call dein#add('osyo-manga/vim-anzu', {
-    \   'if' : has('gui_running'),
     \   'on_map' : '<Plug>',
     \   'on_cmd' : 'AnzuClearSearchStatus',
     \ })
