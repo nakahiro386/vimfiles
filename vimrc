@@ -1717,8 +1717,8 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \ })
   "}}}
 
-  "hekyou/vim-rectinsert{{{
-  call dein#add('hekyou/vim-rectinsert', {
+  "nakahiro386/vim-rectinsert{{{
+  call dein#add('nakahiro386/vim-rectinsert', {
     \   'on_map' : [['nx', '<Plug>', ]],
     \ })
   "}}}
