@@ -1667,13 +1667,12 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
   "cohama/lexima.vim{{{
   call dein#add('cohama/lexima.vim', {
     \   'on_event' : s:event_i,
-    \   'disabled' : 1,
+    \   'if' : 0,
     \ })
   "}}}
   "tpope/vim-endwise{{{
   call dein#add('tpope/vim-endwise', {
     \   'on_event' : s:event_i,
-    \   'disabled' : 1,
     \ })
   "}}}
   call dein#add('raimondi/delimitmate', {
