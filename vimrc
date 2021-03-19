@@ -2023,6 +2023,8 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \ })
   "}}}
 
+  call dein#add('mopp/layoutplugin.vim', { 'on_cmd' : 'LayoutPlugin', })
+
   call dein#add('haya14busa/vim-poweryank', {
     \   'if' : !has('gui_running'),
     \   'on_map' : [['nxo', '<Plug>(operator-poweryank-osc52)']],
