@@ -3986,6 +3986,14 @@ if Tap('vim-migemo') "{{{
   call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
+if Tap('layoutplugin.vim') "{{{
+  function! plugin.on_source() abort "{{{
+    let g:layoutplugin#user_name = 'nakahiro386'
+    let g:layoutplugin#plugins_contain_dir = expand('$VIMBUNDLE/repos/github.com/nakahiro386')
+  endfunction "}}}
+  call Set_hook('hook_source', 'on_source')
+endif "}}}
+
 if Tap('vim-poweryank') "{{{
   map <Leader>y <Plug>(operator-poweryank-osc52)
   nmap <Leader>yy 0<Plug>(operator-poweryank-osc52)$
