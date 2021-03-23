@@ -1848,6 +1848,10 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   "}}}
 
+  call dein#add('nakahiro386/fullwidth-halfwidth.vim',
+    \   {'on_cmd': ['FullwidthAscii', 'HalfwidthAscii']}
+    \ )
+
   " vim-operator-user"{{{
   "kana/vim-operator-user{{{
   call dein#add('kana/vim-operator-user', {
