@@ -1493,13 +1493,11 @@ endif
 "-----------------------------------------------------------------------------
 "Plugin:"{{{
 "dein.vim Install"{{{
-let s:just_installed_dein = 0
 if has('vim_starting') && (HasVersion('8.0') || has('nvim')) && !g:is_view
   let s:dein_path = expand('$VIMBUNDLE/repos/github.com/Shougo/dein.vim')
   if !isdirectory(s:dein_path)
     if executable('git')
       exe '!git clone https://github.com/Shougo/dein.vim' .' '.s:dein_path
-      let s:just_installed_dein = 1
     endif
   endif
   if filereadable(s:dein_path . '/autoload/dein.vim')
@@ -4010,16 +4008,6 @@ elseif s:has_kaoriya && isdirectory(expand('$VIM/switches/'))
 
 endif
 "}}}
-
-if has('vim_starting') && g:_dein_is_installed && s:just_installed_dein
-  if dein#check_install('vimproc')
-    call dein#install('vimproc')
-  endif
-  if dein#check_install('unite.vim')
-    call dein#install('unite.vim')
-  endif
-  call add(g:messages, 'Please check :echo dein#get_log() and execute :call dein#install()')
-endif
 
 "2html.vim"{{{
 let g:html_dynamic_folds = 1
