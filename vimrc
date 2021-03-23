@@ -1957,28 +1957,18 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
   "    \   },
   "    \ })
 
+  call dein#add('sheerun/vim-polyglot',{
+    \   'merged': 0,
+    \ })
+
   call dein#load_dict({
-    \   'vim-scripts/JavaScript-Indent': {'on_ft' : ['html'], 'merged': 0},
     \   'vim-scripts/jQuery': {'on_ft' : ['javascript'], 'merged': 0},
     \ }, {'lazy': 0, 'frozen' : 1}
     \ )
 
   call dein#load_dict({
-    \   'vim-ruby/vim-ruby': {'on_ft': ['ruby', 'eruby']},
-    \   'othree/html5.vim': {'on_ft': ['html', 'xhtml'], 'merged': 0},
-    \   'jelera/vim-javascript-syntax': {'on_ft': ['javascript'], 'merged': 0},
-    \   'chr4/nginx.vim': {'on_ft': ['nginx']},
-    \   'hdima/python-syntax': {'on_ft': ['python']},
-    \   'Vimjas/vim-python-pep8-indent': {'on_ft': ['python']},
-    \   'pearofducks/ansible-vim': {'on_ft': ['ansible', 'ansible_template', 'ansible_hosts']},
-    \   'ekalinin/Dockerfile.vim': {'on_ft': ['Dockerfile', 'docker-compose']},
     \   'stephpy/vim-yaml': {'on_ft': ['yaml']},
     \   'davidoc/taskpaper.vim': {'on_ft': ['taskpaper']},
-    \   'google/vim-ft-go': {'on_ft': ['go']},
-    \   'PProvost/vim-ps1': {'on_ft': ['ps1']},
-    \   'vim-scripts/Windows-PowerShell-indent-enhanced': {'on_ft': ['ps1']},
-    \   'plasticboy/vim-markdown': {'on_ft': ['markdown']},
-    \   'posva/vim-vue': {'on_ft': ['vue']},
     \ }, {'lazy': 0}
     \ )
 
@@ -3895,6 +3885,13 @@ if Tap('open-browser.vim') "{{{
   let g:openbrowser_no_default_menus = 1
   nmap gx <Plug>(openbrowser-open)
   vmap gx <Plug>(openbrowser-open)
+endif "}}}
+
+if Tap('vim-polyglot') "{{{
+  function! plugin.on_post_source() abort "{{{
+    let g:polyglot_disabled = ['sensible', 'log', 'ftdetect']
+  endfunction "}}}
+  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('vim-ruby') "{{{
