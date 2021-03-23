@@ -1857,7 +1857,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
   call dein#add('kana/vim-operator-user', {
     \   'lazy': 0,
     \   'on_func' : 'operator#user#',
-    \   'on_source' : ['operator-camelize.vim', 'vim-operator-replace', ],
     \ })
   "}}}
 
