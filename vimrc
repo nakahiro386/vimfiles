@@ -1921,27 +1921,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   call dein#add('vim-jp/syntax-vim-ex')
 
-  " call dein#add(hail2u/vim-css3-syntax, {
-    " \    'on_ft' : ['css', 'html', 'xhtml',],
-    " \ })
-
-  "skammer/vim-css-color
-  "call dein#add('skammer/vim-css-color', {
-  "    \ 'script_type' : 'after/syntax',
-  "    \ 'autoload' : {
-  "    \    'on_ft' : ['css', 'html', 'xhtml', 'javascript'],
-  "    \   },
-  "    \ })
-  "let g:cssColorVimDoNotMessMyUpdatetime = 1
-
-  ""css_color.vim
-  "call dein#add('css_color.vim', {
-  "    \ 'script_type' : 'after',
-  "    \ 'autoload' : {
-  "    \    'on_ft' : ['css', 'html', 'xhtml', 'javascript'],
-  "    \   },
-  "    \ })
-
   call dein#add('sheerun/vim-polyglot',{
     \   'merged': 0,
     \ })
@@ -1963,14 +1942,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \   'thinca/vim-openbuf': {'on_func' : 'openbuf#'},
     \ }, {'lazy': 0}
     \ )
-
-  "javacomplete{{{
-  "call dein#add('javacomplete', {
-  "    \ 'autoload' : {
-  "    \   'on_ft' : 'java'
-  "    \ }})
-  "autocmd MyAutoCmd Filetype java setlocal omnifunc=javacomplete#Complete
-  "}}}
 
   call dein#add('vim-scripts/java_fold', { 'frozen' : 1, 'on_ft' : ['java'], })
 
@@ -2011,31 +1982,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
 
   call dein#add('editorconfig/editorconfig-vim', {'on_cmd': 'EditorConfigEnable'})
 
-  "javaid.vim{{{
-  " call dein#add('https://fleiner.com/vim/syntax_60/javaid.vim', {
-    " \   'name' : 'javaid.vim',
-    " \   'frozen' : 1,
-    " \   'directory' : 'java.vim',
-    " \   'type' : 'raw',
-    " \   'type__filename' : 'javaid.vim',
-    " \   'script_type' : 'syntax',
-    " \   'stay_same' : 1,
-    " \   'build' : {
-    " \     'windows' : printf('cp -p "%S" "%S"',
-    " \                 expand('$VIMRUNTIME/syntax/java.vim'),
-    " \                 expand('$VIMBUNDLE/java.vim/syntax/java.vim'))
-    " \                 . '|' .
-    " \                 printf('cp -p "%S" "%S"',
-    " \                 expand('$VIMRUNTIME/syntax/html.vim'),
-    " \                 expand('$VIMBUNDLE/java.vim/syntax/html.vim')) ,
-    " \   },
-    " \   'on_ft' : ['java'],
-    " \ })
-  " call neobundle#config('javaid.vim', {
-    " \   'type__filepath' : (neobundle#get('javaid.vim').path) . '/javaid.vim',
-    " \ })
-  "}}}
-
   " call dein#save_state()
 endif "if g:_dein_is_installed && dein#load_state(g:sfile_path)"}}}
 
@@ -2045,17 +1991,6 @@ if g:_dein_is_installed
   function! IsLocal() abort
     return isdirectory(expand('$VIMBUNDLELOCAL/'.g:bundle_name))
   endfunction
-
-  " "thinca/vim-fontzoom vim-fontzoom The fontsize controller in gVim.{{{
-  " let g:bundle_name = 'vim-fontzoom'
-  " call dein#add('thinca/vim-fontzoom', {
-  "   \   'default' : (IsLocal() ? 'local' : '_' ),
-  "   \   'type': (IsLocal() ? 'none' : 'git'),
-  "   \   'gui' : 1,
-  "   \   'on_cmd': ['Fontzoom',],
-  "   \   'on_map': [['n', '<Plug>', ]],
-  "   \ })
-  " "}}}
 
   if g:is_windows && !has('nvim') && (!s:has_kaoriya || (s:has_kaoriya && (get(g:, 'vimrc_local_finish', 0) != 0)))
     "hz_ja.vim{{{
