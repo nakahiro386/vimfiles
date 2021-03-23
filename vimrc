@@ -1598,13 +1598,6 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \ )
   "}}}
 
-  "sudo.vim{{{
-  call dein#add('vim-scripts/sudo.vim', {
-    \   'frozen' : 1,
-    \   'on_cmd' : ['SudoRead', 'SudoWrite', ],
-    \ })
-  "}}}
-
   "osyo-manga/vim-precious"{{{
   call dein#add('osyo-manga/vim-precious', {
     \   'on_cmd' : ['PreciousSwitch',  'PreciousSwitchAutcmd', ],
