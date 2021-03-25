@@ -3806,10 +3806,7 @@ if Tap('open-browser.vim') "{{{
 endif "}}}
 
 if Tap('vim-polyglot') "{{{
-  function! plugin.on_post_source() abort "{{{
-    let g:polyglot_disabled = ['sensible', 'log', 'ftdetect']
-  endfunction "}}}
-  call Set_hook('hook_post_source', 'on_post_source')
+  let g:polyglot_disabled = ['sensible', 'log']
 endif "}}}
 
 if Tap('vim-ruby') "{{{
