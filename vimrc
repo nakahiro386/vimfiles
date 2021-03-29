@@ -1520,11 +1520,12 @@ if g:_dein_is_installed "{{{
 endif "}}}
 
 " dein "{{{
-if g:_dein_is_installed && dein#load_state(g:sfile_path)
+let s:base_path = expand('$VIMBUNDLE')
+if g:_dein_is_installed && dein#load_state(s:base_path)
   let s:event_idle = ['FocusLost', 'CursorHold']
   let s:event_i = ['InsertEnter']
 
-  call dein#begin(expand('$VIMBUNDLE')) "filetype off
+  call dein#begin(s:base_path) "filetype off
 
   call dein#add('Shougo/dein.vim')
 
@@ -1556,9 +1557,7 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
     \   'on_func' : 'vimproc#',
     \   'on_event' : s:event_idle + s:event_i
     \ })
-  if g:is_windows
-    let g:vimproc#download_windows_dll = 1
-  else
+  if !g:is_windows
     call dein#config('vimproc', {'build': 'make'})
   endif
   "}}}
@@ -1981,10 +1980,13 @@ if g:_dein_is_installed && dein#load_state(g:sfile_path)
   call dein#add('editorconfig/editorconfig-vim', {'on_cmd': 'EditorConfigEnable'})
 
   " call dein#save_state()
+  call dein#end()
+  call dein#save_state()
 endif "if g:_dein_is_installed && dein#load_state(g:sfile_path)"}}}
 
 " dein Local "{{{
-if g:_dein_is_installed
+" if g:_dein_is_installed
+if 0
   let g:bundle_name = ''
   function! IsLocal() abort
     return isdirectory(expand('$VIMBUNDLELOCAL/'.g:bundle_name))
@@ -2041,12 +2043,6 @@ if g:_dein_is_installed "{{{
     unlet g:plugin
     return 0
   endfunction "}}}
-  function! DeinEnd() "{{{
-    call dein#end()
-    call dein#save_state()
-    call UnTap()
-    return 0
-  endfunction "}}}
 else
   function! Tap(name) "{{{
     return 0
@@ -2054,13 +2050,12 @@ else
   function! UnTap() "{{{
     return 0
   endfunction "}}}
-  function! DeinEnd() "{{{
-    call UnTap()
-    return 0
-  endfunction "}}}
 endif "if g:_dein_is_installed"}}}
 
 if Tap('vimproc') "{{{
+  if g:is_windows
+    let g:vimproc#download_windows_dll = 1
+  endif
   function! Download_vimproc_dll(version) abort "{{{
     if !g:is_windows || !executable('powershell')
       return
@@ -3926,7 +3921,7 @@ if Tap('hz_ja.vim') || exists(':Hankaku') is 2 "{{{
 endif "}}}
 "}}}
 
-call DeinEnd()
+call UnTap()
 
 "disabled{{{
 let g:loaded_getscriptPlugin = 1
