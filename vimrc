@@ -1918,16 +1918,35 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
 
   call dein#add('vim-jp/syntax-vim-ex')
 
-  call dein#add('sheerun/vim-polyglot',{
-    \   'merged': 0,
-    \ })
-
   call dein#load_dict({
+    \   'vim-scripts/XSLT-syntax': {'on_ft': ['xsl']},
     \   'vim-scripts/jQuery': {'on_ft' : ['javascript'], 'merged': 0},
     \ }, {'lazy': 0, 'frozen' : 1}
     \ )
 
   call dein#load_dict({
+    \   'pearofducks/ansible-vim': {'on_ft': ['ansible', 'ansible_template', 'ansible_hosts']},
+    \   'asciidoc/vim-asciidoc': {'on_ft': ['asciidoc']},
+    \   'hnamikaw/vim-autohotkey': {'on_ft': ['autohotkey']},
+    \   'ekalinin/Dockerfile.vim': {'on_ft': ['Dockerfile', 'docker-compose']},
+    \   'tpope/vim-git': {'on_ft': ['git', 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendemail']},
+    \   'fszymanski/fzf-gitignore': {'on_ft': ['gitignore']},
+    \   'sheerun/html5.vim': {'on_ft': ['html', 'xhtml'], 'merged': 0},
+    \   'pangloss/vim-javascript': {'on_ft': ['javascript'], 'merged': 0},
+    \   'martinda/Jenkinsfile-vim-syntax': {'on_ft': ['Jenkinsfile']},
+    \   'plasticboy/vim-markdown': {'on_ft': ['markdown']},
+    \   'chr4/nginx.vim': {'on_ft': ['nginx']},
+    \   'aklt/plantuml-syntax': {'on_ft': ['plantuml']},
+    \   'PProvost/vim-ps1': {'on_ft': ['ps1']},
+    \   'Vimjas/vim-python-pep8-indent': {'on_ft': ['python']},
+    \   'vim-python/python-syntax': {'on_ft': ['python']},
+    \   'raimon49/requirements.txt.vim': {'on_ft': ['requirements']},
+    \   'vim-ruby/vim-ruby': {'on_ft': ['ruby', 'eruby']},
+    \   'arzg/vim-sh': {'on_ft': ['sh']},
+    \   'wgwoods/vim-systemd-syntax': {'on_ft': ['systemd']},
+    \   'ericpruitt/tmux.vim': {'on_ft': ['tmux'], 'rtp': 'vim'},
+    \   'cespare/vim-toml': {'on_ft': ['toml']},
+    \   'posva/vim-vue': {'on_ft': ['vue']},
     \   'stephpy/vim-yaml': {'on_ft': ['yaml']},
     \   'davidoc/taskpaper.vim': {'on_ft': ['taskpaper']},
     \ }, {'lazy': 0}
@@ -3798,10 +3817,6 @@ if Tap('open-browser.vim') "{{{
   let g:openbrowser_no_default_menus = 1
   nmap gx <Plug>(openbrowser-open)
   vmap gx <Plug>(openbrowser-open)
-endif "}}}
-
-if Tap('vim-polyglot') "{{{
-  let g:polyglot_disabled = ['sensible', 'log']
 endif "}}}
 
 if Tap('vim-ruby') "{{{
