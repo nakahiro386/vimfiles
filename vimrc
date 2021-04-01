@@ -1912,44 +1912,40 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
     \ })
 
   call dein#load_dict({
-    \   'vim-jp/vim-go-extra': {},
-    \ }, {'on_ft': ['go'],}
-    \ )
-
-  call dein#add('vim-jp/syntax-vim-ex')
-
-  call dein#load_dict({
-    \   'vim-scripts/XSLT-syntax': {'on_ft': ['xsl']},
-    \   'vim-scripts/jQuery': {'on_ft' : ['javascript'], 'merged': 0},
-    \ }, {'lazy': 0, 'frozen' : 1}
-    \ )
-
-  call dein#load_dict({
-    \   'pearofducks/ansible-vim': {'on_ft': ['ansible', 'ansible_template', 'ansible_hosts']},
-    \   'asciidoc/vim-asciidoc': {'on_ft': ['asciidoc']},
-    \   'hnamikaw/vim-autohotkey': {'on_ft': ['autohotkey']},
-    \   'ekalinin/Dockerfile.vim': {'on_ft': ['Dockerfile', 'docker-compose']},
-    \   'tpope/vim-git': {'on_ft': ['git', 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendemail']},
-    \   'fszymanski/fzf-gitignore': {'on_ft': ['gitignore']},
-    \   'sheerun/html5.vim': {'on_ft': ['html', 'xhtml'], 'merged': 0},
-    \   'pangloss/vim-javascript': {'on_ft': ['javascript'], 'merged': 0},
-    \   'martinda/Jenkinsfile-vim-syntax': {'on_ft': ['Jenkinsfile']},
-    \   'plasticboy/vim-markdown': {'on_ft': ['markdown']},
-    \   'chr4/nginx.vim': {'on_ft': ['nginx']},
-    \   'aklt/plantuml-syntax': {'on_ft': ['plantuml']},
-    \   'PProvost/vim-ps1': {'on_ft': ['ps1']},
-    \   'Vimjas/vim-python-pep8-indent': {'on_ft': ['python']},
-    \   'vim-python/python-syntax': {'on_ft': ['python']},
-    \   'raimon49/requirements.txt.vim': {'on_ft': ['requirements']},
-    \   'vim-ruby/vim-ruby': {'on_ft': ['ruby', 'eruby']},
-    \   'arzg/vim-sh': {'on_ft': ['sh']},
-    \   'wgwoods/vim-systemd-syntax': {'on_ft': ['systemd']},
-    \   'ericpruitt/tmux.vim': {'on_ft': ['tmux'], 'rtp': 'vim'},
-    \   'cespare/vim-toml': {'on_ft': ['toml']},
-    \   'posva/vim-vue': {'on_ft': ['vue']},
-    \   'stephpy/vim-yaml': {'on_ft': ['yaml']},
-    \   'davidoc/taskpaper.vim': {'on_ft': ['taskpaper']},
+    \   'vim-jp/syntax-vim-ex': {},
+    \   'pearofducks/ansible-vim': {},
+    \   'hnamikaw/vim-autohotkey': {'frozen' : 1},
+    \   'ekalinin/Dockerfile.vim': {},
+    \   'sheerun/html5.vim': {},
+    \   'pangloss/vim-javascript': {},
+    \   'martinda/Jenkinsfile-vim-syntax': {},
+    \   'plasticboy/vim-markdown': {},
+    \   'chr4/nginx.vim': {},
+    \   'aklt/plantuml-syntax': {},
+    \   'PProvost/vim-ps1': {},
+    \   'vim-scripts/Windows-PowerShell-indent-enhanced': {'frozen' : 1, 'merged': 0},
+    \   'Vimjas/vim-python-pep8-indent': {},
+    \   'vim-python/python-syntax': {},
+    \   'nvie/vim-flake8': {},
+    \   'vim-ruby/vim-ruby': {},
+    \   'arzg/vim-sh': {},
+    \   'wgwoods/vim-systemd-syntax': {},
+    \   'ericpruitt/tmux.vim': {},
+    \   'cespare/vim-toml': {},
+    \   'posva/vim-vue': {},
+    \   'vim-scripts/jQuery': {'frozen' : 1, 'merged': 0},
+    \   'vim-scripts/XSLT-syntax': {'frozen' : 1},
+    \   'stephpy/vim-yaml': {},
+    \   'davidoc/taskpaper.vim': {'frozen' : 1},
     \ }, {'lazy': 0}
+    \ )
+
+  call dein#load_dict({
+    \   'jmcantrell/vim-virtualenv': {'on_ft': ['python']},
+    \   'vim-scripts/java_fold': {'on_ft': ['java'], 'frozen': 1},
+    \   'fszymanski/fzf-gitignore': {'on_ft': ['gitignore']},
+    \   'raimon49/requirements.txt.vim': {'on_ft': ['requirements']},
+    \ }, {'lazy': 1}
     \ )
 
   call dein#load_dict({
@@ -1959,19 +1955,11 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
     \ }, {'lazy': 0}
     \ )
 
-  call dein#add('vim-scripts/java_fold', { 'frozen' : 1, 'on_ft' : ['java'], })
-
   call dein#add('previm/previm', {
     \   'on_ft': ['markdown'],
     \   'on_cmd': ['PrevimOpen', ],
     \   'augroup': 'previm',
     \ })
-
-  call dein#load_dict({
-    \   'jmcantrell/vim-virtualenv': {},
-    \   'nvie/vim-flake8': {},
-    \ }, {'on_ft': ['python'],}
-    \ )
 
   "thinca/vim-qfreplace"{{{
   call dein#add('thinca/vim-qfreplace', {
