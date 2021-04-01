@@ -3277,19 +3277,42 @@ if Tap('switch.vim') "{{{
 endif "}}}
 
 if Tap('gina.vim') "{{{
-  nnoremap [Plug]to :<C-u>Switch<CR>
   function! plugin.on_source() abort "{{{
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
-    call gina#custom#command#option('branch', '--opener', 'vsplit')
-    call gina#custom#command#option('changes', '--opener', 'vsplit')
-    call gina#custom#command#option('commit', '--opener', 'vsplit')
-    call gina#custom#command#option('log', '--opener', 'vsplit')
-    call gina#custom#command#option('show', '--opener', 'vsplit')
-    call gina#custom#command#option('stash', '--opener', 'vsplit')
+
+    function! s:ginastatusSetting()
+      setlocal foldcolumn=1
+      setlocal nofoldenable
+      setlocal number
+      nnoremap <buffer> <Leader>wr :<C-U>Gina commit<CR>
+    endfunction
+    function! s:ginacommitSetting()
+      nnoremap <buffer> <Leader>wr :<C-U>write<CR>
+      nnoremap <buffer> <Leader>q :<C-U>q<CR>
+    endfunction
+
+    call gina#custom#command#alias('status', 'ss')
+    call gina#custom#command#alias('branch', 'switch')
+
+    function! GinaCustomCommandOption(schemes, option, ...) abort
+      if type(a:schemes) == type([])
+        call map(a:schemes, "gina#custom#command#option(v:val, a:option, get(a:000, 0, 1))")
+      endif
+    endfunction
+    call GinaCustomCommandOption(
+      \   ['branch', 'switch', 'changes', 'commit', 'log', 'show', 'stash',
+      \    'ls', 'grep'],
+      \   '--opener', 'vsplit'
+      \ )
+    call gina#custom#command#option('ss', '--opener', 'split')
     call gina#custom#command#option('status', '--opener', 'tabedit')
 
+    call gina#custom#command#option('ss', '-s')
+    call gina#custom#command#option('ss', '-b')
+
     call gina#custom#command#option('commit', '-v|--verbose')
+
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
   call Set_hook('hook_post_source', 'on_post_source')
