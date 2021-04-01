@@ -1708,7 +1708,6 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
   call dein#add('AndrewRadev/switch.vim', { 'on_cmd' : 'Switch', })
 
   call dein#add('lambdalisue/gina.vim', {'on_cmd': ['Gina']})
-  call dein#add('tpope/vim-fugitive', {'on_cmd' : ['Git'] })
 
   "Align "{{{
   call dein#add('vim-scripts/Align', {
