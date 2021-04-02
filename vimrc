@@ -2287,7 +2287,7 @@ if Tap('vim-lsp') "{{{
       nmap <buffer> <leader>rn <plug>(lsp-rename)
       nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
       nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
-      nmap <buffer> K <plug>(lsp-hover)
+      " nmap <buffer> K <plug>(lsp-hover)
     endfunction
 
     augroup lsp_install
