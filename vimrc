@@ -3280,37 +3280,37 @@ if Tap('gina.vim') "{{{
   function! plugin.on_source() abort "{{{
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
+    call gina#custom#execute('/.*',
+      \ 'setlocal winfixheight foldcolumn=1 nofoldenable number')
 
+    call gina#custom#mapping#nmap(
+      \   '/.*', 'q',
+      \   ':<C-u>q<CR>',
+      \   {'noremap': 1, 'silent': 1}
+      \ )
+
+    function! s:ginalsSetting()
+      nmap <buffer> gf <Plug>(gina-edit-tab)
+      vmap <buffer> gf <Plug>(gina-edit-tab)
+    endfunction
     function! s:ginastatusSetting()
-      setlocal foldcolumn=1
-      setlocal nofoldenable
-      setlocal number
       nnoremap <buffer> <Leader>wr :<C-U>Gina commit<CR>
     endfunction
     function! s:ginacommitSetting()
-      nnoremap <buffer> <Leader>wr :<C-U>write<CR>
       nnoremap <buffer> <Leader>q :<C-U>q<CR>
     endfunction
 
+    call gina#custom#command#alias('log', 'll')
     call gina#custom#command#alias('status', 'ss')
     call gina#custom#command#alias('branch', 'switch')
 
-    function! GinaCustomCommandOption(schemes, option, ...) abort
-      if type(a:schemes) == type([])
-        call map(a:schemes, "gina#custom#command#option(v:val, a:option, get(a:000, 0, 1))")
-      endif
-    endfunction
-    call GinaCustomCommandOption(
-      \   ['branch', 'switch', 'changes', 'commit', 'log', 'show', 'stash',
-      \    'ls', 'grep'],
-      \   '--opener', 'vsplit'
-      \ )
-    call gina#custom#command#option('ss', '--opener', 'split')
-    call gina#custom#command#option('status', '--opener', 'tabedit')
+    call gina#custom#command#option('/^\%(blame\|compare\|log\|show\|patch\)\@!.\+',
+      \ '--opener', 'split')
+    call gina#custom#command#option('/\v%(blame|compare|log|show|patch)',
+      \ '--opener', 'tabedit')
 
     call gina#custom#command#option('ss', '-s')
     call gina#custom#command#option('ss', '-b')
-
     call gina#custom#command#option('commit', '-v|--verbose')
 
   endfunction "}}}
