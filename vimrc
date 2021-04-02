@@ -1546,6 +1546,8 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
     \   'prabirshrestha/vim-lsp': {'lazy' : 1, 'augroup': 'lsp_auto_enable'},
     \   'mattn/vim-lsp-settings': {'lazy' : 1},
     \   'prabirshrestha/asyncomplete-lsp.vim': {'lazy' : 1},
+    \   'thomasfaingnaert/vim-lsp-snippets': {'lazy' : 1},
+    \   'thomasfaingnaert/vim-lsp-neosnippet': {'lazy' : 1},
     \ }, {'on_source': 'asyncomplete.vim', 'lazy' : 0}
     \ )
 
