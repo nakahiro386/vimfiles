@@ -3304,10 +3304,11 @@ if Tap('gina.vim') "{{{
 
     call gina#custom#command#alias('log', 'll')
     call gina#custom#command#alias('status', 'ss')
+    call gina#custom#command#alias('branch', 'br')
     call gina#custom#command#alias('branch', 'switch')
 
-    call gina#custom#command#option('/^\%(blame\|compare\|log\|show\|patch\)\@!.\+',
-      \ '--opener', 'split')
+    call gina#custom#command#option('/\v^%(ll|ss|br|switch|commit|diff|grep|ls|status|tag)',
+      \ '--opener', 'vsplit')
     call gina#custom#command#option('/\v%(blame|compare|log|show|patch)',
       \ '--opener', 'tabedit')
 
