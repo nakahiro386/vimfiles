@@ -1369,15 +1369,15 @@ endif
 "}}}
 
 "Substitute"{{{
-nnoremap <Leader>rr q:%s/\v/geI#<C-o>F/
-vnoremap <Leader>rr q:s/\v/geI#<C-o>F/
+nnoremap <Leader>rr :%s//geI#<Left><Left><Left><Left><Left>
+vnoremap <Leader>rr :s//geI#<Left><Left><Left><Left><Left>
 "}}}
 
 "global"{{{
-nnoremap <Leader>gg q:%g//normal<Space>
-vnoremap <Leader>gg q:g//normal<Space>
-nnoremap <Leader>GG q:%g!//normal<Space>
-vnoremap <Leader>GG q:g!//normal<Space>
+nnoremap <Leader>gg :%g//normal<Space>
+vnoremap <Leader>gg :g//normal<Space>
+nnoremap <Leader>GG :%g!//normal<Space>
+vnoremap <Leader>GG :g!//normal<Space>
 "}}}
 
 "Esc{{{
