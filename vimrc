@@ -5643,8 +5643,8 @@ if has('vim_starting')
   endif
 else
   if g:_dein_is_installed
-    call dein#call_hook('hook_source')
-    call dein#call_hook('hook_post_source')
+    call dein#call_hook('source')
+    call dein#call_hook('post_source')
   endif
 endif
 
