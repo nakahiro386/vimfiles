@@ -1521,11 +1521,16 @@ if g:_dein_is_installed "{{{
     " let g:dein#install_max_processes = float2nr(ceil(s:numberOfProcessors / 2))
   " endif
   "}}}
+  let g:plugin_disable_filetypes =
+    \ ['help', 'unite', 'vimfiler', 'defx', 'log', 'text', 'calendar', 'ref',
+    \  'quickrun', 'tail']
+
 endif "}}}
 
 " dein "{{{
 let s:base_path = expand('$VIMBUNDLE')
 if g:_dein_is_installed && dein#load_state(s:base_path)
+
   let s:event_idle = ['FocusLost', 'CursorHold']
   let s:event_i = ['InsertEnter']
 
@@ -2123,7 +2128,7 @@ if Tap('asyncomplete.vim') "{{{
     set completeopt=menuone,noselect
     let g:asyncomplete_auto_completeopt = 0
 
-    let g:asyncomplete_disable_filetype = ['help', 'unite', 'vimfiler', 'log', 'text', 'calendar', 'quickrun', 'tail']
+    let g:asyncomplete_disable_filetype = g:plugin_disable_filetypes
     execute ':autocmd MyAutoCmd FileType '.join(g:asyncomplete_disable_filetype, ',').' call asyncomplete#disable_for_buffer()'
     " TODO deoplete#mapping#_complete_common_string()
 
@@ -3615,7 +3620,7 @@ if Tap('vim-indent-guides') "{{{
     let g:indent_guides_enable_on_vim_startup=1
     let g:indent_guides_guide_size=0
     let g:indent_guides_indent_levels = 10
-    let g:indent_guides_exclude_filetypes = ['help', 'unite', 'vimfiler', 'log', 'text', 'calendar', 'ref', 'quickrun', 'tail']
+    let g:indent_guides_exclude_filetypes = g:plugin_disable_filetypes
     let g:indent_guides_start_level = 1
 
     let g:indent_guides_auto_colors = 0
