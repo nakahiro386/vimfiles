@@ -4418,23 +4418,6 @@ set formatoptions+=mBj
 set formatoptions+=c
 " gqでコメント整形
 set formatoptions+=q
-" filetype detect "{{{
-augroup MyAutoCmd
-  autocmd BufRead,BufNewFile .vrapperrc setlocal filetype=vim
-  autocmd BufRead,BufNewFile *.{md,mkd} setlocal filetype=markdown
-  autocmd BufRead,BufNewFile *.js setlocal filetype=javascript syntax=jquery
-  autocmd BufRead,BufNewFile *.wlst setlocal filetype=python
-  " autocmd BufRead,BufNewFile *.log setlocal filetype=messages
-  "autocmd BufRead,BufNewFile *.erb set filetype=eruby.html
-  "xxd"{{{
-  "Vim-users.jp - Hack #133: バイナリファイルを編集する
-  "http://vim-jp.org/vim-users-jp/2010/03/21/Hack-133.html
-  "特定の拡張子をバイナリ編集で開始
-  "autocmd BufReadPost,BufNewFile *.bin,*.exe,*.dll setlocal filetype=xxd
-  "}}}
-  autocmd BufEnter * if empty(&filetype) | filetype detect | endif
-augroup END
-"}}}
 
 augroup MyAutoCmd "{{{
   autocmd FileType * setlocal formatoptions-=r
