@@ -238,11 +238,6 @@ if g:is_windows
   " CraftDrop
   let g:cdrop = expand('$HOME/bin/cdrop/cdrop.exe')
 
-  let g:ipmsg_path = expand('$LOCALAPPDATA/IPMsg/ipmsg.exe')
-  if !executable(g:ipmsg_path)
-    let g:ipmsg_path = expand('$PROGRAMFILES/IPMsg/ipmsg.exe')
-  endif
-
 endif
 "}}}
 
@@ -311,7 +306,7 @@ set backup writebackup backupcopy=yes
 let &backupdir = g:backup_dir
 set backupskip&
 if g:is_windows
-  set backupskip+=ipmsg.log,無題.txt,新しいテキスト\ ドキュメント.txt
+  set backupskip+=無題.txt,新しいテキスト\ ドキュメント.txt
   execute 'set backupskip+='.expand('$MYVIMRC')
   execute 'set backupskip+='.expand('$MYGVIMRC')
   if exists('g:memo_dir')
@@ -348,7 +343,7 @@ call Mkdir(&directory)
 set updatecount=100
 augroup MyAutoCmd
   autocmd WinEnter * if (&l:readonly || !&l:modifiable || !empty(&l:buftype)) && &l:swapfile | setl noswapfile | endif
-  let s:path = ['$VIMFILES/tmp/**', g:backup_dir.'/**', 'ipmsg.log']
+  let s:path = ['$VIMFILES/tmp/**', g:backup_dir.'/**']
   exe printf('autocmd BufRead %s if &swapfile | setl noswapfile | endif', join(s:path, ','))
   unlet s:path
 augroup END
@@ -423,7 +418,7 @@ set iminsert=0 imsearch=-1
 
 augroup MyAutoCmd
   autocmd BufRead * if &readonly && &modifiable | setlocal nomodifiable | endif
-  let s:path = ['$VIMRUNTIME/**', g:backup_dir.'/**', '$VIMBUNDLE/**', 'ipmsg.log', ]
+  let s:path = ['$VIMRUNTIME/**', g:backup_dir.'/**', '$VIMBUNDLE/**']
   exe printf('autocmd BufRead %s setlocal nomodifiable', join(s:path, ','))
   unlet s:path
 augroup END
@@ -5451,62 +5446,6 @@ if !exists('#Tail')
   augroup END
 endif
 "}}}
-
-function! s:SendIpmsg(first, last, bang, args) range "{{{
-  if !executable('powershell')
-    return
-  endif
-  let l:V = VitalWrapper('Prelude', 'System.Filepath', 'Process')
-  if !l:V.Prelude.is_windows()
-    return
-  endif
-
-  call l:V.Prelude.set_default('g:ipmsg_path', 'ipmsg.exe')
-
-  let l:ipmsgPath = l:V.System.Filepath.winpath(g:ipmsg_path)
-  if !executable(l:ipmsgPath)
-    return
-  endif
-
-  let l:hostname = empty(a:args) ? 'localhost' : a:args
-
-  let l:tmpfile = l:V.System.Filepath.winpath(tempname().'.ps1')
-
-  let l:write = []
-  call add(l:write, "$message = @'")
-
-  let l:lineList = getline(a:first, a:last)
-  for l:line in l:lineList
-    if l:line ==# "'@"
-      call add(l:write, "'@ + @\"")
-      call add(l:write, '')
-      call add(l:write, "'@")
-      call add(l:write, '')
-      call add(l:write, "\"@ + @'")
-    else
-      call add(l:write, Outgoing(l:line))
-    endif
-  endfor
-  call add(l:write, '')
-  call add(l:write, "'@")
-  call add(l:write, '')
-
-  let l:exeStr = 'Start-Process -FilePath "%s" -Wait -ArgumentList "/MSG %s %s $message"'
-  let l:exeStr = printf(l:exeStr, l:ipmsgPath, (a:bang ==# '!' ? '' : '/LOG /SEAL'), l:hostname)
-  call add(l:write, l:exeStr)
-
-  call writefile(l:write, l:tmpfile)
-
-  let l:execute = l:V.Process.system(printf('powershell -File "%s"', l:tmpfile))
-  echo l:execute
-  call delete(l:tmpfile)
-
-endfunction "}}}
-
-function! GetHostName(ArgLead, CmdLine, CursorPos) abort "{{{
-  return join(get(g:, 'ipmsg_host_list', ['localhost']), "\n")
-endfunction "}}}
-command! -complete=custom,GetHostName -bang -range=% -nargs=? Ipmsg call s:SendIpmsg(<line1>, <line2>, '<bang>', <q-args>)
 
 "Scratch"{{{
 function! Scratch(filetype) "{{{
