@@ -2667,11 +2667,11 @@ if Tap('unite.vim') "{{{
       endif
     endfunction "}}}
 
-    call s:readLauncher(s:c.command_candidates, '$VIMFILES/launcher.vim')
+    call s:readLauncher(s:c.command_candidates, '$VIMFILES/launcher/launcher.vim')
     if g:is_windows
-      call s:readLauncher(s:c.command_candidates, '$VIMFILES/launcher_win.vim')
+      call s:readLauncher(s:c.command_candidates, '$VIMFILES/launcher/launcher_win.vim')
     endif
-    call s:readLauncher(s:c.command_candidates, '$VIMFILES/launcher_local.vim')
+    call s:readLauncher(s:c.command_candidates, '$VIMFILES/launcher/launcher_local.vim')
 
     let g:unite_source_menu_menus["shortcut"] = deepcopy(s:c)
     unlet s:c
