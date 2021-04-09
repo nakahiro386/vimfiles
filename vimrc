@@ -2267,6 +2267,7 @@ if Tap('neco-vim') "{{{
     \ 'VimFilerSplit' : 'vimfiler#complete',
     \ 'VimFilerTab' : 'vimfiler#complete',
     \ 'Edit' : 'vimfiler#complete',
+    \ 'Defx' : 'defx#util#complete',
     \ 'QuickRun' : 'quickrun#complete',
     \ 'Template' : 'sonictemplate#complete',
     \ 'PP' : 'var',
@@ -2988,7 +2989,6 @@ if Tap('vimfiler') "{{{
   nnoremap <silent> [vimfiler]V :<C-u>VimFilerCurrentDir -buffer-name=fv -simple<CR>
   nnoremap <silent> [vimfiler]e :<C-u>VimFilerBufferDir -buffer-name=fe -explorer -direction=topleft -winwidth=30 -winheight=0<CR>
   nnoremap <silent> [vimfiler]E :<C-u>VimFilerCurrentDir -buffer-name=fe -explorer -direction=topleft -winwidth=30 -winheight=0<CR>
-  command! MemoExplorer execute 'VimFilerExplorer -winwidth=30 -direction=topleft '.g:memo_dir
 
   function! plugin.on_source() abort "{{{
     let g:vimfiler_as_default_explorer = 1
@@ -3171,6 +3171,8 @@ if Tap('defx.nvim') "{{{
   nnoremap <expr> <Leader>dF ':<C-u>Defx -buffer-name=filer<CR>'
   nnoremap <expr> <Leader>de ':<C-u>Defx -buffer-name=explorer-'.tabpagenr().'<CR>'
   nnoremap <expr> <Leader>dE ':<C-u>Defx ' .escape(GetProjectDirectory(), ' :'). ' -buffer-name=project-'.tabpagenr().'<CR>'
+  command! MemoExplorer execute 'Defx -buffer-name=memo '.g:memo_dir
+  nnoremap <F1> :<C-u>MemoExplorer<CR>
 
   function! plugin.on_source() abort "{{{
     let g:defx_winwidth = 30
