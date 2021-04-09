@@ -53,6 +53,10 @@ if has('vim_starting') "{{{
   let g:sfile_path = expand('<sfile>:p')
   lockvar g:sfile_path
 endif "}}}
+function! s:SID_PREFIX() abort
+  return matchstr(expand('<sfile>'), '<SNR>\d\+_\zeSID_PREFIX$')
+endfunction
+let g:vimrc_sid = s:SID_PREFIX()
 
 let s:has_kaoriya = has('kaoriya')
 
@@ -1685,15 +1689,15 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
   "}}}
 
   call dein#add('Shougo/defx.nvim', {
-    \   'if' : has('nvim') || (has('timers') && HasVersion('8.0')),
-    \   'on_event' : s:event_idle + s:event_i,
+    \   'if': has('nvim') || (has('timers') && HasVersion('8.0')),
+    \   'on_event': s:event_idle + s:event_i,
     \ })
   call dein#load_dict({
     \ 'roxma/nvim-yarp': {},
     \ 'roxma/vim-hug-neovim-rpc': {},
     \ }, {
     \   'if': !has('nvim'),
-    \   'on_source' : ['defx.nvim'],
+    \   'on_source': ['defx.nvim'],
     \ }
     \ )
 
@@ -1752,6 +1756,7 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
     \   'on_map' : '<Plug>',
     \   'on_cmd' : 'ChooseWin',
     \   'augroup': 'plugin-choosewin',
+    \   'on_source': ['defx.nvim'],
     \ })
   "}}}
 
@@ -3157,8 +3162,36 @@ if Tap('vimfiler') "{{{
   call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 if Tap('defx.nvim') "{{{
-  nnoremap <expr> <Leader>de ':<C-u>Defx -listed -toggle -resume -split=vertical -direction=topleft -winwidth=30 -buffer-name=tab'.tabpagenr().'<CR>'
+  nnoremap <expr> <Leader>df ':<C-u>Defx ' .escape(expand('%:p:h'), ' :'). ' -search=' .expand('%:p'). ' -buffer-name=defx<CR>'
+  nnoremap <expr> <Leader>dF ':<C-u>Defx -buffer-name=filer<CR>'
+  nnoremap <expr> <Leader>de ':<C-u>Defx -buffer-name=explorer-'.tabpagenr().'<CR>'
+  nnoremap <expr> <Leader>dE ':<C-u>Defx ' .escape(GetProjectDirectory(), ' :'). ' -buffer-name=project-'.tabpagenr().'<CR>'
+
   function! plugin.on_source() abort "{{{
+    let g:defx_winwidth = 30
+    let g:defx_explorer_columns = 'mark:indent:icon:filename'
+    let g:defx_filer_columns = 'mark:indent:icon:filename:size:time'
+
+    highlight Defx_filename_directory term=bold cterm=bold ctermfg=7 gui=bold guifg=SlateGray
+    " highlight link Defx_icon_opened_icon PreProc
+    highlight link Defx_mark_selected PreProc
+
+    function! s:defx_cd(context) abort "{{{
+      call inputsave()
+      let l:cwd = input(a:context['root_marker'], a:context['cwd'], 'dir')
+      if !empty(l:cwd)
+        call defx#call_action('cd', [l:cwd])
+      endif
+      call inputrestore()
+    endfunction "}}}
+    function! s:defx_filter(context) abort "{{{
+      let l:filter = get(b:, 'defx_filter', '')
+      call inputsave()
+      let l:filter = input('filter: ', l:filter)
+      let b:defx_filter = l:filter
+      call defx#call_action('change_filtered_files', [l:filter])
+      call inputrestore()
+    endfunction "}}}
     function! s:defx_toggle_safe_mode() abort "{{{
       let b:defx_safe_mode = (b:defx_safe_mode == v:true ? v:false : v:true)
     endfunction "}}}
@@ -3169,97 +3202,108 @@ if Tap('defx.nvim') "{{{
       return b:defx_safe_mode
     endfunction "}}}
 
+    function! DefxStatusLine() "{{{
+      let l:ret =' '
+      let l:ret.='%#StatusLineModeMsgVl#[%{b:defx["paths"][0]}]%*'
+      let l:ret.='%#Error#%{b:defx_safe_mode?"":"[    ]"}%*'
+      let l:ret.='%{b:defx_safe_mode?"[safe]":""}'
+      let l:ret.='%#Search#%{get(b:, "defx_filter", "")}%*'
+      let l:ret.='%<'
+      let l:ret.='%='
+      return l:ret
+    endfunction "}}}
     function! s:defx_my_settings() abort "{{{
-      if !exists('b:defx_safe_mode')
-        let b:defx_safe_mode = v:true
-      endif
-      " Define mappings
-      nnoremap <silent><buffer><expr> <CR>
-        \ defx#do_action('drop')
-      nnoremap <silent><buffer><expr> <BS>
-        \ defx#do_action('cd', ['..'])
-      nnoremap <silent><buffer><expr> <C-h>
-        \ defx#do_action('cd', ['..'])
-      nnoremap <silent><buffer><expr> l
-        \ defx#is_directory() ?
-        \ defx#do_action('open_tree') . 'j' :
-        \ defx#do_action('open', 'vsplit')
-      nnoremap <silent><buffer><expr> h
-        \ defx#do_action('close_tree')
 
-      nnoremap <silent><buffer><expr> gS
-        \ <SID>defx_toggle_safe_mode()
-      nnoremap <silent><buffer><expr> cc
-        \ <SID>defx_is_safe_mode() ? ''  : defx#do_action('copy')
-      vnoremap <silent><buffer><expr> cc
-        \ <SID>defx_is_safe_mode() ? ''  : defx#do_action('copy')
-      nnoremap <silent><buffer><expr> mm
-        \ <SID>defx_is_safe_mode() ? ''  : defx#do_action('move')
-      nnoremap <silent><buffer><expr> p
-        \ <SID>defx_is_safe_mode() ? ''  : defx#do_action('paste')
-      nnoremap <silent><buffer><expr> dd
-        \ <SID>defx_is_safe_mode() ? ''  : defx#do_action('remove_trash')
-      nnoremap <silent><buffer><expr> DD
-        \ <SID>defx_is_safe_mode() ? ''  : defx#do_action('remove')
-      nnoremap <silent><buffer><expr> r
-        \ <SID>defx_is_safe_mode() ? ''  : defx#do_action('rename')
-      " nnoremap <silent><buffer><expr> N
-        " \ <SID>defx_is_safe_mode() ? ''  : defx#do_action('new_file')
-      nnoremap <silent><buffer><expr> K
-        \ <SID>defx_is_safe_mode() ? ''  : defx#do_action('new_directory')
+      let b:defx_safe_mode = v:true
 
-      nnoremap <silent><buffer><expr> E
-        \ defx#do_action('open', 'vsplit')
-      nnoremap <silent><buffer><expr> P
-        \ defx#do_action('open', 'pedit')
-      nnoremap <silent><buffer><expr> t
-        \ defx#do_action('open', 'tabedit')
-      nnoremap <silent><buffer><expr> o
-        \ defx#do_action('open_or_close_tree')
-      nnoremap <silent><buffer><expr> O
-        \ defx#do_action('open_tree_recursive', '2')
-      nnoremap <silent><buffer><expr> N
-        \ <SID>defx_is_safe_mode() ? '' : defx#do_action('new_multiple_files')
-      nnoremap <silent><buffer><expr> C
-        \ defx#do_action('toggle_columns',
-        \                'mark:indent:icon:filename:type:size:time')
-      nnoremap <silent><buffer><expr> S
-        \ defx#do_action('toggle_sort', 'time')
-      nnoremap <silent><buffer><expr> !
-        \ defx#do_action('execute_command')
-      nnoremap <silent><buffer><expr> x
-        \ defx#do_action('execute_system')
-      nnoremap <silent><buffer><expr> yy
-        \ defx#do_action('yank_path')
-      nnoremap <silent><buffer><expr> .
-        \ defx#do_action('toggle_ignored_files')
-      " nnoremap <silent><buffer><expr> :
-        " \ defx#do_action('repeat')
-      nnoremap <silent><buffer><expr> ~
-        \ defx#do_action('cd')
-      nnoremap <silent><buffer><expr> q
-        \ defx#do_action('quit')
-      nnoremap <silent><buffer> Q
-        \ :<C-u>bwipeout<CR>
-      nnoremap <silent><buffer><expr> ss
-        \ defx#do_action('toggle_select') . 'j'
-      nnoremap <silent><buffer><expr> *
-        \ defx#do_action('toggle_select_all')
-      nnoremap <silent><buffer><expr> j
-        \ line('.') == line('$') ? 'gg' : 'j'
-      nnoremap <silent><buffer><expr> k
-        \ line('.') == 1 ? 'G' : 'k'
-      nnoremap <silent><buffer><expr> <C-l>
-        \ defx#do_action('redraw')
-      nnoremap <silent><buffer><expr> <C-g>
-        \ defx#do_action('print')
-      nnoremap <silent><buffer><expr> cd
-        \ defx#do_action('change_vim_cwd')
+      setl cursorline
+      setl statusline=%!DefxStatusLine()
+
+      nnoremap <silent><buffer><expr> <CR> defx#do_action('drop')
+      nnoremap <silent><buffer><expr> e defx#do_action('open', 'choose')
+      nnoremap <silent><buffer><expr> E defx#do_action('open', 'vsplit')
+      nnoremap <silent><buffer><expr> P defx#do_action('preview')
+      nnoremap <silent><buffer><expr> t defx#do_action('open', 'tabedit')
+
+      nnoremap <silent><buffer><expr> j line('.') == line('$') ? '2gg' : 'j'
+      nnoremap <silent><buffer><expr> k line('.') == 2 ? 'G' : 'k'
+
+      nnoremap <silent><buffer><expr> ~ defx#do_action('cd')
       nnoremap <silent><buffer><expr> \\
         \ defx#do_action('cd', (g:is_windows ? [expand('%:p')[0:2]] : ['/']))
+      nnoremap <silent><buffer><expr> i
+        \ defx#do_action('call', g:vimrc_sid .'defx_cd')
 
-      nnoremap <silent><buffer> H
-        \ :<C-u>echo defx#get_candidate()<CR>
+      nnoremap <silent><buffer><expr> o
+        \ defx#do_action('open_tree', 'toggle')
+      nnoremap <silent><buffer><expr> O
+        \ defx#do_action('open_tree', 'recursive:2')
+      nnoremap <silent><buffer><expr> <BS> defx#do_action('cd', ['..'])
+      nnoremap <silent><buffer><expr> <C-h> defx#do_action('cd', ['..'])
+      nnoremap <silent><buffer><expr> l
+        \ defx#is_directory() ?
+        \ match(bufname('%'), 'filer') == -1 ?
+        \   defx#do_action('open_tree') . 'j' :
+        \   defx#do_action('open')
+        \ :
+        \ tabpagewinnr(tabpagenr(), '$') == 2 ?
+        \   defx#do_action('open', 'vsplit') :
+        \   defx#do_action('open', 'choose')
+      nnoremap <silent><buffer><expr> h
+        \ match(bufname('%'), 'filer') == -1 ?
+        \ defx#do_action('close_tree') :
+        \ defx#do_action('cd', ['..'])
+
+      nnoremap <silent><buffer><expr> mm
+        \ defx#do_action('call', g:vimrc_sid .'defx_filter')
+
+      nnoremap <silent><buffer><expr> q defx#do_action('quit')
+      nnoremap <silent><buffer> Q :<C-u>bwipeout<CR>
+
+      nnoremap <silent><buffer><expr> cd defx#do_action('change_vim_cwd')
+      nnoremap <silent><buffer><expr> gc defx#do_action('change_vim_cwd')
+
+      nnoremap <silent><buffer><expr> gS <SID>defx_toggle_safe_mode()
+      nnoremap <silent><buffer><expr> ss defx#do_action('toggle_select') . 'j'
+      nnoremap <silent><buffer><expr> SS defx#do_action('toggle_select') . 'k'
+      nnoremap <silent><buffer><expr> * defx#do_action('toggle_select_all')
+      nnoremap <silent><buffer><expr> N
+        \ <SID>defx_is_safe_mode() ? '' : defx#do_action('new_multiple_files')
+      nnoremap <silent><buffer><expr> K
+        \ <SID>defx_is_safe_mode() ? '' : defx#do_action('new_directory')
+      nnoremap <silent><buffer><expr> cc
+        \ <SID>defx_is_safe_mode() ? '' : defx#do_action('copy')
+      vnoremap <silent><buffer><expr> cc
+        \ <SID>defx_is_safe_mode() ? '' : defx#do_action('copy')
+      nnoremap <silent><buffer><expr> mv
+        \ <SID>defx_is_safe_mode() ? '' : defx#do_action('move')
+      nnoremap <silent><buffer><expr> pp
+        \ <SID>defx_is_safe_mode() ? '' : defx#do_action('paste')
+      nnoremap <silent><buffer><expr> dd
+        \ <SID>defx_is_safe_mode() ? '' : defx#do_action('remove_trash')
+      nnoremap <silent><buffer><expr> DD
+        \ <SID>defx_is_safe_mode() ? '' : defx#do_action('remove')
+      nnoremap <silent><buffer><expr> r
+        \ <SID>defx_is_safe_mode() ? '' : defx#do_action('rename')
+
+      nnoremap <silent><buffer><expr> C
+        \ match(bufname('%'), 'filer') == -1 ?
+        \ defx#do_action('toggle_columns', g:defx_filer_columns) :
+        \ defx#do_action('toggle_columns', g:defx_explorer_columns)
+      nmap gs C
+      nnoremap <silent><buffer><expr> S defx#do_action('toggle_sort', 'time')
+      nnoremap <silent><buffer><expr> A
+        \ winwidth(0) > g:defx_winwidth ?
+        \ defx#do_action('resize', g:defx_winwidth) :
+        \ defx#do_action('resize', 100)
+
+      nnoremap <silent><buffer><expr> !\ defx#do_action('execute_command')
+      nnoremap <silent><buffer><expr> x  defx#do_action('execute_system')
+      nnoremap <silent><buffer><expr> yy defx#do_action('yank_path')
+      nnoremap <silent><buffer><expr> .  defx#do_action('toggle_ignored_files')
+
+      nnoremap <silent><buffer><expr> <C-l> defx#do_action('redraw')
+      nnoremap <silent><buffer><expr> <C-g> defx#do_action('print')
 
       if exists(':Unite') is 2
         nnoremap <silent><buffer> ? :<C-u>Unite -buffer-name=mapping output:AllMaps\ <buffer><cr>
@@ -3275,25 +3319,42 @@ if Tap('defx.nvim') "{{{
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
 
-    if has('gui_running')
+    call defx#custom#option('_', {
+      \ 'listed': 1,
+      \ 'resume': 1,
+      \ 'toggle': 1,
+      \ 'split': 'vertical',
+      \ 'direction': 'topleft',
+      \ 'winwidth': 30,
+      \ 'vertical_preview': 1,
+      \ 'preview_width': 50,
+      \ 'columns': g:defx_explorer_columns,
+      \ 'show_ignored_files': 1,
+      \ 'root_marker': '[in]: ',
+      \ })
+    call defx#custom#option('filer', {
+      \ 'split': 'no',
+      \ 'columns': g:defx_filer_columns,
+      \ })
 
-      "defx-option-columns
-      call defx#custom#option('_', {
-        \ 'columns': 'mark:indent:icon:filename',
-        \ })
-      call defx#custom#column('mark', {
-        \ 'length': 0,
-        \ })
-      call defx#custom#column('icon', {
-        \ 'directory_icon': '▸',
-        \ 'opened_icon': '▾',
-        \ 'root_icon': '',
-        \ })
-      call defx#custom#column('indent', {
-        \ 'indent': '|'
-        \ })
+    call defx#custom#column('mark', {
+      \ 'length': 1,
+      \ })
+    call defx#custom#column('indent', {
+      \ 'indent': '|'
+      \ })
+    call defx#custom#column('icon', {
+      \ 'directory_icon': '+',
+      \ 'opened_icon': '-',
+      \ 'root_icon': '',
+      \ })
+    call defx#custom#column('filename', {
+      \ 'root_marker_highlight': 'Special',
+      \ })
+    call defx#custom#column('time', {
+      \ 'format': '%Y-%m-%d %H:%M:%S',
+      \ })
 
-    endif
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
   call Set_hook('hook_post_source', 'on_post_source')
@@ -5113,9 +5174,13 @@ command! AutoLCD echo AutoLCD()
 command! -nargs=0 CdCurrent lcd %:p:h|let w:pwd = getcwd()
 nnoremap gc :<C-u>CdCurrent<CR>
 
-function! s:CdProjectDirectory() abort "{{{
+function! GetProjectDirectory() abort "{{{
   let l:V = VitalWrapper('Prelude')
   let l:dir = l:V.Prelude.path2project_directory(expand('%:p'), 1)
+  return l:dir
+endfunction "}}}
+function! s:CdProjectDirectory() abort "{{{
+  let l:dir = GetProjectDirectory()
   let l:cd = exists(':tcd') is 2 ? 'tcd' : 'lcd'
   if !empty(l:dir)
     execute l:cd .' ' .l:dir
