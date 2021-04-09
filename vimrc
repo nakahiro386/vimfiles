@@ -139,8 +139,6 @@ if has('vim_starting')
   call Mkdir($VIMFILES)
   let $VIMBUNDLE = expand('$VIMFILES/bundle')
   call Mkdir($VIMBUNDLE)
-  let $VIMBUNDLELOCAL = expand('$VIMFILES/bundle_local')
-  call Mkdir($VIMBUNDLELOCAL)
   let $VIMDICT = expand('$VIMFILES/dict')
   call Mkdir($VIMDICT)
   if !exists('$MYVIMRC')
@@ -2009,44 +2007,6 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
   call dein#end()
   call dein#save_state()
 endif "if g:_dein_is_installed && dein#load_state(g:sfile_path)"}}}
-
-" dein Local "{{{
-" if g:_dein_is_installed
-if 0
-  let g:bundle_name = ''
-  function! IsLocal() abort
-    return isdirectory(expand('$VIMBUNDLELOCAL/'.g:bundle_name))
-  endfunction
-
-  if g:is_windows && !has('nvim') && (!s:has_kaoriya || (s:has_kaoriya && (get(g:, 'vimrc_local_finish', 0) != 0)))
-    "hz_ja.vim{{{
-    let g:bundle_name = 'hz_ja.vim'
-    call dein#add('hz_ja.vim', {
-      \   'default' : 'local',
-      \   'disabled' : !IsLocal(),
-      \   'on_cmd' : ['Hankaku', 'Zenkaku', 'ToggleHZ'],
-      \ })
-    "}}}
-    "verifyenc.vim{{{
-    let g:bundle_name = 'verifyenc.vim'
-    call dein#add('verifyenc.vim', {
-      \   'default' : 'local',
-      \   'disabled' : !IsLocal(),
-      \   'on_cmd' : ['VerifyEnc',],
-      \   'on_event' : s:event_idle + s:event_i,
-      \ })
-    "}}}
-    "memo.vim{{{
-    let g:bundle_name = 'memo.vim'
-    call dein#add('memo.vim', {
-      \   'default' : 'local',
-      \   'disabled' : !IsLocal(),
-      \   'on_ft' : ['memo'],
-      \ })
-    "}}}
-  endif
-  unlet g:bundle_name
-endif "}}}
 
 "Tap"{{{
 let g:plugins = {}
