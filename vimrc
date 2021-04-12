@@ -4423,196 +4423,43 @@ augroup MyAutoCmd "{{{
   autocmd FileType * setlocal formatoptions-=r
     \| setlocal formatoptions-=o
     \| setlocal formatoptions+=mBj
-  autocmd FileType html,xhtml,javascript,css
-    \  setlocal autoindent
-    \| setlocal smartindent
   autocmd FileType * if exists("*s:".substitute(&filetype, '-', '', 'g').'Setting')
     \|  call s:{substitute(&filetype, '-', '', 'g')}Setting()
     \|endif
-
-  "help{{{
-  function! s:helpSetting()
-    setlocal colorcolumn&
-    setlocal noswapfile
-    nnoremap <buffer> q :<C-U>bw<CR>
-    nnoremap <buffer> Q :<C-U>bw<CR>
-    nnoremap <buffer> g<C-]> <C-]>
-    nnoremap <buffer> <C-]> g<C-]>
-  endfunction
-  "}}}
-  "vim"{{{
-  "埋込言語のsyntax
-  let g:vimsyn_embed = 'Ppr'
-  let g:vimsyn_folding = 0
-  "接続行のインデント数
-  let g:vim_indent_cont = &sw * 1
-  function! s:vimSetting() "{{{
-    setlocal expandtab
-    call IndentSet(2)
-    let g:vim_indent_cont = &sw * 1
-    setlocal autoindent
-    setlocal smartindent
-    setlocal foldmethod=marker
-    setlocal formatoptions-=r
-    setlocal formatoptions-=o
-    nnoremap <buffer> <C-F2> :<C-u>Set<CR>
-    nnoremap <buffer> <C-F3> :<C-u>SetH<CR>
-  endfunction "}}}
-  "}}}
-  "Ruby"{{{
-  "let ruby_no_expensive = 1 "endに対するブロック開始分にしたがった色付けを無効
-  let ruby_operators = 1 "演算子ハイライト
-  let ruby_space_errors = 1 "ホワイトスペースエラー
-  let ruby_fold = 1
-  let ruby_no_comment_fold = 1
-  function! s:rubySetting() "{{{
-    setlocal expandtab
-    call IndentSet(2)
-    setlocal autoindent
-    setlocal smartindent
-    setlocal dictionary+=$VIMDICT/ruby.dict
-    setlocal foldlevelstart=99
-  endfunction "}}}
-  function! s:erubySetting() "{{{
-    call s:rubySetting()
-  endfunction "}}}
-  "}}}
-  "python"{{{
-  let g:python_highlight_all = 1
-  function! s:pythonSetting() "{{{
-    setlocal textwidth=79
-  endfunction "}}}
-  "}}}
-  "sql{{{
-  function! s:sqlSetting() "{{{
-    setlocal expandtab
-    call IndentSet(2)
-    setlocal autoindent
-    setlocal smartindent
-    setlocal dictionary+=$VIMDICT/sql.dict
-    "syntax
-    syntax case ignore
-    syn keyword sqlKeyword case
-    syn keyword sqlKeyword left right inner outer join
-    syn keyword sqlKeyword count
-    syn keyword sqlKeyword isnull
-    syn keyword sqlKeyword partition
-    syn keyword sqlKeyword row_number to_date decode
-    syn keyword sqlType nchar nvarchar nvarchar2 timestamp
-    syn keyword sqlOperator over
-    syn match sqlSpecial "@\w*"
-  endfunction "}}}
-  "}}}
-  "dosbatch"{{{
-  autocmd FileType dos setlocal filetype=dosbatch
-  autocmd BufNewFile * if &l:filetype ==? 'dosbatch' | setlocal fileformat=dos fileencoding=cp932 | endif
-  function! s:dosbatchSetting() "{{{
-    let g:dosbatch_cmdextversion = 1
-    let b:match_words = '\<SETLOCAL\>:\<ENDLOCAL\>'
-    "let b:match_words .= ',%:%'
-
-    setlocal matchpairs+=%:%
-    setlocal dictionary+=$VIMDICT/dosbatch.dict
-
-    syn match dosbatchLineComment '^\s*REM.*$'
-    syn match dosbatchLineComment '^\s*@REM.*$'
-    hi def link dosbatchLineComment Comment
-
-  endfunction "}}}
-  "}}}
-  "java"{{{
-  let g:java_highlight_all=1
-  let g:java_highlight_debug=1
-  let g:java_space_errors=1
-  let g:java_highlight_java_lang_ids=1
-  let g:java_highlight_functions="style"
-  "let java_highlight_functions="indent"
-  let g:java_minlines = 30
-  function! s:javaSetting()
-    setl textwidth=150
-    "setl foldmethod=syntax
-    "fold-expr
-    "setl foldmethod=marker
-    "setl foldmarker={,}
-    "setl foldmethod=expr
-    "setl foldexpr=getline(v:lnum)=~'^\\s*$'&&getline(v:lnum+1)=~'\\S'?'<1':1
-  endfunction
-  "}}}
-  "autohotkey"{{{
-  function! s:autohotkeySetting()
-    call IndentSet(2)
-    setl textwidth=78
-    setl autoindent
-    setl smartindent
-    setl expandtab
-    setl dictionary+=$VIMDICT/ahk.dict
-  endfunction
-  "}}}
-  "qf{{{
-  function! s:qfSetting() "{{{
-    setlocal colorcolumn&
-    setlocal cursorline
-    nnoremap <buffer> q :<C-U>bw<CR>
-    nnoremap <buffer> Q :<C-U>bw<CR>
-    nnoremap <buffer> p :<c-u>exe 'pedit +' . split(getline("."), '\|')[1] . ' ' . split(getline("."), '\|')[0]<cr>
-
-    nnoremap <buffer> <cr> <C-w><cr>
-    nnoremap <buffer> <C-w><cr> <cr>
-
-    if exists(':Qfreplace') is 2
-      nnoremap <buffer> r :<C-u>Qfreplace<CR>
-    endif
-  endfunction "}}}
-  "}}}
-  "html,jsp{{{
-  function! s:htmlSetting() "{{{
-    call IndentSet(2)
-    let &updatetime = g:update_time
-  endfunction "}}}
-  function! s:jspSetting() "{{{
-    call s:htmlSetting()
-  endfunction "}}}
-  function! s:xhtmlSetting() "{{{
-    call s:htmlSetting()
-  endfunction "}}}
-  "}}}
-  "vue{{{
-  function! s:vueSetting() "{{{
-    call IndentSet(2)
-  endfunction "}}}
-  "}}}
-  "xml{{{
-  function! s:xmlSetting() "{{{
-    compiler xmllint
-    let &l:makeprg=&makeprg. ' %:p'
-    call IndentSet(2)
-    let g:xml_syntax_folding = 1
-    setl foldmethod=syntax
-  endfunction "}}}
-  "}}}
-  "markdown{{{
-  let g:vim_markdown_folding_disabled = 1
-  function! s:markdownSetting() "{{{
-    setlocal formatoptions+=w
-    call IndentSet(4)
-  endfunction "}}}
-  "}}}
-  "yaml{{{
-  function! s:yamlSetting() "{{{
-    call IndentSet(2)
-  endfunction "}}}
-  "}}}
-
-  "complete-functions
-  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-  "autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-  "autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-
-  "dictionary
-  autocmd FileType css setlocal dictionary+=$VIMDICT/css.dict
-  autocmd FileType html,xhtml,javascript,jquery setlocal dictionary+=$VIMDICT/html.dict dictionary+=$VIMDICT/javascript.dict dictionary+=$VIMDICT/jquery.dict
-
 augroup END "}}}
+
+"vim"{{{
+"埋込言語のsyntax
+let g:vimsyn_embed = 'Pr'
+let g:vimsyn_folding = 0
+"接続行のインデント数
+let g:vim_indent_cont = &sw * 1
+"}}}
+"Ruby"{{{
+"let ruby_no_expensive = 1 "endに対するブロック開始分にしたがった色付けを無効
+let ruby_operators = 1 "演算子ハイライト
+let ruby_space_errors = 1 "ホワイトスペースエラー
+let ruby_fold = 1
+let ruby_no_comment_fold = 1
+"}}}
+"python"{{{
+let g:python_highlight_all = 1
+"}}}
+"java"{{{
+let g:java_highlight_all=1
+let g:java_highlight_debug=1
+let g:java_space_errors=1
+let g:java_highlight_java_lang_ids=1
+let g:java_highlight_functions="style"
+"let java_highlight_functions="indent"
+let g:java_minlines = 30
+"}}}
+"xml{{{
+  let g:xml_syntax_folding = 1
+"}}}
+"markdown{{{
+let g:vim_markdown_folding_disabled = 1
+"}}}
 
 function! IndentSet(...) "{{{
   if empty(a:000)
