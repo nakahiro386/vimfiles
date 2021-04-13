@@ -2038,6 +2038,15 @@ else
   endfunction "}}}
 endif "if g:_dein_is_installed"}}}
 
+if Tap('dein.vim') "{{{
+  command! DeinCheckLazyPlugins echo dein#check_lazy_plugins()
+  command! DeinCheckClean echo dein#check_clean()
+  command! -bang DeinCheckUpdate execute tr('call dein#check_update(<bang>)', '!', '1')
+
+  command! DeinClearState echo dein#clear_state()
+  command! DeinRecacheRuntimepath echo dein#recache_runtimepath()
+endif "}}}
+
 if Tap('vimproc') "{{{
   if g:is_windows
     let g:vimproc#download_windows_dll = 1
