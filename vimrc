@@ -3126,7 +3126,7 @@ if Tap('defx.nvim') "{{{
   nnoremap <expr> <Leader>dF ':<C-u>Defx -buffer-name=filer<CR>'
   nnoremap <expr> <Leader>de ':<C-u>Defx -buffer-name=explorer-'.tabpagenr().'<CR>'
   nnoremap <expr> <Leader>dE ':<C-u>Defx ' .escape(GetProjectDirectory(), ' :'). ' -buffer-name=project-'.tabpagenr().'<CR>'
-  command! MemoExplorer execute 'Defx -buffer-name=memo '.g:memo_dir
+  command! MemoExplorer execute 'Defx -buffer-name=memo '.escape(g:memo_dir, ' :')
   nnoremap <F1> :<C-u>MemoExplorer<CR>
 
   function! plugin.on_source() abort "{{{
