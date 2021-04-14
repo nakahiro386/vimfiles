@@ -1683,12 +1683,15 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
     \   ],
     \   'on_func' : 'vimfiler#',
     \   'on_event' : s:event_idle + s:event_i,
+    \   'if': 0,
     \ })
   "}}}
 
   call dein#add('Shougo/defx.nvim', {
     \   'if': has('nvim') || (has('timers') && HasVersion('8.0')),
+    \   'on_cmd': 'Defx',
     \   'on_event': s:event_idle + s:event_i,
+    \   'on_path' : '.*',
     \ })
   call dein#load_dict({
     \ 'roxma/nvim-yarp': {},
@@ -2916,6 +2919,7 @@ if Tap('vim-endwise') "{{{
 endif "}}}
 if Tap('delimitmate') "{{{
   function! plugin.on_source() abort "{{{
+    let g:delimitMate_excluded_ft = join(g:plugin_disable_filetypes, ',')
     autocmd MyAutoCmd Filetype markdown
       \  let b:delimitMate_expand_cr = 2
       \| let b:delimitMate_expand_inside_quotes = 1
@@ -3131,14 +3135,50 @@ if Tap('vimfiler') "{{{
   call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 if Tap('defx.nvim') "{{{
-  nnoremap <expr> <Leader>df ':<C-u>Defx ' .escape(expand('%:p:h'), ' :'). ' -search=' .expand('%:p'). ' -buffer-name=defx<CR>'
-  nnoremap <expr> <Leader>dF ':<C-u>Defx -buffer-name=filer<CR>'
-  nnoremap <expr> <Leader>de ':<C-u>Defx -buffer-name=explorer-'.tabpagenr().'<CR>'
-  nnoremap <expr> <Leader>dE ':<C-u>Defx ' .escape(GetProjectDirectory(), ' :'). ' -buffer-name=project-'.tabpagenr().'<CR>'
+
+  nmap <Leader>f [filer]
+  nmap <Leader>F [filer]
+  nnoremap [filer]? :<C-u>Mapping [filer]<CR>
+
+  nnoremap <expr> [filer]e ':<C-u>Defx -buffer-name=explorer-'.tabpagenr().'<CR>'
+  nnoremap <expr> [filer]E ':<C-u>Defx ' .escape(GetProjectDirectory(), ' :'). ' -buffer-name=project-'.tabpagenr().'<CR>'
+  nnoremap <expr> [filer]f ':<C-u>Defx ' .escape(expand('%:p:h'), ' :'). ' -search=' .expand('%:p'). ' -buffer-name=defx-'.tabpagenr().'<CR>'
+  nnoremap <expr> [filer]F ':<C-u>Defx -buffer-name=filer-'.tabpagenr().'<CR>'
   command! MemoExplorer execute 'Defx -buffer-name=memo '.escape(g:memo_dir, ' :')
   nnoremap <F1> :<C-u>MemoExplorer<CR>
 
   function! plugin.on_source() abort "{{{
+
+    augroup defx-explorer
+      autocmd!
+      autocmd BufEnter * call s:browse_check(expand('<amatch>'))
+    augroup END
+    function! s:browse_check(path) abort
+      " vimfilerの実装を参考
+      if a:path == '' || bufnr('%') != expand('<abuf>')
+        return
+      endif
+      " Disable netrw.
+      if exists('#FileExplorer')
+        autocmd! FileExplorer *
+      endif
+
+      let l:path = a:path
+      " For ":edit ~".
+      if fnamemodify(l:path, ':t') ==# '~'
+        let l:path = '~'
+      endif
+
+      if &filetype ==# 'defx' && line('$') != 1
+        return
+      endif
+
+      if isdirectory(expand(l:path))
+        bwipeout
+        execute 'Defx -split=no -new ' . escape(l:path, ' :')
+      endif
+    endfunction
+
     let g:defx_winwidth = 30
     let g:defx_explorer_columns = 'mark:indent:icon:filename'
     let g:defx_filer_columns = 'mark:indent:icon:filename:size:time'
