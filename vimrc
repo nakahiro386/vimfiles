@@ -3253,13 +3253,14 @@ if Tap('defx.nvim') "{{{
       nnoremap <silent><buffer><expr> <C-h> defx#do_action('cd', ['..'])
       nnoremap <silent><buffer><expr> l
         \ defx#is_directory() ?
-        \ match(bufname('%'), 'filer') == -1 ?
-        \   defx#do_action('open_tree') . 'j' :
-        \   defx#do_action('open')
-        \ :
+        \   match(bufname('%'), 'filer') == -1 ?
+        \     defx#do_action('open_tree') . 'j' :
+        \     defx#do_action('open') :
         \ tabpagewinnr(tabpagenr(), '$') == 2 ?
-        \   defx#do_action('open', 'vsplit') :
-        \   defx#do_action('open', 'choose')
+        \   empty(bufname(winbufnr(2))) && !getbufvar(winbufnr(2), "&mod") ?
+        \     defx#do_action('open', 'choose') :
+        \     defx#do_action('open', 'vsplit') :
+        \ defx#do_action('open', 'choose')
       nnoremap <silent><buffer><expr> h
         \ match(bufname('%'), 'filer') == -1 ?
         \ defx#do_action('close_tree') :
