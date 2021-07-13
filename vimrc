@@ -5423,8 +5423,15 @@ endif
 "Finalization:"{{{
 if has('vim_starting')
   call Source('$VIMRUNTIME/delmenu.vim')
-  if has('gui_running') && !argc()
-    cd $HOME
+  if argc()
+    if g:_dein_is_installed
+      call dein#source('defx.nvim')
+      call dein#call_hook('post_source')
+    endif
+  else
+    if has('gui_running')
+      cd $HOME
+    endif
   endif
 else
   if g:_dein_is_installed
