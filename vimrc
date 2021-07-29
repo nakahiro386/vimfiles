@@ -3829,7 +3829,7 @@ endif "}}}
 if Tap('vim-operator-surround') "{{{
   map S  <Plug>(operator-surround-append)
   " map ds <Plug>(operator-surround-delete)
-  map cs <Plug>'oerator-surround-replace'
+  map cs <Plug>(operator-surround-replace)
   vunmap cs
   vmap Cs <Plug>(operator-surround-replace)
 endif "}}}
