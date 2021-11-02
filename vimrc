@@ -1963,7 +1963,7 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
   call dein#load_dict({
     \   'jmcantrell/vim-virtualenv': {'on_ft': ['python']},
     \   'vim-scripts/java_fold': {'on_ft': ['java'], 'frozen': 1},
-    \   'fszymanski/fzf-gitignore': {'on_ft': ['gitignore']},
+    \   'theniceboy/fzf-gitignore': {'on_ft': ['gitignore']},
     \   'raimon49/requirements.txt.vim': {'on_ft': ['requirements']},
     \ }, {'lazy': 1}
     \ )
