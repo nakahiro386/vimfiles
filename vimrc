@@ -1637,7 +1637,7 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
     \ })
   "}}}
   "sonictemplate-vim-templates{{{
-  call dein#add('https://bitbucket.org/nakahiro386/sonictemplate-vim-templates.git', {
+  call dein#add('nakahiro386/sonictemplate-vim-templates', {
     \   'on_source' : ['sonictemplate-vim', ],
     \ })
   "}}}
