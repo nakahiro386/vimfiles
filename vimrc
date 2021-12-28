@@ -1538,7 +1538,7 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
   call dein#load_dict({
     \   'prabirshrestha/asyncomplete-buffer.vim': {},
     \   'prabirshrestha/asyncomplete-file.vim': {},
-    \   'prabirshrestha/asyncomplete-neosnippet.vim': {},
+    \   'prabirshrestha/asyncomplete-neosnippet.vim': {'rev': '1b00832'},
     \   'prabirshrestha/asyncomplete-emmet.vim': {},
     \   'Shougo/neco-syntax': {'lazy' : 1},
     \   'prabirshrestha/asyncomplete-necosyntax.vim': {},
