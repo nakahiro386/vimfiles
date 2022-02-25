@@ -2446,6 +2446,7 @@ if Tap('unite.vim') "{{{
       imap <buffer> <C-@> <Plug>(unite_quick_match_default_action)
       nmap <buffer> @ <Plug>(unite_quick_match_default_action)
 
+      nmap <buffer> i ggk<Plug>(unite_insert_enter)
       nmap <buffer> I ggk<Plug>(unite_insert_enter)
       nmap <buffer> A ggk<Plug>(unite_append_end)
 
