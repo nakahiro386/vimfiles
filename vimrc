@@ -3143,7 +3143,7 @@ if Tap('defx.nvim') "{{{
 
   nnoremap <expr> [filer]e ':<C-u>Defx -buffer-name=explorer-'.tabpagenr().'<CR>'
   nnoremap <expr> [filer]E ':<C-u>Defx ' .escape(GetProjectDirectory(), ' :'). ' -buffer-name=project-'.tabpagenr().'<CR>'
-  nnoremap <expr> [filer]f ':<C-u>Defx ' .escape(expand('%:p:h'), ' :'). ' -search=' .expand('%:p'). ' -buffer-name=defx-'.tabpagenr().'<CR>'
+  nnoremap <expr> [filer]f ':<C-u>Defx ' .escape(expand('%:p:h'), ' :'). ' -search=' .escape(expand('%:p'), ' :'). ' -buffer-name=defx-'.tabpagenr().'<CR>'
   nnoremap <expr> [filer]F ':<C-u>Defx -buffer-name=filer-'.tabpagenr().'<CR>'
   command! MemoExplorer execute 'Defx -buffer-name=memo '.escape(g:memo_dir, ' :')
   nnoremap <F1> :<C-u>MemoExplorer<CR>
