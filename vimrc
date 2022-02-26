@@ -1515,7 +1515,7 @@ if g:_dein_is_installed "{{{
   " endif
   "}}}
   let g:plugin_disable_filetypes =
-    \ ['help', 'unite', 'vimfiler', 'defx', 'log', 'text', 'calendar', 'ref',
+    \ ['help', 'unite', 'defx', 'log', 'text', 'calendar', 'ref',
     \  'quickrun', 'tail']
 
 endif "}}}
@@ -1556,7 +1556,7 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
   "Shougo/vimproc{{{
   call dein#add('Shougo/vimproc', {
     \   'if' : !g:is_android,
-    \   'on_source' : ['unite.vim', 'vimfiler', ],
+    \   'on_source' : ['unite.vim', ],
     \   'on_cmd' : [ 'VimProcInstall', 'VimProcBang', 'VimProcRead',],
     \   'on_func' : 'vimproc#',
     \   'on_event' : s:event_idle + s:event_i
@@ -1567,7 +1567,7 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
   "}}}
 
   call dein#add('Shougo/tabpagebuffer.vim', {
-    \   'on_source' : ['unite.vim', 'vimfiler', ],
+    \   'on_source' : ['unite.vim', ],
     \ })
 
   call dein#add('vim-jp/vimdoc-ja', {'lazy': 0,})
@@ -1672,20 +1672,6 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
   call dein#add('raimondi/delimitmate', {
     \   'on_event' : s:event_i,
     \ })
-
-  "Shougo/vimfiler{{{
-  call dein#add('Shougo/vimfiler', {
-    \   'depends' : 'unite.vim',
-    \   'on_cmd' : [
-    \     'VimFiler', 'VimFilerBufferDir', 'VimFilerCurrentDir',
-    \     'VimFilerDouble', 'VimFilerExplorer', 'VimFilerSimple',
-    \     'VimFilerSplit', 'VimFilerTab',
-    \   ],
-    \   'on_func' : 'vimfiler#',
-    \   'on_event' : s:event_idle + s:event_i,
-    \   'if': 0,
-    \ })
-  "}}}
 
   call dein#add('Shougo/defx.nvim', {
     \   'if': has('nvim') || (has('timers') && HasVersion('8.0')),
@@ -2225,15 +2211,6 @@ if Tap('neco-vim') "{{{
   let g:necovim#complete_functions = {
     \ 'Unite' : 'unite#complete_source',
     \ 'Ref' : 'ref#complete',
-    \ 'VimFiler' : 'vimfiler#complete',
-    \ 'VimFilerBufferDir' : 'vimfiler#complete',
-    \ 'VimFilerCurrentDir' : 'vimfiler#complete',
-    \ 'VimFilerDouble' : 'vimfiler#complete',
-    \ 'VimFilerExplorer' : 'vimfiler#complete',
-    \ 'VimFilerSimple' : 'vimfiler#complete',
-    \ 'VimFilerSplit' : 'vimfiler#complete',
-    \ 'VimFilerTab' : 'vimfiler#complete',
-    \ 'Edit' : 'vimfiler#complete',
     \ 'Defx' : 'defx#util#complete',
     \ 'QuickRun' : 'quickrun#complete',
     \ 'Template' : 'sonictemplate#complete',
@@ -2456,8 +2433,6 @@ if Tap('unite.vim') "{{{
   function! plugin.on_post_source() abort "{{{
     call unite#custom_default_action('file,file_mru,bookmark', 'tabopen')
     "call unite#custom_default_action('directory', 'file')
-    call unite#custom_default_action('directory' , 'vimfiler')
-    call unite#custom_default_action('directory,directory_mru' , 'vimfiler')
     call unite#custom_default_action('tag', 'vsplit')
     call unite#custom_default_action('command', 'execute')
     if has('migemo')
@@ -2585,33 +2560,6 @@ if Tap('unite.vim') "{{{
       endif
       "}}}
     endif "}}}
-
-    "VimFilerFF"{{{
-    let vfff_action = { 'description' : 'tabVimFilerFF', 'is_selectable' : 0 }
-    function! vfff_action.func(candidates)
-      let l:path = has_key(a:candidates, 'action__directory') ? a:candidates.action__directory : a:candidates.action__path
-      execute 'VimFiler -buffer-name=ff -tab ' . l:path
-    endfunction
-    call unite#custom_action('directory', 'tabVimFilerFF', vfff_action)
-    unlet vfff_action
-    "}}}
-    "VimFilerExplorer"{{{
-    let vfe_action = { 'description' : 'tabVimFilerExplorer', 'is_selectable' : 0 }
-    function! vfe_action.func(candidates)
-      let l:path = has_key(a:candidates, 'action__directory') ? a:candidates.action__directory : a:candidates.action__path
-      execute 'VimFilerExplorer -buffer-name=fe -tab ' . l:path
-    endfunction
-    call unite#custom_action('directory', 'tabVimFilerExplorer', vfe_action)
-    unlet vfe_action
-
-    let vfe_action = { 'description' : 'VimFilerExplorer', 'is_selectable' : 0 }
-    function! vfe_action.func(candidates)
-      let l:path = has_key(a:candidates, 'action__directory') ? a:candidates.action__directory : a:candidates.action__path
-      execute 'VimFilerExplorer -buffer-name=fe ' . l:path
-    endfunction
-    call unite#custom_action('directory', 'VimFilerExplorer', vfe_action)
-    unlet vfe_action
-    "}}}
 
     "}}}
 
@@ -2932,209 +2880,6 @@ if Tap('delimitmate') "{{{
   call Set_hook('hook_source', 'on_source')
 endif "}}}
 
-if Tap('vimfiler') "{{{
-
-  let g:vimfiler_as_default_explorer = 1
-
-  "vimfiler prefix key.
-  nnoremap [vimfiler] <Nop>
-  nmap <Leader>f [vimfiler]
-  nmap <Leader>F [vimfiler]
-  nnoremap [vimfiler]? :<C-u>Mapping [vimfiler]<CR>
-
-  nnoremap <silent> [vimfiler]f :<C-u>VimFiler -buffer-name=ff -horizontal <CR>
-  nnoremap <silent> [vimfiler]F :<C-u>VimFiler -buffer-name=ff -no-split<CR>
-  nnoremap <silent> [vimfiler]t :<C-u>VimFilerTab<CR>
-  nnoremap <silent> [vimfiler]s :<C-u>VimFiler -buffer-name=fs -simple<CR>
-
-  nnoremap <silent> [vimfiler]b :<C-u>VimFilerBufferDir -buffer-name=fb -horizontal<CR>
-  nnoremap <silent> [vimfiler]B :<C-u>VimFilerBufferDir -buffer-name=fb<CR>
-  nnoremap <silent> [vimfiler]c :<C-u>VimFilerCurrentDir -buffer-name=fc -horizontal<CR>
-  nnoremap <silent> [vimfiler]C :<C-u>VimFilerCurrentDir -buffer-name=fc<CR>
-  nnoremap <silent> [vimfiler]d :<C-u>VimFilerDouble -buffer-name=fd -split -toggle -no-quit<CR>
-  nnoremap <silent> [vimfiler]D :<C-u>VimFilerDouble -buffer-name=fd -split -horizontal -toggle -no-quit<CR>
-
-  nnoremap <silent> [vimfiler]v :<C-u>VimFilerBufferDir -buffer-name=fv -simple<CR>
-  nnoremap <silent> [vimfiler]V :<C-u>VimFilerCurrentDir -buffer-name=fv -simple<CR>
-  nnoremap <silent> [vimfiler]e :<C-u>VimFilerBufferDir -buffer-name=fe -explorer -direction=topleft -winwidth=30 -winheight=0<CR>
-  nnoremap <silent> [vimfiler]E :<C-u>VimFilerCurrentDir -buffer-name=fe -explorer -direction=topleft -winwidth=30 -winheight=0<CR>
-
-  function! plugin.on_source() abort "{{{
-    let g:vimfiler_as_default_explorer = 1
-    let g:vimfiler_data_directory = expand('$VIMFILES/tmp/.vimfiler')
-    let g:unite_kind_file_use_trashbox = 1
-    let g:vimfiler_force_overwrite_statusline = 0
-
-    let g:vimfiler_tree_leaf_icon = '|'
-    let g:vimfiler_tree_opened_icon = '-'
-    let g:vimfiler_tree_closed_icon = '+'
-    if has('gui_running')
-      let g:vimfiler_tree_opened_icon = nr2char(9662, 1) "'▾'
-      let g:vimfiler_tree_closed_icon = nr2char(9656, 1) "'▸'
-    endif
-    let g:vimfiler_file_icon = ' '
-
-    "VimFiler StatusLine Settings"{{{
-    function! VimFilerSafeMode() "{{{
-      return exists('b:vimfiler') ? get(b:vimfiler, 'is_safe_mode') : 0
-    endfunction "}}}
-    function! VimFilerMask() "{{{
-      if exists('b:vimfiler')
-        let l:current_mask = get(b:vimfiler, 'current_mask', '')
-        if !empty(l:current_mask)
-          return '['.l:current_mask.']'
-        endif
-      endif
-      return ''
-    endfunction "}}}
-    function! VimFilerPath() "{{{
-      if exists('b:vimfiler')
-        return GetShortPath(get(b:vimfiler, 'current_dir', getcwd()), 4, 20)
-      else
-        return ''
-      endif
-    endfunction "}}}
-    function! VimFilerLineCount() "{{{
-      if !exists('b:vimfiler')
-        return ''
-      endif
-      let l:all_files_len = get(b:vimfiler, 'all_files_len')
-      let l:prompt_linenr = get(b:vimfiler, 'prompt_linenr')
-      let l:len = len(l:all_files_len)
-      return printf('%'.l:len.'d/%'.l:len.'d', line('.') - l:prompt_linenr, l:all_files_len)
-    endfunction "}}}
-    function! VimFilerStatusLine() "{{{
-      let l:ret =' '
-      let l:ret.=StatusLineBufNum()
-      let l:ret.='%#StatusLineModeMsgVl#[*%{Bufpath()}*]%*'
-      let l:ret.=' '
-      let l:ret.='%#Error#%{VimFilerSafeMode()?"":"[    ]"}%*'
-      let l:ret.='%{VimFilerSafeMode()?"[safe]":""}'
-      let l:ret.='['
-      let l:ret.='%{VimFilerPath()}'
-      let l:ret.=']'
-      let l:ret.='%#Search#%{VimFilerMask()}%*'
-      let l:ret.='[%{VimFilerLineCount()}]'
-      let l:ret.='%#Error#%h%w%q%r%m%*'
-      let l:ret.=StatuslineGetMode()
-      let l:ret.='%<'
-      let l:ret.='%='
-      let l:ret.=StatuslineSuffix()
-      return l:ret
-    endfunction "}}}
-    "}}}
-
-    function! s:vimfiler_my_settings() "{{{
-      setl cursorline
-      setl statusline=%!VimFilerStatusLine()
-
-      call UnmapBuffer('<Space>', 'n')
-      call UnmapBuffer('<S-Space>', 'n')
-      call UnmapBuffer('<Tab>', 'n')
-      "nmap <buffer> <expr> <CR> vimfiler#smart_cursor_map("\<Plug>(vimfiler_expand_tree)", "\<Plug>(vimfiler_edit_file)")
-      nmap <buffer> ss <Plug>(vimfiler_toggle_mark_current_line)
-      nmap <buffer> SS <Plug>(vimfiler_toggle_mark_current_line_up)
-      nmap <buffer> S<CR> <Plug>(vimfiler_select_sort_type)
-      nmap <buffer> <C-j> <Plug>(vimfiler_switch_to_history_directory)
-      nnoremap <silent><buffer> J <C-u>:Unite -default-action=lcd -buffer-name=directory_mru bookmark:directory directory_mru<CR>
-      nmap <buffer> A <Plug>(vimfiler_toggle_maximize_window)
-      nmap <buffer> cc <Plug>(vimfiler_copy_file)
-      nmap <buffer> mm <Plug>(vimfiler_move_file)
-      nmap <buffer> dd <Plug>(vimfiler_delete_file)
-      nmap <buffer> D <Plug>(vimfiler_delete_file)
-      nmap <buffer> <C-r> <Plug>(vimfiler_redraw_screen)
-      nmap <buffer> <C-h> <Plug>(vimfiler_switch_to_parent_directory)
-      nmap <buffer> ? <Plug>(vimfiler_help)
-      nmap <buffer> o <Plug>(vimfiler_expand_or_edit)
-      nmap <buffer> go <Plug>(vimfiler_open_file_in_another_vimfiler)
-      nnoremap <buffer> <Leader>/ :<C-u>Unite -buffer-name=search line:all<CR>
-      "nmap <buffer> <C-Return> <Plug>(vimfiler_execute_vimfiler_associated)
-      if g:is_windows
-        nnoremap <buffer><expr> <C-Return> vimfiler#do_action('office_readonly')
-        nnoremap <buffer><expr> <C-S-Return> vimfiler#do_action('contextmenu')
-      endif
-      nnoremap <buffer><expr> T vimfiler#do_action('tabopen')
-
-      "nnoremap <silent><buffer><expr> v vimfiler#do_switch_action('vsplit')
-      nmap <buffer><expr> e vimfiler#smart_cursor_map(
-        \  "\<Plug>(vimfiler_cd_file)",
-        \  "\<Plug>(vimfiler_edit_file)")
-
-      hi vimfilerClosedFile term=bold cterm=bold ctermfg=7 gui=bold guifg=SlateGray
-      " hi vimfilerOpenedFile term=bold cterm=bold ctermfg=7 gui=bold guifg=Red
-    endfunction "}}}
-    autocmd MyAutoCmd FileType vimfiler call s:vimfiler_my_settings()
-
-  endfunction "}}}
-  function! plugin.on_post_source() abort "{{{
-
-    nmap <Leader>f [vimfiler]
-    call extend(vimfiler#custom#get(), {'profiles': {
-      \   'default': {'context' : {},}, 'ff': {'context' : {},},
-      \   'fs': {'context' : {},}, 'fv': {'context' : {},}, 'fe': {'context' : {},},
-      \   'fb': {'context' : {},}, 'fc': {'context' : {},},
-      \ }})
-
-    let l:context = {
-      \   'auto_cd': 0,
-      \   'direction': 'botright',
-      \   'edit_action': 'open',
-      \   'no_quit': 1,
-      \   'safe': 1,
-      \   'split_action': 'vsplit',
-      \   'split_rule': 'botright',
-      \   'status': 1,
-      \   'split': '1',
-      \   'toggle': 1,
-      \   'winheight': 0,
-      \   'winwidth': 0,
-      \   'explorer': 0,
-      \   'simple' : 1,
-      \ }
-
-    call vimfiler#custom#profile('default', 'context', deepcopy(l:context, 1))
-    call vimfiler#custom#profile('ff', 'context', extend(deepcopy(l:context, 1), {
-      \   'horizontal' : 1,
-      \ }))
-    call vimfiler#custom#profile('fs', 'context', extend(deepcopy(l:context, 1), {
-      \   'simple' : 1,
-      \   'horizontal' : 1,
-      \   'direction': 'topleft',
-      \   'split_rule': 'leftabove',
-      \ }))
-    call vimfiler#custom#profile('fb', 'context', extend(deepcopy(l:context, 1), {
-      \   'direction': 'topleft',
-      \   'split_rule': 'topleft',
-      \   'split_action': 'vsplit',
-      \ }))
-    call vimfiler#custom#profile('fc', 'context', extend(deepcopy(l:context, 1), {
-      \   'direction': 'topleft',
-      \   'split_rule': 'leftabove',
-      \ }))
-    call vimfiler#custom#profile('fv', 'context', extend(deepcopy(l:context, 1), {
-      \   'simple' : 1,
-      \   'split': 1,
-      \   'split_action' : 'vsplit',
-      \   'split_rule': 'leftabove',
-      \   'direction': 'leftabove',
-      \   'winminwidth' : 15,
-      \   'winwidth' : 30,
-      \ }))
-    call vimfiler#custom#profile('fe', 'context', extend(deepcopy(l:context, 1), {
-      \   'explorer' : 1,
-      \   'explorer_columns': '',
-      \   'direction': 'leftabove',
-      \   'simple' : 1,
-      \   'split': 1,
-      \   'split_action' : 'split',
-      \   'winwidth' : 30,
-      \ }))
-
-    call vimfiler#set_execute_file('_', 'vim')
-  endfunction "}}}
-  call Set_hook('hook_source', 'on_source')
-  call Set_hook('hook_post_source', 'on_post_source')
-endif "}}}
 if Tap('defx.nvim') "{{{
 
   nmap <Leader>f [filer]
