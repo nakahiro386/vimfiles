@@ -3886,22 +3886,11 @@ if Tap('vim-capslock') "{{{
   function! plugin.on_source() abort "{{{
     " exe printf('autocmd MyAutoCmd FileType %s CapsLockEnable',
     " \ join(g:capslock_filetype, ','))
-    let g:mapgC =  maparg('gC', '', 0, 1)
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
     " execute 'doautocmd Filetype ' &filetype
     autocmd! capslock InsertLeave
     autocmd! capslock CursorHold
-    try
-      unmap gC
-    catch /^Vim\%((\a\+)\)\=:E31/
-    endtry
-    let l:V = VitalWrapper('Mapping')
-    if !empty(g:mapgC)
-      call l:V.Mapping.execute_map_command(g:mapgC.mode, g:mapgC, g:mapgC.lhs, g:mapgC.rhs)
-    endif
-    unlet g:mapgC
-
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
   call Set_hook('hook_post_source', 'on_post_source')
