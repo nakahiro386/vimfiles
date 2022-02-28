@@ -2432,7 +2432,8 @@ if Tap('unite.vim') "{{{
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
     call unite#custom_default_action('file,file_mru,bookmark', 'tabopen')
-    "call unite#custom_default_action('directory', 'file')
+    call unite#custom_default_action('directory', 'lcd')
+    call unite#custom_default_action('directory,directory_mru', 'lcd')
     call unite#custom_default_action('tag', 'vsplit')
     call unite#custom_default_action('command', 'execute')
     if has('migemo')
