@@ -2259,6 +2259,8 @@ endif "}}}
 if Tap('vim-lsp') "{{{
   function! plugin.on_source() abort "{{{
     let g:lsp_use_lua = has('nvim-0.4.0') || (has('lua') && has('patch-8.2.0775'))
+    let g:lsp_diagnostics_echo_cursor = 1
+    let g:lsp_diagnostics_float_cursor = 1
     nmap [Plug]. <plug>(lsp-previous-diagnostic-nowrap)
     nmap [Plug], <plug>(lsp-next-diagnostic-nowrap)
     nmap <C-S-f> <plug>(lsp-document-format)
