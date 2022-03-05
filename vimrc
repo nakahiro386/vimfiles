@@ -113,16 +113,29 @@ endif
 "}}}
 "-----------------------------------------------------------------------------
 " Environment Property:"{{{
-function! Mkdir(path) "{{{
-  if !exists("*mkdir")
+if exists("*mkdir")
+  function! Mkdir(path) "{{{
+    let l:path = expand(a:path)
+    if !isdirectory(l:path)
+      return mkdir(l:path, 'p')
+    endif
+  endfunction "}}}
+else
+  function! Mkdir(path) "{{{
     call EchoError('Not available mkdir()')
     return 0
-  endif
-  let l:path = expand(a:path)
-  if !isdirectory(l:path)
-    return mkdir(l:path, 'p')
+  endfunction "}}}
+endif
+
+function! Getdir(new, old) "{{{
+  if isdirectory(expand(a:old))
+    call add(g:messages, a:old)
+    return a:old
+  else
+    return a:new
   endif
 endfunction "}}}
+
 function! ConvEnvPath(path) "{{{
   return fnamemodify(expand(a:path), g:rep_path .
     \ (g:is_windows ? ':s?[\\/]$??:s?:$?:\\?' : ':s?[\/]$??'))
@@ -137,8 +150,16 @@ if has('vim_starting')
     let $VIMFILES = expand('$HOME/' . (g:is_windows ? 'vimfiles' : '.vim'))
   endif
   call Mkdir($VIMFILES)
-  let $VIMBUNDLE = expand('$VIMFILES/bundle')
+
+  let g:vimrc_cache = exists('$XDG_CACHE_HOME') ?
+    \ '$XDG_CACHE_HOME/vimrc' :
+    \ '$HOME/.cache/vimrc'
+  let g:vimrc_data = exists('$XDG_DATA_HOME') ?
+    \ '$XDG_DATA_HOME/vimrc' :
+    \ '$HOME/.local/share/vimrc'
+  let $VIMBUNDLE = expand(Getdir(g:vimrc_data.'/bundle', '$VIMFILES/bundle'))
   call Mkdir($VIMBUNDLE)
+
   let $VIMDICT = expand('$VIMFILES/dict')
   call Mkdir($VIMDICT)
   if !exists('$MYVIMRC')
@@ -211,9 +232,9 @@ endif "}}}
 "Global Variabl:"{{{
 let g:memo_dir = expand('$HOME/Documents/memo/')
 if isdirectory(expand('$HOME/.bk'))
-  let g:backup_dir =expand('$HOME/.bk')
+  let g:backup_dir = expand('$HOME/.bk')
 else
-  let g:backup_dir=expand('$VIMFILES/tmp/bk')
+  let g:backup_dir = expand(Getdir(g:vimrc_data.'/bk', '$VIMFILES/tmp/bk'))
 endif
 
 "Windows:"{{{
@@ -278,7 +299,7 @@ if has('vim_starting')
   set noundofile
 endif
 if &undofile
-  set undodir=$VIMFILES/tmp/undodir
+  let &undodir = expand(Getdir(g:vimrc_cache.'/undodir', '$VIMFILES/tmp/undodir'))
   call Mkdir(&undodir)
 endif
 set undoreload=10000
@@ -336,12 +357,12 @@ augroup END "}}}
 "-----------------------------------------------------------------------------
 "File:{{{
 set swapfile
-set directory=$VIMFILES/tmp/swap//
+let &directory = expand(Getdir(g:vimrc_cache.'/swap//', '$VIMFILES/tmp/swap//'))
 call Mkdir(&directory)
 set updatecount=100
 augroup MyAutoCmd
   autocmd WinEnter * if (&l:readonly || !&l:modifiable || !empty(&l:buftype)) && &l:swapfile | setl noswapfile | endif
-  let s:path = ['$VIMFILES/tmp/**', g:backup_dir.'/**']
+  let s:path = [g:vimrc_cache . '/**', g:vimrc_data . '/**', '$VIMFILES/tmp/**', g:backup_dir.'/**']
   exe printf('autocmd BufRead %s if &swapfile | setl noswapfile | endif', join(s:path, ','))
   unlet s:path
 augroup END
@@ -371,16 +392,14 @@ else
   if g:is_windows
     set viminfo+=rA:,rB:,rX:,rS:,rT:,rQ:,rU:,rJ:
   endif
-  if has('nvim')
-    set viminfo+=n$VIMFILES/tmp/.nviminfo
-  else
-    set viminfo+=n$VIMFILES/tmp/.viminfo
-  endif
+    execute printf('set viminfo+=n%s/%s',
+      \ expand(Getdir(g:vimrc_cache, '$VIMFILES/tmp')),
+      \ has('nvim') ? '.nviminfo' : '.viminfo')
 endif
 
 "}}}
 
-set viewdir=$VIMFILES/tmp/view
+let &viewdir=expand(Getdir(g:vimrc_cache . '/view', '$VIMFILES/tmp/view'))
 call Mkdir(&viewdir)
 set viewoptions=folds,cursor,slash,unix
 "set sessionoptions=blank,folds,help,slash,winpos,winsize,tabpages
@@ -1507,7 +1526,7 @@ let g:_dein_is_installed = (&rtp =~? 'dein\.vim')
 
 if g:_dein_is_installed "{{{
   "dein{{{
-  let g:dein#install_log_filename = expand('$VIMFILES/tmp/dein.log')
+  let g:dein#install_log_filename = expand(g:vimrc_data . '/dein.log')
   let g:dein#install_progress_type = "none"
   " if g:is_windows
     " let s:numberOfProcessors = str2float($NUMBER_OF_PROCESSORS)
@@ -2361,8 +2380,8 @@ if Tap('unite.vim') "{{{
   autocmd MyAutoCmd QuickFixCmdPost l* doautocmd FileType
 
   function! plugin.on_source() abort "{{{
-    let g:unite_data_directory = expand('$VIMFILES/tmp/.unite')
-    let g:unite_source_bookmark_directory = expand('$VIMFILES/unite_bookmark')
+    let g:unite_data_directory = expand(Getdir(g:vimrc_cache . '/unite', '$VIMFILES/tmp/.unite'))
+    let g:unite_source_bookmark_directory = expand(Getdir(g:vimrc_data.'/unite_bookmark', '$VIMFILES/unite_bookmark'))
 
     let g:unite_enable_auto_select = 1
 
@@ -2651,15 +2670,15 @@ if Tap('neomru.vim') "{{{
     let g:neomru#filename_format = ''
     let g:neomru#time_format = ''
     let g:neomru#do_validate = 0
-    let g:neomru#file_mru_path = expand('$VIMFILES/tmp/.unite/file')
-    let g:neomru#directory_mru_path = expand('$VIMFILES/tmp/.unite/directory')
+    let g:neomru#file_mru_path = expand(Getdir(g:vimrc_cache . '/unite/file', '$VIMFILES/tmp/.unite/file'))
+    let g:neomru#directory_mru_path = expand(Getdir(g:vimrc_cache . '/unite/directory', '$VIMFILES/tmp/.unite/directory'))
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('neoyank.vim') "{{{
   function! plugin.on_source() abort "{{{
-    let g:neoyank#file = expand('$VIMFILES/tmp/.neoyank/history_yank')
+    let g:neoyank#file = expand(Getdir(g:vimrc_cache . '/neoyank/history_yank', '$VIMFILES/tmp/.neoyank/history_yank'))
     let g:neoyank#limit = 30
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
@@ -2768,8 +2787,8 @@ if Tap('neosnippet') "{{{
   function! plugin.on_source() abort "{{{
     let g:neosnippet#disable_select_mode_mappings=1
     let g:neosnippet#snippets_directory = expand('$VIMFILES/snippets')
-    let g:neosnippet_data_directory = expand('$VIMFILES/tmp/.neosnippet')
-    let g:neosnippet#data_directory = expand('$VIMFILES/tmp/.neosnippet')
+    let g:neosnippet_data_directory = expand(g:vimrc_cache . '/neosnippet')
+    let g:neosnippet#data_directory = expand(g:vimrc_cache . '/neosnippet')
     let g:neosnippet#enable_snipmate_compatibility = 1
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
@@ -3401,7 +3420,7 @@ if Tap('number-marks') "{{{
   nmap md <Plug>Remove_all_signs
   nmap ma <Plug>Move_sign
   function! plugin.on_source() abort "{{{
-    let g:Signs_file_path_corey = expand('$VIMFILES/tmp/.number_marks/')
+    let g:Signs_file_path_corey = expand(g:vimrc_cache . '/number_marks')
     let g:mapF5 =  maparg('<F5>', '', 0, 1)
     let g:mapF6 =  maparg('<F6>', '', 0, 1)
   endfunction "}}}
@@ -4480,7 +4499,7 @@ nnoremap <Leader>S :ToggleSwapfile<CR>
 "}}}
 
 "Session"{{{
-let g:sessionBaseDir = $VIMFILES.'/tmp/session/'
+let g:sessionBaseDir = expand(Getdir(g:vimrc_data.'/session/', '$VIMFILES/tmp/session/'))
 let g:sessionDefaultName = 'session.vim'
 function! SessionMake() "{{{
   call inputsave()
@@ -4577,7 +4596,7 @@ nnoremap <Leader>sl :<C-u>call SessionSelect()<CR>
 
 "RestoreSession "{{{
 if !g:is_view || v:servername !=? 'SUDO' || v:servername !=? 'SUDOW'
-  let g:restore_vim_path = expand('$VIMFILES/tmp/restore.vim')
+  let g:restore_vim_path = expand(Getdir(g:vimrc_cache, '$VIMFILES/tmp')) . '/restore.vim'
   function! SessionSave() abort "{{{
     if v:dying is 0 && len(filter(range(1, bufnr('$')), 'bufexists(v:val) && bufname(v:val) !=# ""')) is 0
       exe 'SessionClear'
