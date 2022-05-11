@@ -371,7 +371,7 @@ augroup END
 set autoread
 set hidden
 
-set diffopt=filler,vertical
+set diffopt=filler,vertical,closeoff
 set browsedir=buffer
 "}}}
 "-----------------------------------------------------------------------------
