@@ -1500,7 +1500,12 @@ endif
 nnoremap <silent> <Leader>sp :<C-u>setlocal spell!<CR>:setlocal spell?<CR>
 
 if has('terminal')
+  tnoremap <C-Insert> <C-w>N
+  tnoremap <S-Insert> <C-w>"*
+
   "like tmux
+  tnoremap <C-b>n <C-w>w
+  tnoremap <C-b>p <C-w>W
   tnoremap <C-b>[ <C-w>N
   tnoremap <C-b>] <C-w>"*
 endif
