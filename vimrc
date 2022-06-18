@@ -5158,11 +5158,19 @@ if has('terminal')
     command! Cmd terminal cmd.exe
     command! Powershell terminal powershell
     function! GitBash() abort
-      if !g:is_msys
-        let $MSYSTEM = 'MINGW64'
+      let l:envs = '$VIM $VIMBUNDLE $VIMDICT $VIMFILES $VIMRUNTIME $MYVIMRC $MYGVIMRC'
+      if g:is_msys
+        let l:envs ..= ' $MSYSTEM'
       endif
+
+      let l:guard = vimrc#util#store(split(l:envs))
+      execute 'unlet ' .. l:envs
+      let $MSYSTEM = 'MINGW64'
+
       let l:git_bash_path = ConvEnvPath("$ProgramFiles/Git/usr/bin/bash")
-      call term_start(l:git_bash_path . " --login -i")
+      call term_start(l:git_bash_path .. " --login -i")
+
+      call l:guard.restore()
       if !g:is_msys
         unlet $MSYSTEM
       endif
