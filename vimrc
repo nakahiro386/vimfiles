@@ -1721,6 +1721,14 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
 
   call dein#add('taku-o/vim-batch-source', { 'on_cmd' : 'Batch', })
 
+  "which.vim 1.0{{{
+  call dein#add('vim-scripts/which.vim', {
+    \   'frozen' : 1,
+    \   'on_func' : 'Which',
+    \   'on_cmd'  : 'Which',
+    \ })
+  "}}}
+
   call dein#add('tyru/capture.vim', {'on_cmd' : 'Capture'})
 
   "scrooloose/nerdcommenter{{{
