@@ -4980,55 +4980,7 @@ endfunction "}}}
 "head.vim : ファイルの上か下、限定された行数のみを読み込む — 名無しのvim使い
 "https://nanasi.jp/articles/vim/head_vim.html
 "https://nanasi.jp/articles/code/sample/head.vim.html
-let g:tailLines = 50
-function! TailRead(path, bang) "{{{
-  if exists('b:tail_file_path')
-    let l:file = b:tail_file_path
-  else
-    let l:file = fnamemodify(expand(a:path), ':p')
-
-    " 実際に読む込むべきファイルのパスを取得
-    let l:prot = matchstr(l:file, ';\(tail\)$')
-    if !empty(l:prot)
-      let l:file = strpart(l:file, 0, strlen(l:file) - strlen(l:prot))
-    endif
-  endif
-
-  " バッファを作る
-  let l:tempEventIgnore = &eventignore
-  try
-    let &eventignore = 'all'
-    call MakeBuf(l:file.';tail')
-  finally
-    let &eventignore = l:tempEventIgnore
-  endtry
-  setlocal modifiable
-  silent %d _
-  " ファイルを読み込んで、バッファにセットする。
-  if filereadable(l:file)
-    if a:bang == '!'
-      call setline(1, readfile(l:file))
-      " call setline(1, map(readfile(l:file), 'Incoming(v:val)'))
-    else
-      call setline(1, readfile(l:file, '', get(g:, 'tailLines', 10) * -1))
-      " call setline(1, map(readfile(l:file, '', get(g:, 'tailLines', 10) * -1), 'Incoming(v:val)'))
-    endif
-  else
-    call setline(1, printf('ERROR!!! filereadable(%s)', l:file))
-  endif
-  let b:tail_file_path = l:file
-
-  setlocal noswapfile
-  setlocal buftype=nofile
-  setlocal filetype=tail
-  setlocal nomodifiable
-  nnoremap <silent> <buffer> <F5> :<C-u>TailRead %<CR>
-  nnoremap <silent> <buffer> <S-F5> :<C-u>TailRead! %<CR>
-  command! -buffer TailReadOrig exe 'tabe '.b:tail_file_path
-  exe 'normal! G'
-endfunction "}}}
-
-command! -bang -nargs=1 -complete=file TailRead call TailRead(<f-args>, '<bang>')
+command! -count=30 -bang -nargs=1 -complete=file TailRead call vimrc#tail(<f-args>, '<bang>', <count>)
 if !exists('#Tail')
   augroup Tail
     autocmd!
