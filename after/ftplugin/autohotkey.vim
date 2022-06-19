@@ -1,6 +1,6 @@
 scriptencoding utf-8
 setlocal expandtab
-call IndentSet(2)
+call vimrc#set_indent(2)
 setlocal autoindent
 setlocal smartindent
 setlocal textwidth=78

@@ -13,6 +13,10 @@ function! vimrc#util#is_list(value) abort "{{{
   return s:Prelude.is_list(a:value)
 endfunction "}}}
 
+function! vimrc#util#is_number(value) abort "{{{
+  return s:Prelude.is_number(a:value)
+endfunction "}}}
+
 let s:Guard = s:V.import('Vim.Guard')
 function! vimrc#util#store(targets) abort "{{{
 

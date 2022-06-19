@@ -1,2 +1,2 @@
 scriptencoding utf-8
-call IndentSet(2)
+call vimrc#set_indent(2)

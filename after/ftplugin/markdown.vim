@@ -1,3 +1,3 @@
 scriptencoding utf-8
 setlocal formatoptions+=w
-call IndentSet(4)
+call vimrc#set_indent(4)
