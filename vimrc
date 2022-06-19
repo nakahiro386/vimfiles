@@ -122,7 +122,7 @@ if exists("*mkdir")
   endfunction "}}}
 else
   function! Mkdir(path) "{{{
-    call EchoError('Not available mkdir()')
+    call vimrc#util#error('Not available mkdir()')
     return 0
   endfunction "}}}
 endif
@@ -1263,10 +1263,10 @@ function! s:MoveChange(cmd) "{{{
     execute 'normal! '.a:cmd
   catch /^Vim\%((\a\+)\)\=:E66[2-4]/
     redraw
-    call EchoWarning(v:exception)
+    call vimrc#util#warn(v:exception)
   catch /^Vim\%((\a\+)\)\=:E19/
     redraw
-    call EchoWarning(v:exception)
+    call vimrc#util#warn(v:exception)
   endtry
 endfunction "}}}
 "}}}
@@ -2989,7 +2989,7 @@ if Tap('defx.nvim') "{{{
     endfunction "}}}
     function! s:defx_is_safe_mode() abort "{{{
       if b:defx_safe_mode
-        call EchoWarning('In safe mode, this operation is disabled.')
+        call vimrc#util#warn('In safe mode, this operation is disabled.')
       endif
       return b:defx_safe_mode
     endfunction "}}}
@@ -4014,7 +4014,7 @@ elseif s:has_kaoriya && isdirectory(expand('$VIM/switches/'))
     if !filereadable(s:vimrc_local)
       let s:ret = writefile(a:line, s:vimrc_local)
       if s:ret is -1
-        call EchoError('write fails:' . s:vimrc_local)
+        call vimrc#util#error('write fails:' . s:vimrc_local)
       endif
       return s:ret
     endif
@@ -4289,11 +4289,11 @@ function! IndentSet(...) "{{{
     return
   endif
   if type(a:1) != type(0)
-    call EchoError('Argument must be Number : args '.a:1)
+    call vimrc#util#error('Argument must be Number : args '.a:1)
     return
   endif
   if a:1 < 1
-    call EchoError('Argument must be positive : args '.a:1)
+    call vimrc#util#error('Argument must be positive : args '.a:1)
     return
   endif
   execute 'setlocal tabstop='.a:1
@@ -4501,7 +4501,7 @@ function! s:ToggleOption(option, bang) "{{{
     exe 'setl ' a:option.'!'
     exe 'setl ' a:option.'?'
   else
-    call EchoWarning(printf('buftype is [%s]. cannot toggle %s.', &buftype, a:option))
+    call vimrc#util#warn(printf('buftype is [%s]. cannot toggle %s.', &buftype, a:option))
   endif
 endfunction "}}}
 command! -bang ToggleModifiable call s:ToggleOption('modifiable', '<bang>')
@@ -4567,7 +4567,7 @@ function! SessionSelect() "{{{
     if l:sessinFileName == 'y'
       let l:result = delete(l:path)
       if l:result != 0
-        call EchoError('delete fails : ' . l:path)
+        call vimrc#util#error('delete fails : ' . l:path)
       endif
     endif
   endfunction "}}}
@@ -4593,13 +4593,13 @@ function! s:Session(bang, session) abort "{{{
       if filereadable(l:session)
         execute 'source '.l:session
       else
-        call EchoWarning(printf('file not readable [%s]', l:session))
+        call vimrc#util#warn(printf('file not readable [%s]', l:session))
       endif
     else
       execute 'mksession! '.l:session
     endif
   catch
-    call EchoWarning(v:throwpoint . "\n" . v:exception)
+    call vimrc#util#warn(v:throwpoint . "\n" . v:exception)
   endtry
 endfunction "}}}
 command! -nargs=? SessionMake call s:Session('', <q-args>)
@@ -4752,7 +4752,7 @@ function! s:BufCloseIt(cmd, bang) "{{{
         silent execute "buffer " . l:currentBufNum
       endif
       redraw
-      call EchoWarning(v:exception)
+      call vimrc#util#warn(v:exception)
     endtry
   endif
 endfunction "}}}
@@ -4929,7 +4929,7 @@ function! s:Native2ascii(first, last, bang)
   if executable('native2ascii')
     silent execute a:first . ',' . a:last . '!native2ascii -encoding UTF-8'.(a:bang == '!' ? ' -reverse' : '')
   else
-    call EchoError('"native2ascii" does not exist')
+    call vimrc#util#error('"native2ascii" does not exist')
   endif
 endfunction
 command! -nargs=0 -range=% Native2asciiReverse call s:Native2ascii(<line1>, <line2>, '!')
@@ -4944,7 +4944,7 @@ function! s:UniqLine(first,last) "{{{
   elseif executable('uniq')
     silent execute a:first . ',' . a:last . '!uniq'
   else
-    call EchoError('"uniq" does not exist')
+    call vimrc#util#error('"uniq" does not exist')
   endif
 endfunction "}}}
 command! -range=% Uniq call s:UniqLine(<line1>, <line2>)
@@ -5082,19 +5082,6 @@ nnoremap <Leader>vs :<C-u>VScratch<Space>
 nnoremap <Leader>E :<C-u>tab new<CR>:ScratchThis<Space>
 "}}}
 
-function! EchoWarning(msg) "{{{
-  redraw
-  execute 'echohl WarningMsg'
-  execute 'echomsg "[.vimrc]"'.string(a:msg)
-  execute 'echohl None'
-endfunction "}}}
-function! EchoError(msg) "{{{
-  redraw
-  execute 'echohl ErrorMsg'
-  execute 'echomsg "[.vimrc]"'.string(a:msg)
-  execute 'echohl None'
-endfunction "}}}
-
 command! RestoreUpdatetime let &updatetime = g:update_time
 
 " sudo "{{{
@@ -5153,8 +5140,8 @@ if has('gui_running')
     nnoremap <Leader>RES :<C-u>wviminfo!<Cr>:silent !start gvim<Cr>:qall<Cr>
   endif
 else
-  nnoremap <Leader>res :<C-u>call EchoWarning('not supported')<Cr>
-  nnoremap <Leader>RES :<C-u>call EchoWarning('not supported')<Cr>
+  nnoremap <Leader>res :<C-u>call vimrc#util#warn('not supported')<Cr>
+  nnoremap <Leader>RES :<C-u>call vimrc#util#warn('not supported')<Cr>
 endif
 
 if has('terminal')
@@ -5229,7 +5216,7 @@ endif
 if len(g:messages) > 0
   augroup lazy-starting-msg
     autocmd!
-    autocmd CursorHold,CursorHoldI,FocusLost * call map(g:messages, 'EchoError(v:val)')
+    autocmd CursorHold,CursorHoldI,FocusLost * call map(g:messages, 'vimrc#util#error(v:val)')
       \| exe 'autocmd! lazy-starting-msg'
   augroup END
 endif

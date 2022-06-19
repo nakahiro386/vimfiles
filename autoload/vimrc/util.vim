@@ -26,3 +26,21 @@ function! vimrc#util#store(targets) abort "{{{
 
   return s:Guard.store(l:targets)
 endfunction "}}}
+
+let s:VM = s:V.import('Vim.Message')
+function! s:_format_message(msg) abort "{{{
+  return (vimrc#util#is_string(a:msg) ? a:msg : string(a:msg))
+    \ ->split("\n")
+    \ ->map({_, val -> printf("[%s]%s", s:V.plugin_name(), val)})
+    \ ->join("\n")
+endfunction "}}}
+
+function! vimrc#util#warn(msg) abort "{{{
+  redraw
+  call s:VM.warn(s:_format_message(a:msg))
+endfunction "}}}
+
+function! vimrc#util#error(msg) abort "{{{
+  redraw
+  call s:VM.error(s:_format_message(a:msg))
+endfunction "}}}
