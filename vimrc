@@ -729,6 +729,7 @@ let s:dict = {
   \   's'  : ['SELECT','%#StatusLineModeMsgSE#'],
   \   "\<C-s>" : ['S-BLOCK','%#StatusLineModeMsgSB#'],
   \   "t"  : ['TERMINAL','%#StatusLineModeMsgTE#'],
+  \   "nt" : ['N-TERMINAL','%#StatusLineModeMsgNT#'],
   \ }
 function! StatuslineGetMode() "{{{
   let l:ret = ['', '', '']
@@ -812,7 +813,7 @@ set guitablabel=%N\ %h%w%q%{GuiTabLabel()}%m%r
 "tabline"{{{
 "'tabline'を活用してみた - LeafCage備忘録
 "http://d.hatena.ne.jp/leafcage/20120214/1329183521
-let g:TabLineSep = (has('gui_running') ? ' | ' : '  ') "'┆¦|⋮'
+let g:TabLineSep = (has('gui_running') ? ' | ' : ' ') "'┆¦|⋮'
 
 " let s:date_string = '['.strftime("%Y/%m/%d(%a)").']'
 function! TabLine() "{{{
@@ -4037,6 +4038,8 @@ let g:html_prevent_copy = "fntd"
 "-----------------------------------------------------------------------------
 "ColorScheme Highlight:"{{{
 
+runtime colors/lists/csscolors.vim
+
 let g:hlightHankakuSpaceLight = 'term=undercurl ctermbg=0 gui=underline guifg=grey70'
 let g:hlightZenkakuSpaceLight = 'term=undercurl ctermbg=0 gui=underline guifg=Red guibg=grey90'
 
@@ -4089,30 +4092,31 @@ function! Highlight() "{{{
   "highlight TabLineInfo gui=underline guifg=fg guibg=NONE
   highlight TabLineInfo gui=underline,bold guifg=fg guibg=NONE ctermfg=fg ctermbg=bg
   "highlight TabLineNo gui=underline,bold guifg=Black guibg=lightgray ctermfg=fg ctermbg=bg
-  highlight TabLineNo gui=underline,bold guifg=white guibg=DarkGreen ctermfg=15 ctermbg=2
+  highlight TabLineNo gui=underline,bold guifg=white guibg=DarkGreen ctermfg=15 ctermbg=28
   highlight TabLineSep  gui=underline guifg=fg guibg=NONE ctermfg=fg ctermbg=bg
   "highlight TabLineSel  gui=underline,reverse,bold guifg=Black guibg=grey80
-  highlight TabLineSel  gui=underline,reverse guifg=fg guibg=NONE ctermfg=0 ctermbg=15
+  highlight TabLineSel  gui=underline,reverse guifg=fg guibg=NONE ctermfg=15 ctermbg=242
   "highlight link TabLineMod Error
-  highlight TabLineMod gui=underline guifg=fg guibg=Red ctermfg=fg ctermbg=12
+  highlight TabLineMod gui=underline guifg=fg guibg=Red ctermfg=fg ctermbg=1
 
   highlight! default link StatusLineTerm StatusLine
   highlight! default link StatusLineTermNC StatusLineNC
 
   highlight StatusLineBufNum gui=bold guibg=bg
   highlight StatusLineMsg gui=bold guifg=red guibg=NONE
-  highlight StatusLineModeMsg   term=bold ctermfg=14 gui=bold,reverse guifg=green
-  highlight StatusLineModeMsgNO term=bold ctermfg=14 gui=bold,reverse guifg=green
-  highlight StatusLineModeMsgIN term=bold ctermfg=14 gui=bold,reverse guifg=red
-  highlight StatusLineModeMsgCL term=bold ctermfg=14 gui=bold,reverse guifg=red
-  highlight StatusLineModeMsgRE term=bold ctermfg=14 gui=bold,reverse guifg=green
-  highlight StatusLineModeMsgRV term=bold ctermfg=14 gui=bold,reverse guifg=green
+  highlight StatusLineModeMsg   term=bold ctermfg=10 gui=bold,reverse guifg=green
+  highlight StatusLineModeMsgNO term=bold ctermfg=10 gui=bold,reverse guifg=green
+  highlight StatusLineModeMsgIN term=bold ctermfg=9 gui=bold,reverse guifg=red
+  highlight StatusLineModeMsgCL term=bold ctermfg=9 gui=bold,reverse guifg=red
+  highlight StatusLineModeMsgRE term=bold ctermfg=10 gui=bold,reverse guifg=green
+  highlight StatusLineModeMsgRV term=bold ctermfg=10 gui=bold,reverse guifg=green
   highlight StatusLineModeMsgVI term=bold ctermfg=14 gui=bold,reverse guifg=lightblue
   highlight StatusLineModeMsgVL term=bold ctermfg=14 gui=bold,reverse guifg=LightSkyBlue
   highlight StatusLineModeMsgVB term=bold ctermfg=14 gui=bold,reverse guifg=DodgerBlue
-  highlight StatusLineModeMsgSE term=bold ctermfg=14 gui=bold,reverse guifg=green
-  highlight StatusLineModeMsgSB term=bold ctermfg=14 gui=bold,reverse guifg=green
-  highlight StatusLineModeMsgTE term=bold ctermfg=14 gui=bold,reverse guifg=red
+  highlight StatusLineModeMsgSE term=bold ctermfg=10 gui=bold,reverse guifg=green
+  highlight StatusLineModeMsgSB term=bold ctermfg=10 gui=bold,reverse guifg=green
+  highlight StatusLineModeMsgTE term=bold ctermfg=9 gui=bold,reverse guifg=red
+  highlight StatusLineModeMsgNT term=bold ctermfg=9 gui=bold,reverse guifg=red
 endfunction "}}}
 function! s:morning() "{{{
   highlight StatusLine   guifg=RoyalBlue
@@ -4124,26 +4128,27 @@ endfunction "}}}
 function! s:desert() "{{{
   highlight Normal  ctermfg=15 ctermbg=0  guibg=grey10
   " highlight NonText term=bold  ctermfg=15 ctermbg=0 guifg=cyan guibg=gray17
-  highlight NonText term=bold  ctermfg=15 ctermbg=0 guifg=cyan guibg=#000000
+  highlight NonText term=bold  ctermfg=15 ctermbg=0 guifg=cyan guibg=black
   highlight Cursor  guibg=#ffff99
+  highlight Search ctermbg=215 guibg=peru guifg=wheat
   highlight clear  Visual
-  highlight Visual gui=none guibg=grey30 ctermbg=8
-  highlight LineNr guifg=lightred guibg=black
-  highlight Pmenu      ctermfg=15 ctermbg=8 guifg=#000000 guibg=#a6a190
-  highlight PmenuSel   ctermfg=15 ctermbg=9 guifg=#ffffff guibg=#133293
+  highlight Visual gui=none guibg=grey30 ctermbg=59
+  highlight LineNr ctermfg=210 guifg=lightred guibg=black
+  highlight Pmenu      ctermfg=15 ctermbg=8 guifg=black guibg=#a6a190
+  highlight PmenuSel   ctermfg=15 ctermbg=9 guifg=white guibg=#133293
   highlight PmenuSbar  ctermfg=0  ctermbg=0 guibg=#555555
-  highlight PmenuThumb ctermfg=7  ctermbg=7 guibg=#cccccc
-  highlight WildMenu   guifg=#ffffff    guibg=#133293
-  highlight Folded guifg=#c2bfa5
+  highlight PmenuThumb ctermfg=7  ctermbg=7 guibg=grey80
+  highlight WildMenu   ctermfg=250 ctermbg=26 guifg=white guibg=#133293
+  highlight Folded ctermfg=145 ctermbg=bg guifg=#c2bfa5
+  highlight FoldColumn ctermfg=228 ctermbg=237
   highlight CursorLine term=underline guibg=#2b3b20
-  " highlight Statement  gui=bold guifg=khaki
-  " highlight Type term=underline ctermfg=2 gui=bold guifg=darkkhaki
   highlight Type guifg=#5f7f3f
-  highlight StatusLineNC guibg=grey30
+  highlight StatusLine ctermfg=bg ctermbg=187 guifg=gray20 guibg=#c2bfa5
+  highlight StatusLineNC ctermfg=244 ctermbg=237 guibg=grey30
   highlight Comment guibg=grey10
-  highlight Statement guibg=grey10
+  highlight Statement ctermfg=226 guibg=grey10
   highlight PreProc guibg=grey10
-  highlight Type guibg=grey10
+  highlight Type ctermfg=28 guibg=grey10
   highlight Identifier guibg=grey10
   highlight Constant guibg=grey10
   highlight Special guibg=grey10
