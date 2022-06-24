@@ -1,5 +1,5 @@
 let g:gvimrc_path = expand("<sfile>:p:h") . "/gvimrc"
-" 互換性ないのでsourceｈあしない
+" 互換性がないのでsourceはしない
 let $MYGVIMRC = expand("<sfile>:p")
 
 " see $VIM-qt/runtime/plugin/nvim_gui_shim.vim
