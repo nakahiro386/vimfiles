@@ -22,6 +22,11 @@ function! vimrc#util#is_number(value) abort "{{{
   return l:vital.Prelude.is_number(a:value)
 endfunction "}}}
 
+function! vimrc#util#set_default(var, val) abort "{{{
+  let l:vital = vimrc#util#_vital()
+  return l:vital.Prelude.set_default(a:value)
+endfunction "}}}
+
 function! vimrc#util#store(targets) abort "{{{
 
   let l:targets = []

@@ -24,12 +24,6 @@ if has('vim_starting') "{{{
   lockvar g:is_android
   let g:is_msys = !empty($MSYSTEM)
   lockvar g:is_msys
-  " Vital.Prelude.set_default()
-  function! Set_default(var, val) abort
-    if !exists(a:var) || type({a:var}) != type(a:val)
-      let {a:var} = a:val
-    endif
-  endfunction
 
   let g:inside_tmux = !empty($TMUX)
   lockvar g:inside_tmux
@@ -2409,7 +2403,7 @@ if Tap('unite.vim') "{{{
     let g:unite_source_history_yank_save_clipboard = 0
     let g:unite_force_overwrite_statusline = 0
 
-    call Set_default('g:unite_source_alias_aliases', {})
+    call vimrc#util#set_default('g:unite_source_alias_aliases', {})
     let g:unite_source_alias_aliases.calc = 'kawaii-calc'
     let g:unite_source_alias_aliases.line_migemo = 'line'
     if g:is_windows
@@ -2601,7 +2595,7 @@ if Tap('unite.vim') "{{{
     "}}}
 
     "unite-menu"{{{
-    call Set_default('g:unite_source_menu_menus', {})
+    call vimrc#util#set_default('g:unite_source_menu_menus', {})
 
     "Reload with encoding"{{{
     let s:c = { 'description' : 'Reload with encoding' }
