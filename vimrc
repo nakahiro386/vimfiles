@@ -430,7 +430,8 @@ set iminsert=0 imsearch=-1
 
 augroup MyAutoCmd
   autocmd BufRead * if &readonly && &modifiable | setlocal nomodifiable | endif
-  let s:path = ['$VIMRUNTIME/**', g:backup_dir.'/**', '$VIMBUNDLE/**']
+  let s:path = ['$VIMRUNTIME/**', g:backup_dir.'/**', '$VIMBUNDLE/**',
+    \ '$VIMFILES/autoload/vital/**']
   exe printf('autocmd BufRead %s setlocal nomodifiable', join(s:path, ','))
   unlet s:path
 augroup END
