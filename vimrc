@@ -117,6 +117,9 @@ if exists("*mkdir")
   function! Mkdir(path) "{{{
     let l:path = expand(a:path)
     if !isdirectory(l:path)
+      if mkdir(l:path, 'p')
+        echomsg "mkdir " .. l:path
+      endif
       return mkdir(l:path, 'p')
     endif
   endfunction "}}}
