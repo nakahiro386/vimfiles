@@ -152,7 +152,6 @@ if has('vim_starting')
   else
     let $VIMFILES = expand('$HOME/' . (g:is_windows ? 'vimfiles' : '.vim'))
   endif
-  call Mkdir($VIMFILES)
 
   let g:vimrc_cache = exists('$XDG_CACHE_HOME') ?
     \ '$XDG_CACHE_HOME/vimrc' :
@@ -164,7 +163,6 @@ if has('vim_starting')
   call Mkdir($VIMBUNDLE)
 
   let $VIMDICT = expand('$VIMFILES/dict')
-  call Mkdir($VIMDICT)
   if !exists('$MYVIMRC')
     if filereadable(expand('$HOME/.vimrc'))
       let $MYVIMRC = expand('$HOME/.vimrc')
