@@ -4459,12 +4459,13 @@ function! s:GitGrep(cmd, ...) abort "{{{
     let l:cmd = printf(l:cmd, l:option, l:pattern, l:target)
     let l:fname = matchstr(l:cmd, '\v^\w+')
 
+    let l:bufnr = bufnr()
     let l:grepprg_ = &l:grepprg
     try
       let &l:grepprg = 'git grep --line-number'
       execute printf('noautocmd %s |doautocmd QuickFixCmdPost %s', l:cmd, l:fname)
     finally
-      let &l:grepprg = l:grepprg_
+      call setbufvar(l:bufnr, '&grepprg', l:grepprg_)
     endtry
 
   endif
