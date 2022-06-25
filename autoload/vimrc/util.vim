@@ -24,7 +24,7 @@ endfunction "}}}
 
 function! vimrc#util#set_default(var, val) abort "{{{
   let l:vital = vimrc#util#_vital()
-  return l:vital.Prelude.set_default(a:value)
+  return l:vital.Prelude.set_default(a:var, a:val)
 endfunction "}}}
 
 function! vimrc#util#store(targets) abort "{{{
