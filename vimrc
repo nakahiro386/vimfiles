@@ -4437,8 +4437,8 @@ command! -nargs=* -complete=file LVimGrep
 command! -nargs=* -complete=file Grep call s:Grep('grep! %s %s', <f-args>)
 command! -nargs=* -complete=file LGrep call s:Grep('lgrep! %s %s', <f-args>)
 
-function! s:GitGrep(cmd, ...) abort "{{{
-  let l:cmd = a:cmd
+function! s:GitGrep(...) abort "{{{
+  let l:cmd = 'grep! %s -e %s -- %s'
   let l:pattern = get(a:000, 0, '')
   let l:target = get(a:000, 1, '')
   let l:option = get(a:000, 2, '')
@@ -4455,14 +4455,14 @@ function! s:GitGrep(cmd, ...) abort "{{{
   endif
   call inputrestore()
 
-  if !empty(l:cmd) && !empty(l:pattern)
+  if !empty(l:pattern)
     let l:cmd = printf(l:cmd, l:option, l:pattern, l:target)
     let l:fname = matchstr(l:cmd, '\v^\w+')
 
     let l:bufnr = bufnr()
     let l:grepprg_ = &l:grepprg
     try
-      let &l:grepprg = 'git grep --line-number'
+      let &l:grepprg = 'git grep -n'
       execute printf('noautocmd %s |doautocmd QuickFixCmdPost %s', l:cmd, l:fname)
     finally
       call setbufvar(l:bufnr, '&grepprg', l:grepprg_)
@@ -4470,10 +4470,10 @@ function! s:GitGrep(cmd, ...) abort "{{{
 
   endif
 endfunction "}}}
-command! -nargs=* -complete=file GitGrep call s:GitGrep('grep! %s %s %s', <f-args>)
+command! -nargs=* -complete=file GitGrep call s:GitGrep(<f-args>)
 
-function! s:GitLsfiles(cmd, ...) abort "{{{
-  let l:cmd = a:cmd
+function! s:GitLsfiles(...) abort "{{{
+  let l:cmd = 'grep! %s -- %s'
   let l:pattern = get(a:000, 0, '')
   let l:option = get(a:000, 1, '')
 
@@ -4486,7 +4486,7 @@ function! s:GitLsfiles(cmd, ...) abort "{{{
   endif
   call inputrestore()
 
-  if !empty(l:cmd) && !empty(l:pattern)
+  if !empty(l:pattern)
     let l:cmd = printf(l:cmd, l:option, l:pattern)
     let l:fname = matchstr(l:cmd, '\v^\w+')
 
@@ -4504,7 +4504,7 @@ function! s:GitLsfiles(cmd, ...) abort "{{{
 
   endif
 endfunction "}}}
-command! -nargs=* -complete=file GitLsfiles call s:GitLsfiles('grep! %s -- %s', <f-args>)
+command! -nargs=* -complete=file GitLsfiles call s:GitLsfiles(<f-args>)
 
 function! s:UGrepFunc() "{{{
   exe 'Unite -buffer-name=grep -no-quit -default-action=tabopen grep'
