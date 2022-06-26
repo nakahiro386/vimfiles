@@ -4472,6 +4472,40 @@ function! s:GitGrep(cmd, ...) abort "{{{
 endfunction "}}}
 command! -nargs=* -complete=file GitGrep call s:GitGrep('grep! %s %s %s', <f-args>)
 
+function! s:GitLsfiles(cmd, ...) abort "{{{
+  let l:cmd = a:cmd
+  let l:pattern = get(a:000, 0, '')
+  let l:option = get(a:000, 1, '')
+
+  call inputsave()
+  if empty(l:pattern)
+    let l:pattern = input('pattern : ' )
+  endif
+  if empty(l:option)
+    let l:option = input('option : ', '')
+  endif
+  call inputrestore()
+
+  if !empty(l:cmd) && !empty(l:pattern)
+    let l:cmd = printf(l:cmd, l:option, l:pattern)
+    let l:fname = matchstr(l:cmd, '\v^\w+')
+
+    let l:bufnr = bufnr()
+    let l:grepprg_ = &l:grepprg
+    let l:grepformat_ = &l:grepformat
+    try
+      let &l:grepprg = 'git ls-files'
+      let &l:grepformat = '%f'
+      execute printf('noautocmd %s |doautocmd QuickFixCmdPost %s', l:cmd, l:fname)
+    finally
+      call setbufvar(l:bufnr, '&grepprg', l:grepprg_)
+      call setbufvar(l:bufnr, '&grepformat', l:grepformat_)
+    endtry
+
+  endif
+endfunction "}}}
+command! -nargs=* -complete=file GitLsfiles call s:GitLsfiles('grep! %s -- %s', <f-args>)
+
 function! s:UGrepFunc() "{{{
   exe 'Unite -buffer-name=grep -no-quit -default-action=tabopen grep'
 endfunction "}}}
