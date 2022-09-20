@@ -366,7 +366,11 @@ augroup END
 set autoread
 set hidden
 
-set diffopt=filler,vertical,closeoff
+set diffopt=filler,vertical
+if HasVersion('8.1.2289')
+  set diffopt+=closeoff
+  endif
+
 set browsedir=buffer
 "}}}
 "-----------------------------------------------------------------------------
