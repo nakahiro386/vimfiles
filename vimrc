@@ -58,8 +58,11 @@ if g:is_windows
   let g:drive_letter = g:sfile_path[0]
 endif
 
+function! s:nop()
+endfunction
 augroup MyAutoCmd
   autocmd!
+  autocmd QuickFixCmdPre,QuickFixCmdPost * call s:nop()
 augroup END
 let g:messages = []
 
@@ -2000,12 +2003,12 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
     \   'augroup': 'previm',
     \ })
 
-  "thinca/vim-qfreplace"{{{
-  call dein#add('thinca/vim-qfreplace', {
-    \   'on_ft' : ['unite', 'quickfix'],
-    \   'on_cmd' : ['Qfreplace',],
-    \ })
-  "}}}
+
+  call dein#load_dict({
+    \   'thinca/vim-qfreplace': {'on_cmd' : ['Qfreplace',]},
+    \   'romainl/vim-qf': {},
+    \ }, {'on_event': 'QuickFixCmdPre'}
+    \ )
 
   "haya14busa/vim-migemo{{{
   call dein#add('haya14busa/vim-migemo', {
@@ -2390,10 +2393,10 @@ if Tap('unite.vim') "{{{
   nnoremap [unite]git :<C-u>Unite -buffer-name=file_rec file_rec/git<CR>
   "}}}
 
-  autocmd MyAutoCmd QuickFixCmdPost [^l]* Unite -buffer-name=quickfix quickfix
-  autocmd MyAutoCmd QuickFixCmdPost [^l]* doautocmd FileType
-  autocmd MyAutoCmd QuickFixCmdPost l* exe 'Unite -profile-name=location_list -buffer-name=location_list' . bufnr('%'). ' location_list'
-  autocmd MyAutoCmd QuickFixCmdPost l* doautocmd FileType
+  " autocmd MyAutoCmd QuickFixCmdPost [^l]* Unite -buffer-name=quickfix quickfix
+  " autocmd MyAutoCmd QuickFixCmdPost [^l]* doautocmd FileType
+  " autocmd MyAutoCmd QuickFixCmdPost l* exe 'Unite -profile-name=location_list -buffer-name=location_list' . bufnr('%'). ' location_list'
+  " autocmd MyAutoCmd QuickFixCmdPost l* doautocmd FileType
 
   function! plugin.on_source() abort "{{{
     let g:unite_data_directory = expand(Getdir(g:vimrc_cache . '/unite', '$VIMFILES/tmp/.unite'))
@@ -3397,6 +3400,39 @@ if Tap('vim-choosewin') "{{{
       \   'cterm': [22, 15, 'bold'],
       \   'gui': ['DarkGreen', 'white', 'bold']
       \ }
+
+    " Vimのquickfixとlocation listで好きな方法でファイルを開くプラグインを作った
+    " https://zenn.dev/skanehira/articles/2021-10-28-vim-qfopen
+    function! s:choosewin() abort
+      let l:winid = win_getid()
+      let l:wintype = win_gettype(l:winid)
+
+      if l:wintype ==? "quickfix"
+        let l:list = getqflist()
+      elseif l:wintype ==? "loclist"
+        let l:list = getloclist(l:winid)
+      else
+        return
+      endif
+      let l:info = l:list[line(".")-1]
+
+      let l:result = choosewin#start(range(1,winnr('$')))
+      " choosewin#start('noop')->win_getid()->win_gotoid()
+      let l:opener = 'buffer'
+      if empty(l:result)
+        let l:opener = 'vsplit'
+        " echo '#'->winnr()->win_getid()->win_gotoid()
+        " call win_gotoid(win_getid(winnr('#')))
+        execute "normal! \<C-w>p"
+      endif
+      execute l:opener bufname(l:info.bufnr)
+      call cursor(l:info.lnum, l:info.col)
+    endfunction
+
+    augroup choosewin-qf
+      autocmd!
+      autocmd FileType qf nnoremap <buffer> a :<C-u>call <SID>choosewin()<CR>
+    augroup END
 
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
@@ -4431,7 +4467,7 @@ function! s:Grep(cmd, ...) abort "{{{
   if !empty(l:cmd) && !empty(l:pattern) && !empty(l:target)
     let l:cmd = printf(l:cmd, l:pattern, l:target)
     let l:fname = matchstr(l:cmd, '\v^\w+')
-    execute printf('noautocmd %s |doautocmd QuickFixCmdPost %s', l:cmd, l:fname)
+    execute printf('noautocmd %s |doautocmd QuickFixCmdPre %s |doautocmd QuickFixCmdPost %s', l:cmd, l:fname, l:fname)
   endif
 endfunction "}}}
 command! -nargs=* -complete=file VimGrep
@@ -4467,7 +4503,7 @@ function! s:GitGrep(...) abort "{{{
     let l:grepprg_ = &l:grepprg
     try
       let &l:grepprg = 'git grep -n'
-      execute printf('noautocmd %s |doautocmd QuickFixCmdPost %s', l:cmd, l:fname)
+      execute printf('noautocmd %s |doautocmd QuickFixCmdPre %s |doautocmd QuickFixCmdPost %s', l:cmd, l:fname, l:fname)
     finally
       call setbufvar(l:bufnr, '&grepprg', l:grepprg_)
     endtry
@@ -4500,7 +4536,7 @@ function! s:GitLsfiles(...) abort "{{{
     try
       let &l:grepprg = 'git ls-files'
       let &l:grepformat = '%f'
-      execute printf('noautocmd %s |doautocmd QuickFixCmdPost %s', l:cmd, l:fname)
+      execute printf('noautocmd %s |doautocmd QuickFixCmdPre %s |doautocmd QuickFixCmdPost %s', l:cmd, l:fname, l:fname)
     finally
       call setbufvar(l:bufnr, '&grepprg', l:grepprg_)
       call setbufvar(l:bufnr, '&grepformat', l:grepformat_)
