@@ -3263,11 +3263,7 @@ if Tap('nerdcommenter') "{{{
       endif
     endfunction "}}}
   endfunction "}}}
-  function! plugin.on_post_source() abort "{{{
-    doautoall NERDCommenter BufEnter
-  endfunction "}}}
   call Set_hook('hook_source', 'on_source')
-  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('vim-rectinsert') "{{{
