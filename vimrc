@@ -4842,7 +4842,7 @@ command! AutoLCD echo AutoLCD()
 
 "from kaoriya
 command! -nargs=0 CdCurrent lcd %:p:h|let w:pwd = getcwd()
-nnoremap gc :<C-u>CdCurrent<CR>
+nnoremap gC :<C-u>CdCurrent<CR>
 
 function! GetProjectDirectory() abort "{{{
   let l:V = VitalWrapper('Prelude')
@@ -4858,7 +4858,7 @@ function! s:CdProjectDirectory() abort "{{{
   endif
 endfunction "}}}
 command! -nargs=0 CdProjectDirectory call s:CdProjectDirectory()
-nnoremap gC :<C-u>CdProjectDirectory<CR>
+nnoremap gc :<C-u>CdProjectDirectory<CR>
 
 "SynCheck"{{{
 function! s:SynCheck() "{{{
