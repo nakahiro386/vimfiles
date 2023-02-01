@@ -64,3 +64,9 @@ function! vimrc#util#capture(command) abort "{{{
   let l:vital = vimrc#util#_vital()
   return l:vital.Vim.Message.capture(a:command)
 endfunction "}}}
+
+function! vimrc#util#path2project_directory(path, is_allow_empty) abort "{{{
+  let l:vital = vimrc#util#_vital()
+  let l:dir = l:vital.Prelude.path2project_directory(a:path, a:is_allow_empty)
+  return l:dir
+endfunction "}}}

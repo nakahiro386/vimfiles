@@ -71,3 +71,8 @@ function! vimrc#redir(bang, cmd) abort "{{{
   endif
   execute ''.(a:bang != '!' ? '0' : '').'put =l:Redir'
 endfunction "}}}
+
+function! vimrc#get_project_directory() abort "{{{
+  let l:dir = vimrc#util#path2project_directory(expand('%:p'), 1)
+  return l:dir
+endfunction "}}}

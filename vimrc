@@ -2927,7 +2927,7 @@ if Tap('defx.nvim') "{{{
   nnoremap [filer]? :<C-u>Mapping [filer]<CR>
 
   nnoremap <expr> [filer]e ':<C-u>Defx -buffer-name=explorer-'.tabpagenr().'<CR>'
-  nnoremap <expr> [filer]E ':<C-u>Defx ' .escape(GetProjectDirectory(), ' :'). ' -buffer-name=project-'.tabpagenr().'<CR>'
+  nnoremap <expr> [filer]E ':<C-u>Defx ' .escape(vimrc#get_project_directory(), ' :'). ' -buffer-name=project-'.tabpagenr().'<CR>'
   nnoremap <expr> [filer]f ':<C-u>Defx ' .escape(expand('%:p:h'), ' :'). ' -search=' .escape(expand('%:p'), ' :'). ' -buffer-name=defx-'.tabpagenr().'<CR>'
   nnoremap <expr> [filer]F ':<C-u>Defx -buffer-name=filer-'.tabpagenr().'<CR>'
   command! MemoExplorer execute 'Defx -buffer-name=memo '.escape(g:memo_dir, ' :')
@@ -4840,13 +4840,8 @@ command! AutoLCD echo AutoLCD()
 command! -nargs=0 CdCurrent lcd %:p:h|let w:pwd = getcwd()
 nnoremap gC :<C-u>CdCurrent<CR>
 
-function! GetProjectDirectory() abort "{{{
-  let l:V = VitalWrapper('Prelude')
-  let l:dir = l:V.Prelude.path2project_directory(expand('%:p'), 1)
-  return l:dir
-endfunction "}}}
 function! s:CdProjectDirectory() abort "{{{
-  let l:dir = GetProjectDirectory()
+  let l:dir = vimrc#get_project_directory()
   let l:cd = exists(':tcd') is 2 ? 'tcd' : 'lcd'
   if !empty(l:dir)
     execute l:cd .' ' .l:dir
