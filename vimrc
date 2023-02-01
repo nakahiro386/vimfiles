@@ -3643,17 +3643,7 @@ if Tap('im_control.vim') "{{{
     " 「日本語入力固定モード」の全バッファローカルモード
     let g:IM_CtrlBufLocalMode = 1
   endfunction "}}}
-  function! plugin.on_post_source() abort "{{{
-    let l:V = VitalWrapper('Vim.ScriptLocal')
-    let s:sfuncs = l:V.Vim.ScriptLocal.sfuncs((g:dein#plugin.rtp).'/plugin/im_control.vim')
-    augroup InsertHookIM_Cmdwin
-      autocmd!
-      autocmd CmdwinEnter * call s:sfuncs.BufEnter()
-      autocmd CmdwinLeave * call s:sfuncs.BufLeave()
-    augroup END
-  endfunction "}}}
   call Set_hook('hook_source', 'on_source')
-  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('win-ime-con.nvim') "{{{
