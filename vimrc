@@ -4866,15 +4866,7 @@ endfunction "}}}
 command! SynCheck call s:SynCheck()
 "}}}
 
-function! s:Redir(bang, cmd) "{{{
-  let l:V = VitalWrapper('Vim.Message')
-  let l:Redir = l:V.Vim.Message.capture(a:cmd)
-  if a:bang != '!'
-    execute 'tabnew'
-  endif
-  execute ''.(a:bang != '!' ? '0' : '').'put =l:Redir'
-endfunction "}}}
-command! -bang -nargs=+ -complete=command Redir call s:Redir('<bang>',<q-args>)
+command! -bang -nargs=+ -complete=command Redir call vimrc#redir('<bang>',<q-args>)
 
 "Vim-users.jp - Hack #84: バッファの表示設定を保存する"{{{
 "https://vim-jp.org/vim-users-jp/2009/10/08/Hack-84.html

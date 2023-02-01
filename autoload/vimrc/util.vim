@@ -59,3 +59,8 @@ function! vimrc#util#error(msg) abort "{{{
   let l:vital = vimrc#util#_vital()
   call l:vital.Vim.Message.error(s:_format_message(a:msg))
 endfunction "}}}
+
+function! vimrc#util#capture(command) abort "{{{
+  let l:vital = vimrc#util#_vital()
+  return l:vital.Vim.Message.capture(a:command)
+endfunction "}}}

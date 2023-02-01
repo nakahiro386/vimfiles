@@ -63,3 +63,11 @@ function! vimrc#tail(path, bang, count) "{{{
   command! -buffer TailReadOrig exe 'tabe '.b:tail_file_path
   exe 'normal! G'
 endfunction "}}}
+
+function! vimrc#redir(bang, cmd) abort "{{{
+  let l:Redir = vimrc#util#capture(a:cmd)
+  if a:bang != '!'
+    execute 'tabnew'
+  endif
+  execute ''.(a:bang != '!' ? '0' : '').'put =l:Redir'
+endfunction "}}}
