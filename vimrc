@@ -1792,14 +1792,9 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
     \   'on_cmd' : ['IndentGuidesEnable', 'IndentGuidesToggle'],
     \ })
   "}}}
-  "vim-scripts/number-marks{{{
-  call dein#add('vim-scripts/number-marks', {
-    \   'on_map' : [['n', '<Plug>Place_sign',
-    \                     '<Plug>Goto_next_sign',
-    \                     '<Plug>Goto_prev_sign',
-    \                     '<Plug>Remove_all_signs',
-    \                     '<Plug>Move_sign',], ],
-    \   'frozen' : 1,
+  "nakahiro386/number-marks{{{
+  call dein#add('nakahiro386/number-marks', {
+    \   'on_map' : [['n', '<Plug>Place_sign',], ],
     \ })
   "}}}
 
@@ -3469,32 +3464,11 @@ if Tap('number-marks') "{{{
   nmap md <Plug>Remove_all_signs
   nmap ma <Plug>Move_sign
   function! plugin.on_source() abort "{{{
+    let g:number_marks_no_default_key_mappings = 1
     let g:Signs_file_path_corey = expand(g:vimrc_cache . '/number_marks')
-    let g:mapF5 =  maparg('<F5>', '', 0, 1)
-    let g:mapF6 =  maparg('<F6>', '', 0, 1)
-  endfunction "}}}
-  function! plugin.on_post_source() abort "{{{
-    try
-      "noremap <F6> :call SaveP()<cr>
-      "noremap <F5> :call ReloadP()<cr>
-      unmap <F5>
-      unmap <F6>
-    catch /^Vim\%((\a\+)\)\=:E31/
-    endtry
-    let l:V = VitalWrapper('Mapping')
-    if !empty(g:mapF5)
-      call l:V.Mapping.execute_map_command(g:mapF5.mode, g:mapF5, g:mapF5.lhs, g:mapF5.rhs)
-    endif
-    unlet g:mapF5
-    if !empty(g:mapF6)
-      call l:V.Mapping.execute_map_command(g:mapF6.mode, g:mapF6, g:mapF6.lhs, g:mapF6.rhs)
-    endif
-    unlet g:mapF6
-    unlet l:V
     command! ThisSign exe 'sign place buffer=' . winbufnr(0)
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
-  call Set_hook('hook_post_source', 'on_post_source')
 endif "}}}
 
 if Tap('colorizer') "{{{
