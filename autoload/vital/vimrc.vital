@@ -1,7 +1,6 @@
 vimrc
 7fa44ef166bd9bb9ab6d2f9c3ec86c7b1d6b13ba
 
-Mapping
 Prelude
 Process
 System.File
@@ -11,6 +10,3 @@ Vim.Buffer
 Vim.BufferManager
 Vim.Guard
 Vim.Message
-Vim.ScriptLocal
-Web.HTTP
-Web.JSON

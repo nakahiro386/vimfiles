@@ -1915,7 +1915,10 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
     \ })
   "}}}
 
-  call dein#add('vim-jp/vital.vim', { 'on_func' : 'vital#', })
+  call dein#add('vim-jp/vital.vim', {
+    \   'on_cmd' : 'Vitalize',
+    \   'on_func' : 'vital#',
+    \ })
 
   "thinca/vim-scouter{{{
   call dein#add('thinca/vim-scouter', { 'on_cmd' : 'Scouter', })
