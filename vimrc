@@ -4959,21 +4959,6 @@ command! -range=% Reverse call s:Reverse(<line1>, <line2>)
 
 comman! Capitalize %s/./\l&/g|%s/_./\L\U&/g|%s/_//g
 
-function! DecodeJson(url, ...) "{{{
-  let l:url = a:url
-  let l:settings = get(a:000, 0, {})
-
-  let l:V = VitalWrapper('Web.HTTP', 'Web.JSON')
-  let l:res = l:V.Web.HTTP.request(l:url, l:settings)
-  if !get(l:res, 'success', 0)
-    return l:res
-  endif
-  let l:content = get(l:res, 'content', '')
-  return l:V.Web.JSON.decode(l:content)
-endfunction "}}}
-command! VimPatches PP DecodeJson('https://vim-jp.herokuapp.com/patches/json')
-command! RssVimJp PP map(webapi#feed#parseURL('https://vim-jp.org/rss.xml'), 'get(v:val, "title")')
-
 "TODO replace Vital.Vim.BufferManager
 "let g:m = g:vital.Vim.BufferManager.new()
 "echo g:m.open('test')
