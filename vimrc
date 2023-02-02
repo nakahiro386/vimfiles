@@ -3985,8 +3985,7 @@ elseif s:has_kaoriya && isdirectory(expand('$VIM/switches/'))
       let l:catalog = expand('$VIM/switches/catalog/') . a:name
       let l:enabled = expand('$VIM/switches/enabled/') . a:name
       if !filereadable(l:enabled) && filereadable(l:catalog)
-        let l:V = VitalWrapper('System.File')
-        call l:V.System.File.copy(l:catalog, l:enabled)
+        call vimrc#file#copy(l:catalog, l:enabled)
       endif
     endfunction "}}}
     function! s:callSwitchEnabled() abort
@@ -4294,9 +4293,9 @@ augroup END
 function! JavapCurrentBuffer() "{{{
   silent execute '%del _'
 
-  let l:V = VitalWrapper('Prelude', 'System.Filepath')
+  let l:V = VitalWrapper('System.Filepath')
   let l:abs = l:V.System.Filepath.abspath(expand('%'))
-  if l:V.Prelude.is_windows()
+  if g:is_windows
     let l:path = l:V.System.Filepath.winpath(l:abs)
   else
     let l:path = l:V.System.Filepath.realpath(l:abs)
@@ -4715,8 +4714,7 @@ if executable('nkf')
     else
       let l:system = 'unix'
     endif
-    let l:V = VitalWrapper('Process')
-    return l:V.Process.system('nkf --'.l:system, a:input)
+    return vimrc#process#system('nkf --'.l:system, a:input)
   endfunction
   "}}}
   command! Nkf echo system(printf('nkf -g "%s"', expand("%:p")))
@@ -4870,8 +4868,7 @@ function! CmdStart(...) "{{{
   endif
 endfunction "}}}
 function! Open(...) "{{{
-  let l:V = VitalWrapper('System.File')
-  return l:V.System.File.open(join(a:000, ' '))
+  return vimrc#file#open(join(a:000, ' '))
 endfunction "}}}
 "conversion"{{{
 function! Outgoing(cmd)
@@ -4881,8 +4878,7 @@ function! Incoming(cmd)
   return s:iconv(a:cmd, 'char', &encoding)
 endfunction
 function! s:iconv(expr, from, to)
-  let l:V = VitalWrapper('Process')
-  return l:V.Process.iconv(a:expr, a:from, a:to)
+  return vimrc#process#iconv(a:expr, a:from, a:to)
 endfunction
 "}}}
 
