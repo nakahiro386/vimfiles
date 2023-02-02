@@ -4296,13 +4296,8 @@ augroup END
 function! JavapCurrentBuffer() "{{{
   silent execute '%del _'
 
-  let l:V = VitalWrapper('System.Filepath')
-  let l:abs = l:V.System.Filepath.abspath(expand('%'))
-  if g:is_windows
-    let l:path = l:V.System.Filepath.winpath(l:abs)
-  else
-    let l:path = l:V.System.Filepath.realpath(l:abs)
-  endif
+  let l:abs = vimrc#filepath#abspath(expand('%'))
+  let l:path = vimrc#filepath#realpath(l:abs)
   if executable('java') && !empty(Which('cfr.jar'))
     let l:result = System(printf('java -jar "%s" "%s"', Which('cfr.jar'), l:path))
   elseif executable('jad')

@@ -1,72 +1,46 @@
-let s:V = vital#vimrc#new()
-call s:V.load('Prelude')
-call s:V.load('Vim.Guard')
-call s:V.load('Vim.Message')
-
-function! vimrc#util#_vital() abort "{{{
-  return s:V
-endfunction "}}}
-
 function! vimrc#util#is_string(value) abort "{{{
-  let l:vital = vimrc#util#_vital()
-  return l:vital.Prelude.is_string(a:value)
+  return vimrc#modules#common#is_string(a:value)
 endfunction "}}}
 
 function! vimrc#util#is_list(value) abort "{{{
-  let l:vital = vimrc#util#_vital()
-  return l:vital.Prelude.is_list(a:value)
+  return vimrc#modules#common#is_list(a:value)
 endfunction "}}}
 
 function! vimrc#util#is_number(value) abort "{{{
-  let l:vital = vimrc#util#_vital()
-  return l:vital.Prelude.is_number(a:value)
+  return vimrc#modules#common#is_number(a:value)
 endfunction "}}}
 
 function! vimrc#util#set_default(var, val) abort "{{{
-  let l:vital = vimrc#util#_vital()
-  return l:vital.Prelude.set_default(a:var, a:val)
+  return vimrc#modules#common#set_default(a:var, a:val)
 endfunction "}}}
 
 function! vimrc#util#store(targets) abort "{{{
 
   let l:targets = []
-  if vimrc#util#is_string(a:targets)
+  if vimrc#modules#is_string(a:targets)
     call add(l:targets, a:targets)
-  elseif vimrc#util#is_list(a:targets)
+  elseif vimrc#modules#is_list(a:targets)
     let l:targets += a:targets
   endif
   call filter(l:targets, {idx, val -> exists(val)})
 
-  let l:vital = vimrc#util#_vital()
-  return l:vital.Vim.Guard.store(l:targets)
-endfunction "}}}
-
-function! s:_format_message(msg) abort "{{{
-  return (vimrc#util#is_string(a:msg) ? a:msg : string(a:msg))
-    \ ->split("\n")
-    \ ->map({_, val -> printf("[%s]%s", s:V.plugin_name(), val)})
-    \ ->join("\n")
+  return vimrc#modules#common#store(l:targets)
 endfunction "}}}
 
 function! vimrc#util#warn(msg) abort "{{{
   redraw
-  let l:vital = vimrc#util#_vital()
-  call l:vital.Vim.Message.warn(s:_format_message(a:msg))
+  call vimrc#modules#message#warn(a:msg)
 endfunction "}}}
 
 function! vimrc#util#error(msg) abort "{{{
   redraw
-  let l:vital = vimrc#util#_vital()
-  call l:vital.Vim.Message.error(s:_format_message(a:msg))
+  call vimrc#modules#message#error(a:msg)
 endfunction "}}}
 
 function! vimrc#util#capture(command) abort "{{{
-  let l:vital = vimrc#util#_vital()
-  return l:vital.Vim.Message.capture(a:command)
+  return vimrc#modules#message#capture(a:command)
 endfunction "}}}
 
 function! vimrc#util#path2project_directory(path, is_allow_empty) abort "{{{
-  let l:vital = vimrc#util#_vital()
-  let l:dir = l:vital.Prelude.path2project_directory(a:path, a:is_allow_empty)
-  return l:dir
+  return vimrc#modules#common#path2project_directory(a:path, a:is_allow_empty)
 endfunction "}}}
