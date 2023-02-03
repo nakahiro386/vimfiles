@@ -4196,35 +4196,44 @@ endfunction "}}}
 
 " colorsel.vim
 " https://gist.github.com/mattn/28009873b42dd2c1d62a
-function! s:colorScheme_select() "{{{
-  let l:V = VitalWrapper('Vim.BufferManager')
-  let l:buf = l:V.Vim.BufferManager.new()
-  call l:buf.open('colorScheme_select', {'opener': '20vsplit'})
+function! s:colorscheme_select() "{{{
+  function! s:get_colors(info) abort closure "{{{
+    let b:buffer_info = a:info
+    setl buftype=nofile
+    setl bufhidden=hide
+    setl nobuflisted
+    setl nonumber
+    setl nowrap
+    setl cursorline
+    setl nospell
+    setl noswapfile
+    setl foldcolumn=0
+    if !a:info.newbuf
+      setl modifiable
+      setl noreadonly
+      silent execute '%del _'
+    endif
+    let l:colors = map(split(globpath(&runtimepath, 'colors/*.vim'), '\n'), 'fnamemodify(v:val, ":t:r")')
+    call setline(1, l:colors)
+    setl nomodifiable
+    setl readonly
+    let b:lastLnum = len(l:colors)
 
-  setl modifiable
-  let l:colors = map(split(globpath(&runtimepath, 'colors/*.vim'), '\n'), 'fnamemodify(v:val, ":t:r")')
-  call setline(1, l:colors)
-  setl buftype=nofile
-  setl bufhidden=wipe
-  setl nobuflisted
-  setl nomodifiable
-  setl readonly
-  setl number
-  setl nowrap
-  setl cursorline
-  setl nospell
-  setl foldcolumn=0
-  let b:lastLnum = len(l:colors)
+    nnoremap <buffer> <silent> <CR> :<c-u>exe 'color' getline('.')<cr>
+    nnoremap <buffer> <silent> <Space> :<c-u>exe 'color' getline('.')<cr>
+    nnoremap <buffer> <silent> q :<C-U>call vimrc#buffer#close(b:buffer_info.bufname)<CR>
+    nnoremap <buffer> <silent> Q :<C-U>call vimrc#buffer#wipeout(b:buffer_info.bufname)<CR>
+    nnoremap <buffer> <silent> <expr> j (line('.') is b:lastLnum ? 'gg' : 'j')
+    nnoremap <buffer> <silent> <expr> k (line('.') is 1 ? 'G' : 'k')
 
-  nnoremap <buffer> <silent> <CR> :<c-u>exe 'color' getline('.')<cr>
-  nnoremap <buffer> <silent> <Space> :<c-u>exe 'color' getline('.')<cr>
-  nnoremap <buffer> <silent> q :<C-U>bw<CR>
-  nnoremap <buffer> <silent> Q :<C-U>bw<CR>
-  nnoremap <buffer> <silent> <expr> j (line('.') is b:lastLnum ? 'gg' : 'j')
-  nnoremap <buffer> <silent> <expr> k (line('.') is 1 ? 'G' : 'k')
+  endfunction "}}}
+  let b:buffer_info = vimrc#buffer#open({'bufname': 'colorscheme_select',
+    \   'config': {'opener': '20vsplit'},
+    \   'opened': function('s:get_colors'),
+    \ })
 
 endfunction "}}}
-command! SelectColorScheme call s:colorScheme_select()
+command! SelectColorScheme call s:colorscheme_select()
 nnoremap <F9> :<C-u>SelectColorScheme<CR>
 
 syntax enable
@@ -4540,64 +4549,73 @@ function! SessionMake() "{{{
   call inputrestore()
 endfunction "}}}
 function! SessionSelect() "{{{
-  let l:sessionDir = g:sessionBaseDir
-  let l:lines = map(expand(g:sessionBaseDir.'*', 1, 1), 'fnamemodify(v:val, ":t")."|".fnamemodify(v:val, ":p")')
-  call MakeBuf('SessionSelect')
-  setl modifiable
-  setl noreadonly
-  silent %d _
-  call setline(1, l:lines)
-  setl buftype=nofile
-  setl bufhidden=wipe
-  setl nobuflisted
-  setl nomodifiable
-  setl readonly
-  setl number
-  setl nowrap
-  setl cursorline
-  setl nospell
-  setl foldcolumn=0
-  let b:lastLnum = len(l:lines)
-  vert resize 20
-  let b:sessionFunc = {}
-  function! b:sessionFunc.get_name() "{{{
-    return split(getline("."), '|', 1)[0]
-  endfunction "}}}
-  function! b:sessionFunc.get_path() "{{{
-    return split(getline("."), '|', 1)[1]
-  endfunction "}}}
-  function! b:sessionFunc.execute() "{{{
-    let l:path = b:sessionFunc.get_path()
-    exe tabpagenr('$').'tabnew'
-    exe 'source '.l:path
-    exe 'bw! SessionSelect'
-    exe 'tablast'
-  endfunction "}}}
-  function! b:sessionFunc.delete() "{{{
-    let l:path = b:sessionFunc.get_path()
-    call inputsave()
-    let l:sessinFileName = input(l:path."\nAre you sure you want to remove file ? [y/n] : ")
-    call inputrestore()
-    let l:result = 0
-    if l:sessinFileName == 'y'
-      let l:result = delete(l:path)
-      if l:result != 0
-        call vimrc#util#error('delete fails : ' . l:path)
-      endif
+  function! s:session_select(info) abort closure "{{{
+    let b:buffer_info = a:info
+    setl buftype=nofile
+    setl bufhidden=wipe
+    setl nobuflisted
+    setl nonumber
+    setl nowrap
+    setl cursorline
+    setl nospell
+    setl noswapfile
+    setl foldcolumn=0
+    if !a:info.newbuf
+      setl modifiable
+      setl noreadonly
+      silent %d _
     endif
-  endfunction "}}}
+    let l:sessionDir = g:sessionBaseDir
+    let l:lines = map(expand(g:sessionBaseDir.'*', 1, 1), 'fnamemodify(v:val, ":t")."|".fnamemodify(v:val, ":p")')
+    call setline(1, l:lines)
+    setl nomodifiable
+    setl readonly
 
-  nnoremap <buffer> <silent> <CR> :<C-u>call b:sessionFunc.execute()<CR>
-  nnoremap <buffer> <silent> D :<C-u>call b:sessionFunc.delete()<CR>:call SessionSelect()<CR>
-  nnoremap <buffer> <silent> yy :<C-u>let @*=b:sessionFunc.get_name()<CR>:echo 'yank!'<CR>
-  nnoremap <buffer> <silent> Y :<C-u>let @*=b:sessionFunc.get_name()<CR>:echo 'yank!'<CR>
-  nnoremap <buffer> <silent> p :<c-u>exe 'pedit ' matchstr(getline("."), "\|.*$")[1:]<cr>
-  nnoremap <buffer> <silent> q :<C-U>bw<CR>
-  nnoremap <buffer> <silent> Q :<C-U>bw<CR>
-  nnoremap <buffer> <silent> <C-r> :<C-u>call SessionSelect()<CR>
-  nnoremap <buffer> <silent> <expr> j (line('.') is b:lastLnum ? 'gg' : 'j')
-  nnoremap <buffer> <silent> <expr> k (line('.') is 1 ? 'G' : 'k')
-  nnoremap <buffer> <silent> ? :<C-U>map <buffer><CR>
+    let b:lastLnum = len(l:lines)
+    let b:sessionFunc = {}
+    function! b:sessionFunc.get_name() "{{{
+      return split(getline("."), '|', 1)[0]
+    endfunction "}}}
+    function! b:sessionFunc.get_path() "{{{
+      return split(getline("."), '|', 1)[1]
+    endfunction "}}}
+    function! b:sessionFunc.execute() "{{{
+      let l:path = b:sessionFunc.get_path()
+      exe tabpagenr('$').'tabnew'
+      exe 'source '.l:path
+      " exe 'bw! SessionSelect'
+      exe 'tablast'
+    endfunction "}}}
+    function! b:sessionFunc.delete() "{{{
+      let l:path = b:sessionFunc.get_path()
+      call inputsave()
+      let l:sessinFileName = input(l:path."\nAre you sure you want to remove file ? [y/n] : ")
+      call inputrestore()
+      let l:result = 0
+      if l:sessinFileName == 'y'
+        let l:result = delete(l:path)
+        if l:result != 0
+          call vimrc#util#error('delete fails : ' . l:path)
+        endif
+      endif
+    endfunction "}}}
+
+    nnoremap <buffer> <silent> <CR> :<C-u>call b:sessionFunc.execute()<CR>
+    nnoremap <buffer> <silent> D :<C-u>call b:sessionFunc.delete()<CR>:call SessionSelect()<CR>
+    nnoremap <buffer> <silent> yy :<C-u>let @*=b:sessionFunc.get_name()<CR>:echo 'yank!'<CR>
+    nnoremap <buffer> <silent> Y :<C-u>let @*=b:sessionFunc.get_name()<CR>:echo 'yank!'<CR>
+    nnoremap <buffer> <silent> p :<c-u>exe 'pedit ' matchstr(getline("."), "\|.*$")[1:]<cr>
+    nnoremap <buffer> <silent> q :<C-U>call vimrc#buffer#close(b:buffer_info.bufname)<CR>
+    nnoremap <buffer> <silent> Q :<C-U>call vimrc#buffer#wipeout(b:buffer_info.bufname)<CR>
+    nnoremap <buffer> <silent> <C-r> :<C-u>call SessionSelect()<CR>
+    nnoremap <buffer> <silent> <expr> j (line('.') is b:lastLnum ? 'gg' : 'j')
+    nnoremap <buffer> <silent> <expr> k (line('.') is 1 ? 'G' : 'k')
+    nnoremap <buffer> <silent> ? :<C-U>map <buffer><CR>
+  endfunction "}}}
+  let b:buffer_info = vimrc#buffer#open({'bufname': 'SessionSelect',
+    \   'config': {'opener': '20vsplit'},
+    \   'opened': function('s:session_select'),
+    \ })
 
 endfunction "}}}
 function! s:Session(bang, session) abort "{{{
@@ -4956,27 +4974,6 @@ endfunction "}}}
 command! -range=% Reverse call s:Reverse(<line1>, <line2>)
 
 comman! Capitalize %s/./\l&/g|%s/_./\L\U&/g|%s/_//g
-
-"TODO replace Vital.Vim.BufferManager
-"let g:m = g:vital.Vim.BufferManager.new()
-"echo g:m.open('test')
-function! MakeBuf(bufname, ...) "{{{
-  let l:options = {}
-  if !empty(a:000) && type(a:1) == type({})
-    let l:options = a:1
-  endif
-  let l:bufname = a:bufname
-  let l:bufnr = bufnr(l:bufname)
-  let l:bufwinnr = bufwinnr(l:bufnr)
-  if l:bufwinnr >= 0
-    if l:bufwinnr != bufwinnr('%')
-      exe l:bufwinnr . 'wincmd w'
-    endif
-  else
-    exe 'vnew '.l:bufname
-  endif
-  "let b:{l:bufname} = l:bufname
-endfunction "}}}
 
 "tailread"{{{
 "参考

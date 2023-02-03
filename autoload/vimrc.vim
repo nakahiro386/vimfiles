@@ -31,37 +31,50 @@ function! vimrc#tail(path, bang, count) "{{{
     endif
   endif
 
+  function! s:tail(info) abort closure "{{{
+    let b:buffer_info = a:info
+    setlocal noswapfile
+    setlocal buftype=nofile
+    setlocal filetype=tail
+    setlocal nomodeline
+    if !a:info.newbuf
+      setl modifiable
+      silent execute '%del _'
+    endif
+
+    " ファイルを読み込んで、バッファにセットする。
+    if filereadable(l:file)
+      if a:bang == '!'
+        call setline(1, readfile(l:file))
+      else
+        call setline(1, readfile(l:file, '', a:count * -1))
+      endif
+    else
+      call setline(1, printf('ERROR!!! filereadable(%s)', l:file))
+    endif
+    let b:tail_file_path = l:file
+    let b:tail_read_count = a:count
+
+    setlocal nomodifiable
+    nnoremap <silent> <buffer> <F5> :<C-u>exe b:tail_read_count .. 'TailRead %'<CR>
+    nnoremap <silent> <buffer> <S-F5> :<C-u>exe b:tail_read_count .. 'TailRead! %'<CR>
+    nnoremap <buffer> <silent> q :<C-U>call vimrc#buffer#close(b:buffer_info.bufname)<CR>
+    nnoremap <buffer> <silent> Q :<C-U>call vimrc#buffer#wipeout(b:buffer_info.bufname)<CR>
+    command! -buffer TailReadOrig exe 'tabe '.b:tail_file_path
+    exe 'normal! G'
+  endfunction "}}}
+
   " バッファを作る
   let l:guard = vimrc#util#store('&eventignore')
   try
     let &eventignore = 'all'
-    call MakeBuf(l:file.';tail')
+    let b:buffer_info = vimrc#buffer#open({'bufname': l:file.';tail',
+      \   'config': {},
+      \   'opened': function('s:tail'),
+      \ })
   finally
     call l:guard.restore()
   endtry
-  setlocal modifiable
-  silent %d _
-  " ファイルを読み込んで、バッファにセットする。
-  if filereadable(l:file)
-    if a:bang == '!'
-      call setline(1, readfile(l:file))
-    else
-      call setline(1, readfile(l:file, '', a:count * -1))
-    endif
-  else
-    call setline(1, printf('ERROR!!! filereadable(%s)', l:file))
-  endif
-  let b:tail_file_path = l:file
-  let b:tail_read_count = a:count
-
-  setlocal noswapfile
-  setlocal buftype=nofile
-  setlocal filetype=tail
-  setlocal nomodifiable
-  nnoremap <silent> <buffer> <F5> :<C-u>exe b:tail_read_count .. 'TailRead %'<CR>
-  nnoremap <silent> <buffer> <S-F5> :<C-u>exe b:tail_read_count .. 'TailRead! %'<CR>
-  command! -buffer TailReadOrig exe 'tabe '.b:tail_file_path
-  exe 'normal! G'
 endfunction "}}}
 
 function! vimrc#redir(bang, cmd) abort "{{{

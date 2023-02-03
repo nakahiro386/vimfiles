@@ -17,9 +17,9 @@ endfunction "}}}
 function! vimrc#util#store(targets) abort "{{{
 
   let l:targets = []
-  if vimrc#modules#is_string(a:targets)
+  if vimrc#util#is_string(a:targets)
     call add(l:targets, a:targets)
-  elseif vimrc#modules#is_list(a:targets)
+  elseif vimrc#util#is_list(a:targets)
     let l:targets += a:targets
   endif
   call filter(l:targets, {idx, val -> exists(val)})
