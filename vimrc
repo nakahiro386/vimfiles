@@ -1488,20 +1488,6 @@ endif
 nnoremap <silent> <F5> :<C-u>e<CR>
 nnoremap <silent> <S-F5> :<C-u>noautocmd e<CR>
 
-if g:is_windows
-  let s:ConEmu = expand(printf('$PROGRAMFILES/ConEmu/ConEmu%s.exe', has("win64") ? '64' : ''))
-  function! s:start_console(shell) abort
-    if executable(s:ConEmu)
-      execute printf('!start "%s" /Single /Dir "%s" /cmd {%s}', s:ConEmu, expand('%:p:h'), a:shell)
-    else
-      execute '!start ' . a:shell
-    endif
-  endfunction
-  nnoremap <silent> <Leader>c<CR> :<C-u>call <SID>start_console('Shells::cmd')<CR>
-  nnoremap <silent> <Leader>P<CR> :<C-u>call <SID>start_console('Shells::powershell')<CR>
-  nnoremap <silent> <Leader>B<CR> :<C-u>call <SID>start_console('Bash::git-bash')<CR>
-endif
-
 nnoremap <silent> <Leader>sp :<C-u>setlocal spell!<CR>:setlocal spell?<CR>
 
 if has('terminal')
