@@ -1,12 +1,13 @@
-let s:V = vital#vimrc#new()
+let s:V = {}
 
-function! vimrc#modules#_vital() abort "{{{
+function! vimrc#modules#load(...) abort "{{{
+  if empty(s:V)
+    let s:V = vital#vimrc#new()
+  endif
+  for l:module in a:000
+    if !empty(l:module) && !has_key(s:V, l:module)
+      call s:V.load(l:module)
+    endif
+  endfor
   return s:V
 endfunction "}}}
-
-function! vimrc#modules#load(module_name) abort "{{{
-  let l:vital = vimrc#modules#_vital()
-  call l:vital.load(a:module_name)
-endfunction "}}}
-
-
