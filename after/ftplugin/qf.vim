@@ -4,6 +4,7 @@ setlocal cursorline
 nnoremap <buffer> q :<C-U>close<CR>
 nnoremap <buffer> Q :<C-U>close<CR>
 nnoremap <buffer> p :<c-u>exe 'pedit +' . split(getline("."), '\|')[1] . ' ' . split(getline("."), '\|')[0]<cr>
+nnoremap <buffer> t <C-w><cr><C-w>T
 
 nnoremap <buffer> <cr> <C-w><cr>
 nnoremap <buffer> <C-w><cr> <cr>
