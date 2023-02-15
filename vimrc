@@ -1920,7 +1920,7 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
   "thinca/vim-quickrun{{{
   call dein#add('thinca/vim-quickrun', {
     \   'on_cmd' : ['QuickRun', ],
-    \   'pre_func' : 'quickrun#',
+    \   'on_func' : 'quickrun#',
     \ })
   "}}}
 
