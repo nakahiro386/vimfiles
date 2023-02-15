@@ -1279,21 +1279,6 @@ endfunction "}}}
 "buffer{{{
 nnoremap <silent> <Leader>bn :<C-u>bn<CR>
 nnoremap <silent> <Leader>bp :<C-u>bp<CR>
-nnoremap <silent> <Leader>bb :<C-u>call <SID>BufferSelect(0)<CR>
-nnoremap <silent> <Leader>BB :<C-u>call <SID>BufferSelect(1)<CR>
-function! s:BufferSelect(bang) "{{{
-  if exists(':Unite') is 2
-    exe 'Unite -buffer-name=buffer buffer' . (a:bang ? ':!' : '')
-  else
-    exe 'buffers' . (a:bang ? '!' : '')
-    call inputsave()
-    let l:buffer = input('buffer: ', '', 'buffer')
-    if !empty(l:buffer)
-      exe 'buffer '.l:buffer
-    endif
-    call inputrestore()
-  endif
-endfunction "}}}
 "}}}
 
 "window"{{{
@@ -1605,8 +1590,6 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
     \   'osyo-manga/unite-quickfix': {},
     \   'pasela/unite-webcolorname': {},
     \   'Shougo/unite-help': {},
-    \   'ujihisa/unite-colorscheme': {},
-    \   'zhaocai/unite-scriptnames': {},
     \   'Shougo/unite-outline': {},
     \   'sgur/unite-everything': {'if': executable('es.exe')},
     \   'ujihisa/unite-locate': {'if': executable('locate')},
@@ -1905,6 +1888,10 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
     \   'on_cmd' : 'Vitalize',
     \   'on_func' : 'vital#',
     \ })
+  call dein#load_dict({
+    \   'lambdalisue/vital-Whisky': {},
+    \ }, {'on_source': 'vital.vim'}
+    \ )
 
   "thinca/vim-scouter{{{
   call dein#add('thinca/vim-scouter', { 'on_cmd' : 'Scouter', })
@@ -4180,48 +4167,6 @@ function! s:colorscheme_restore() "{{{
   silent doautocmd ColorScheme
 endfunction "}}}
 
-" colorsel.vim
-" https://gist.github.com/mattn/28009873b42dd2c1d62a
-function! s:colorscheme_select() "{{{
-  function! s:get_colors(info) abort closure "{{{
-    let b:buffer_info = a:info
-    setl buftype=nofile
-    setl bufhidden=hide
-    setl nobuflisted
-    setl nonumber
-    setl nowrap
-    setl cursorline
-    setl nospell
-    setl noswapfile
-    setl foldcolumn=0
-    if !a:info.newbuf
-      setl modifiable
-      setl noreadonly
-      silent execute '%del _'
-    endif
-    let l:colors = map(split(globpath(&runtimepath, 'colors/*.vim'), '\n'), 'fnamemodify(v:val, ":t:r")')
-    call setline(1, l:colors)
-    setl nomodifiable
-    setl readonly
-    let b:lastLnum = len(l:colors)
-
-    nnoremap <buffer> <silent> <CR> :<c-u>exe 'color' getline('.')<cr>
-    nnoremap <buffer> <silent> <Space> :<c-u>exe 'color' getline('.')<cr>
-    nnoremap <buffer> <silent> q :<C-U>call vimrc#buffer#close(b:buffer_info.bufname)<CR>
-    nnoremap <buffer> <silent> Q :<C-U>call vimrc#buffer#wipeout(b:buffer_info.bufname)<CR>
-    nnoremap <buffer> <silent> <expr> j (line('.') is b:lastLnum ? 'gg' : 'j')
-    nnoremap <buffer> <silent> <expr> k (line('.') is 1 ? 'G' : 'k')
-
-  endfunction "}}}
-  let b:buffer_info = vimrc#buffer#open({'bufname': 'colorscheme_select',
-    \   'config': {'opener': '20vsplit'},
-    \   'opened': function('s:get_colors'),
-    \ })
-
-endfunction "}}}
-command! SelectColorScheme call s:colorscheme_select()
-nnoremap <F9> :<C-u>SelectColorScheme<CR>
-
 syntax enable
 
 "}}}
@@ -5102,6 +5047,27 @@ if g:inside_tmux
   nnoremap <Leader>ss :<C-u>TmuxSplitWindow<CR>
 endif
 
+
+let g:selector#action_keys = {
+  \   'open': '<CR>',
+  \   'tabopen': 't',
+  \   'delete': 'dd',
+  \   'preview': 'p',
+  \   'split': 's',
+  \   'vsplit': 'v',
+  \   'quit': 'q',
+  \   'wipeout': 'Q',
+  \ }
+let g:selector#config = {
+  \   'colorscheme': {'opener': '20vsplit'},
+  \ }
+
+nnoremap <silent> <Leader>bb :<C-u>Selector buffers<CR>
+nnoremap <silent> <Leader>BB :<C-u>Selector! buffers<CR>
+
+" colorsel.vim
+" https://gist.github.com/mattn/28009873b42dd2c1d62a
+nnoremap <F9> :<C-u>Selector colorscheme<CR>
 
 "}}}
 "-----------------------------------------------------------------------------
