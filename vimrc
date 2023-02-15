@@ -4364,9 +4364,9 @@ call s:createEncCommand(s:fencs)
 "command! MYGVIMRC exe printf("tab %s $MYGVIMRC", s:cmd)
 command! MYVIMRC  tab split $MYVIMRC
 command! MYGVIMRC tab split $MYGVIMRC
-noremap <Leader>vim  :<C-u>MYVIMRC<CR>
-noremap <Leader>gvim :<C-u>MYGVIMRC<CR>
-noremap <Leader>VIM  :<C-u>vsplit $MYVIMRC<CR>
+noremap <silent> <Leader>vim  :<C-u>MYVIMRC<CR>:<C-u>CdCurrent<CR>
+noremap <silent> <Leader>gvim :<C-u>MYGVIMRC<CR>:<C-u>CdCurrent<CR>
+noremap <silent> <Leader>VIM  :<C-u>vsplit $MYVIMRC<CR>:<C-u>CdCurrent<CR>
 "}}}
 
 "Trim:"{{{
