@@ -1671,11 +1671,16 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
     \   'on_event' : s:event_i,
     \ })
 
+  call dein#add('obaland/vfiler.vim', {
+    \   'if': (has('lua') && HasVersion('8.2')) || has('nvim-0.5.0') ,
+    \   'on_cmd': 'VFiler',
+    \   'on_event': s:event_idle + s:event_i,
+    \   'on_path' : '.*',
+    \ })
+
   call dein#add('Shougo/defx.nvim', {
     \   'if': has('nvim') || (has('timers') && HasVersion('8.0')),
     \   'on_cmd': 'Defx',
-    \   'on_event': s:event_idle + s:event_i,
-    \   'on_path' : '.*',
     \ })
   call dein#load_dict({
     \ 'roxma/nvim-yarp': {},
@@ -2891,6 +2896,162 @@ if Tap('delimitmate') "{{{
   call Set_hook('hook_source', 'on_source')
 endif "}}}
 
+if Tap('vfiler.vim') "{{{
+  nmap <Leader>f [filer]
+  nmap <Leader>F [filer]
+  nnoremap [filer]? :<C-u>Mapping [filer]<CR>
+
+  nnoremap <expr> [filer]f ':<C-u>VFiler -name=filerc-'.tabpagenr().' '.escape(expand('%:p:h'), ' ').'<CR>'
+  nnoremap <expr> [filer]F ':<C-u>VFiler -name=filerb-'.tabpagenr().'<CR>'
+  command! MemoExplorer execute 'VFiler -name=memo '.escape(g:memo_dir, ' ')
+  nnoremap <F1> :<C-u>MemoExplorer<CR>
+
+  function! plugin.on_source() abort "{{{
+      " vimfilerの実装、defxのhelpを参考
+    augroup vfiler-explorer
+      autocmd!
+      autocmd BufEnter,VimEnter,BufNew,BufWinEnter,BufRead,BufCreate *
+        \ call s:vfiler_explorer(expand('<amatch>'))
+    augroup END
+    function! s:vfiler_explorer(path) abort
+      let l:path = a:path
+      if l:path == '' || bufnr('%') != expand('<abuf>')
+        return
+      endif
+      " Disable netrw.
+      if exists('#FileExplorer')
+        autocmd! FileExplorer *
+      endif
+
+      if &filetype ==# 'vfiler' && line('$') != 1
+        return
+      endif
+
+      " For ":edit ~".
+      if fnamemodify(l:path, ':t') ==# '~'
+        let l:path = '~'
+      endif
+
+      if isdirectory(expand(l:path))
+        bwipeout
+        execute 'VFiler ' . escape(expand(l:path), ' ')
+      endif
+    endfunction
+
+  endfunction "}}}
+  function! plugin.on_post_source() abort "{{{
+lua <<EOF
+    require'vfiler/config'.clear_mappings()
+    local action = require('vfiler/action')
+    local myaction = require('vfiler/actions/myaction')
+    require'vfiler/config'.setup {
+      options = {
+        auto_cd = false,
+        auto_resize = false,
+        columns = 'indent,icon,name',
+        find_file = true,
+        header = true,
+        keep = true,
+        listed = true,
+        name = '',
+        session = 'buffer',
+        show_hidden_files = true,
+        sort = 'name',
+        layout = 'left',
+        width = 30,
+        height = 30,
+        new = true,
+        quit = true,
+        row = 0,
+        col = 0,
+        blend = 0,
+        border = 'rounded',
+        zindex = 200,
+        git = {
+          enabled = false
+        },
+        preview = {
+          layout = 'floating',
+          width = 0,
+          height = 0,
+        },
+      },
+
+      mappings = {
+        ['h'] = myaction.close_tree,
+        ['j'] = action.loop_cursor_down,
+        ['k'] = action.loop_cursor_up,
+        ['l'] = myaction.open_by_choose_or_open_tree,
+        ['gg'] = action.move_cursor_top,
+        ['G'] = action.move_cursor_bottom,
+
+        ['~'] = action.jump_to_home,
+        ['\\'] = action.jump_to_root,
+        ['J'] = action.jump_to_directory,
+        ['L'] = action.switch_to_drive,
+
+        ['.'] = action.toggle_show_hidden,
+        ['<BS>'] = action.change_to_parent,
+        ['<C-h>'] = action.change_to_parent,
+        ['<C-l>'] = action.reload,
+        ['<C-p>'] = action.toggle_auto_preview,
+        ['<C-s>'] = action.toggle_sort,
+        ['SO'] = action.change_sort,
+        ['<CR>'] = action.open,
+        ['e'] = action.open_by_vsplit,
+        ['t'] = action.open_by_tabpage,
+        ['v'] = action.open_by_vsplit,
+
+        ['SS'] = function(vfiler, context, view)
+          action.toggle_select(vfiler, context, view)
+          action.move_cursor_up(vfiler, context, view)
+        end,
+        ['ss'] = function(vfiler, context, view)
+          action.toggle_select(vfiler, context, view)
+          action.move_cursor_down(vfiler, context, view)
+        end,
+        ['U'] = action.clear_selected_all,
+        ['*'] = action.toggle_select_all,
+
+        ['<C-r>'] = action.sync_with_current_filer,
+
+        ['<Tab>'] = action.switch_to_filer,
+        ['cc'] = action.copy_to_filer,
+        ['mm'] = action.move_to_filer,
+
+        ['yy'] = action.yank_path,
+        ['YY'] = action.yank_name,
+
+        -- ['b'] = action.list_bookmark,
+        -- ['B'] = action.add_bookmark,
+
+        ['p'] = action.toggle_preview,
+        ['q'] = myaction.wipeout,
+        ['Q'] = myaction.wipeout,
+
+        ['x'] = action.execute_file,
+        ['K'] = action.new_directory,
+        ['r'] = action.rename,
+        ['C'] = action.copy,
+        ['dd'] = action.delete,
+        ['D'] = action.delete,
+        ['M'] = action.move,
+        ['N'] = action.new_file,
+        ['P'] = action.paste,
+
+      },
+    }
+    require'vfiler/extensions/rename/config'.setup {
+      options = {
+        right = '1.0',
+      },
+    }
+EOF
+  endfunction "}}}
+  call Set_hook('hook_source', 'on_source')
+  call Set_hook('hook_post_source', 'on_post_source')
+endif "}}}
+
 if Tap('defx.nvim') "{{{
 
   nmap <Leader>f [filer]
@@ -2899,10 +3060,10 @@ if Tap('defx.nvim') "{{{
 
   nnoremap <expr> [filer]e ':<C-u>Defx -buffer-name=explorer-'.tabpagenr().'<CR>'
   nnoremap <expr> [filer]E ':<C-u>Defx ' .escape(vimrc#get_project_directory(), ' :'). ' -buffer-name=project-'.tabpagenr().'<CR>'
-  nnoremap <expr> [filer]f ':<C-u>Defx ' .escape(expand('%:p:h'), ' :'). ' -search=' .escape(expand('%:p'), ' :'). ' -buffer-name=defx-'.tabpagenr().'<CR>'
-  nnoremap <expr> [filer]F ':<C-u>Defx -buffer-name=filer-'.tabpagenr().'<CR>'
-  command! MemoExplorer execute 'Defx -buffer-name=memo '.escape(g:memo_dir, ' :')
-  nnoremap <F1> :<C-u>MemoExplorer<CR>
+  " nnoremap <expr> [filer]f ':<C-u>Defx ' .escape(expand('%:p:h'), ' :'). ' -search=' .escape(expand('%:p'), ' :'). ' -buffer-name=defx-'.tabpagenr().'<CR>'
+  " nnoremap <expr> [filer]F ':<C-u>Defx -buffer-name=filer-'.tabpagenr().'<CR>'
+  " command! MemoExplorer execute 'Defx -buffer-name=memo '.escape(g:memo_dir, ' :')
+  " nnoremap <F1> :<C-u>MemoExplorer<CR>
 
   function! plugin.on_source() abort "{{{
 
@@ -5076,7 +5237,7 @@ if has('vim_starting')
   call Source('$VIMRUNTIME/delmenu.vim')
   if argc()
     if g:_dein_is_installed
-      call dein#source('defx.nvim')
+      call dein#source('vfiler.vim')
       call dein#call_hook('post_source')
     endif
   else
