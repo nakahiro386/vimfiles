@@ -72,7 +72,9 @@ function! selector#open(name, bang) abort "{{{
   endfunction "}}}
 
   let l:selector_config = get(g:, 'selector#config', {})
+  let l:base_config = get(l:selector_config, '_', {})
   let l:config = get(l:selector_config, l:name, {})
+  let l:config = extendnew(l:base_config, l:config)
   let b:_selector['buffer_info'] = selector#buffer#open({
     \   'bufname': '[selector]'. l:name,
     \   'config': l:config,

@@ -5220,7 +5220,8 @@ let g:selector#action_keys = {
   \   'wipeout': 'Q',
   \ }
 let g:selector#config = {
-  \   'colorscheme': {'opener': '20vsplit'},
+  \   '_': {'opener': 'botright split'},
+  \   'colorscheme': {'opener': 'botright 20vsplit'},
   \ }
 
 nnoremap <silent> <Leader>bb :<C-u>Selector buffers<CR>
