@@ -7,12 +7,6 @@ function! selector#sources#colorscheme#init() abort "{{{
     return l:contents
   endfunction "}}}
 
-  function! s:_bufnr() abort "{{{
-    let l:line = getline(".")
-    let l:bufnr = matchstr(l:line, '^\s*\zs\d\+')
-    return l:bufnr
-  endfunction "}}}
-
   function! s:colorscheme_open() abort "{{{
     exe 'color' getline('.')
     close

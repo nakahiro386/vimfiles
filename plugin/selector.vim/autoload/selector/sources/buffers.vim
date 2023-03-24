@@ -27,13 +27,19 @@ function! selector#sources#buffers#init() abort "{{{
   function! s:buffers_split() abort "{{{
     let l:bufnr = s:_bufnr()
     close
-    exe 'sbuffer '.l:bufnr
+    exe 'rightbelow sbuffer '.l:bufnr
+  endfunction "}}}
+
+  function! s:buffers_vsplit() abort "{{{
+    let l:bufnr = s:_bufnr()
+    close
+    exe 'rightbelow vertical sbuffer '.l:bufnr
   endfunction "}}}
 
   function! s:buffers_delete() abort "{{{
     let l:bufnr = s:_bufnr()
     exe l:bufnr.'bwipeout'
-    execute "normal! i\<Cr>"
+    call selector#action#reload()
   endfunction "}}}
 
   let s:buffers = {
@@ -43,6 +49,7 @@ function! selector#sources#buffers#init() abort "{{{
     \     'open': function('s:buffers_open'),
     \     'tabopen': function('s:buffers_tabopen'),
     \     'split': function('s:buffers_split'),
+    \     'vsplit': function('s:buffers_vsplit'),
     \     'delete': function('s:buffers_delete'),
     \   },
     \ }

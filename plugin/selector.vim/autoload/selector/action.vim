@@ -1,9 +1,15 @@
 function! s:quit() abort "{{{
-  call selector#buffer#close(b:_selector['buffer_info'].bufname)
+  let l:bufname = b:_selector['buffer_info'].bufname
+  let l:previous_winid = win_getid(winnr('#'))
+  call selector#buffer#close(l:bufname)
+  call win_gotoid(l:previous_winid)
 endfunction "}}}
 
 function! s:wipeout() abort "{{{
-  call selector#buffer#wipeout(b:_selector['buffer_info'].bufname)
+  let l:bufname = b:_selector['buffer_info'].bufname
+  let l:previous_winid = win_getid(winnr('#'))
+  call selector#buffer#wipeout(l:bufname)
+  call win_gotoid(l:previous_winid)
 endfunction "}}}
 
 let s:default_actions = {
@@ -23,6 +29,14 @@ function! selector#action#call(source_name, action_name) abort "{{{
     let l:Action = s:default_actions[a:action_name]
   endif
   call l:Action()
+endfunction "}}}
+
+function! selector#action#reload() abort "{{{
+  let l:curpos = getcurpos('.')
+  let l:mask = selector#_get_mask()
+  call selector#_text_entered(l:mask)
+  call setpos('.', l:curpos)
+  stopinsert
 endfunction "}}}
 
 " vim:set filetype=vim expandtab shiftwidth=2 tabstop=2 foldmethod=marker:

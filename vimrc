@@ -1301,7 +1301,7 @@ nnoremap <silent> <Leader>l :<C-u>call <SID>SwitchTab('n')<CR>
 nnoremap <silent> <Leader>h :<C-u>call <SID>SwitchTab('p')<CR>
 
 nnoremap <silent> <Leader>T :<C-u>call <SID>SwitchTab('m', 1)<CR>
-nnoremap <silent> <Leader>m :<C-u>call <SID>SwitchTab('m', 1)<CR>
+nnoremap <silent> <Leader>tt :<C-u>call <SID>SwitchTab('m', 1)<CR>
 function! s:SwitchTab(command, ...) "{{{
   if !empty(a:000) && a:1 is 1
     let l:count = (v:count > 0 ? v:count - 1 : v:count)
@@ -1596,6 +1596,11 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
     \ }, {'on_source': 'unite.vim'}
     \ )
   "}}}
+
+  call dein#add('lambdalisue/mr.vim', {
+    \   'on_event': s:event_idle + s:event_i,
+    \   'on_func' : 'mr#',
+    \ })
 
   "osyo-manga/vim-precious"{{{
   call dein#add('osyo-manga/vim-precious', {
@@ -2348,9 +2353,9 @@ if Tap('unite.vim') "{{{
   nnoremap <silent><expr> [unite]S  ":\<C-u>:UniteWithCursorWord -max-multi-lines=1 -truncate -toggle -no-quit -buffer-name=search" . bufnr('%'). " line:all\<CR>"
   nnoremap <silent><expr> [unite]/  ":\<C-u>Unite -max-multi-lines=1 -truncate -toggle -no-quit -buffer-name=search" . bufnr('%'). " line:all\<CR>"
   nnoremap <silent><expr> [unite]g/ ":\<C-u>Unite -max-multi-lines=1 -truncate -toggle -no-quit -buffer-name=search" . bufnr('%'). " line_migemo:all\<CR>"
-  nnoremap <silent> [unite]c :<C-u>Unite -buffer-name=bookmark -default-action=tabopen bookmark:default<CR>
+  " nnoremap <silent> [unite]c :<C-u>Unite -buffer-name=bookmark -default-action=tabopen bookmark:default<CR>
   nnoremap <silent> [unite]d :<C-u>Unite bookmark:directory<CR>
-  nnoremap <silent> [unite]a :<C-u>UniteBookmarkAdd<CR>
+  " nnoremap <silent> [unite]a :<C-u>UniteBookmarkAdd<CR>
 
   if g:is_windows
     nnoremap [unite]e :<C-u>Unite -buffer-name=everything -default-action=tabopen everything/async -input=
@@ -2705,6 +2710,19 @@ if Tap('vim-hug-neovim-rpc') "{{{
   call Set_hook('hook_source', 'on_source')
 endif "}}}
 
+if Tap('mr.vim') "{{{
+  function! plugin.on_source() abort "{{{
+    let l:base_dir = expand(g:vimrc_cache).'/mr'
+    let g:mr#mru#filename = l:base_dir.'/mru'
+    let g:mr#mrw#filename = l:base_dir.'/mrw'
+    let g:mr#mrr#filename = l:base_dir.'/mrr'
+
+    let g:mr#mru#predicates = [{ filename -> filename !~# expand("$VIMBUNDLE/.cache") }]
+
+  endfunction "}}}
+  call Set_hook('hook_source', 'on_source')
+endif "}}}
+
 if Tap('vim-precious') "{{{
   function! plugin.on_source() abort "{{{
     let g:precious_enable_switchers = {
@@ -3054,9 +3072,9 @@ endif "}}}
 
 if Tap('defx.nvim') "{{{
 
-  nmap <Leader>f [filer]
-  nmap <Leader>F [filer]
-  nnoremap [filer]? :<C-u>Mapping [filer]<CR>
+  " nmap <Leader>f [filer]
+  " nmap <Leader>F [filer]
+  " nnoremap [filer]? :<C-u>Mapping [filer]<CR>
 
   nnoremap <expr> [filer]e ':<C-u>Defx -buffer-name=explorer-'.tabpagenr().'<CR>'
   nnoremap <expr> [filer]E ':<C-u>Defx ' .escape(vimrc#get_project_directory(), ' :'). ' -buffer-name=project-'.tabpagenr().'<CR>'
@@ -4060,7 +4078,7 @@ endif "}}}
 if Tap('layoutplugin.vim') "{{{
   function! plugin.on_source() abort "{{{
     let g:layoutplugin#user_name = 'nakahiro386'
-    let g:layoutplugin#plugins_contain_dir = expand('$VIMBUNDLE/repos/github.com/nakahiro386')
+    let g:layoutplugin#plugins_contain_dir = expand('$VIMFILES/plugin')
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
 endif "}}}
@@ -5226,6 +5244,12 @@ let g:selector#config = {
 
 nnoremap <silent> <Leader>bb :<C-u>Selector buffers<CR>
 nnoremap <silent> <Leader>BB :<C-u>Selector! buffers<CR>
+nnoremap <silent> <Leader>mm :<C-u>Selector mr<CR>
+nnoremap <silent> <Leader>mu :<C-u>Selector mru<CR>
+nnoremap <silent> <Leader>mw :<C-u>Selector mrw<CR>
+nnoremap <silent> <Leader>mr :<C-u>Selector mrr<CR>
+nnoremap <silent> <Leader>ua :<C-u>BookmarksAddCurrentFile<CR>
+nnoremap <silent> <Leader>uc :<C-u>Selector bookmarks<CR>
 
 " colorsel.vim
 " https://gist.github.com/mattn/28009873b42dd2c1d62a
