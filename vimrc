@@ -2980,6 +2980,7 @@ lua <<EOF
         height = 30,
         new = true,
         quit = true,
+        toggle = true,
         row = 0,
         col = 0,
         blend = 0,
