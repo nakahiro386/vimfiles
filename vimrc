@@ -555,7 +555,9 @@ set lazyredraw
 "Terminal:"{{{
 set novisualbell
 set t_vb=
-set belloff=all
+if HasVersion('7.4.793')
+  set belloff=all
+endif
 if !has('gui_running')
   if has('mouse') && !has('nvim')
     set ttymouse=xterm2
