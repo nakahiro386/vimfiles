@@ -1172,14 +1172,6 @@ noremap <Del> "xx
 noremap x "xx
 noremap X "xD
 
-" nnoremap gy my"yyy"ypg`y
-" nnoremap gY my"yyy"yPg`y
-" xnoremap gy "yy"ypgv
-" xnoremap gY "yy"yPgv
-
-" nnoremap <M-Up> kV"yd"ypk
-" nnoremap <M-Down> V"yd"yp
-
 nnoremap d "dd
 vnoremap d "dd
 noremap D "dD
@@ -3513,11 +3505,6 @@ endif "}}}
 
 if Tap('vim-textmanip') "{{{
   "mappings{{{
-  nmap gY <Plug>(textmanip-duplicate-down)
-  xmap gY <Plug>(textmanip-duplicate-down)
-  nmap gy <Plug>(textmanip-duplicate-up)
-  xmap gy <Plug>(textmanip-duplicate-up)
-
   nmap <M-Down> V<Plug>(textmanip-move-down)<Esc>
   nmap <M-Up> V<Plug>(textmanip-move-up)<Esc>
   nmap <M-Left> V<Plug>(textmanip-move-left)<Esc>
@@ -4524,9 +4511,24 @@ command! CopyFileDir exe "let @*=expand('%:p:h')"
 command! CopyFilePath exe "let @*=expand('%:p')"
 command! CopyFilePathFowWin exe "let @*=expand('%:p:gs?/?\\?')"
 command! ConvertWinPath exe "let @*=tr(@*, '/', '\\')"
-"command! -range Lcopy execute "<line1>,<line2>copy ".(line(".") - 1)
-"nnoremap gy :Lcopy<CR>
-"vnoremap gy :Lcopy<CR>
+function! s:LineCopy(mode, direction, count) abort "{{{
+  if a:mode == 'n'
+    let l:start = getpos('.')[1]
+    let l:end = l:start
+  elseif a:mode == 'V'
+    let l:start = getpos("'<")[1]
+    let l:end = getpos("'>")[1]
+  endif
+  let l:lines = getline(l:start, l:end)
+  let l:lnum = a:direction == 'down' ? l:end : (l:start -1)
+  for i in range(a:count)
+    call append(l:lnum, l:lines)
+  endfor
+endfunction "}}}
+nnoremap gy :<C-u>call <SID>LineCopy('n', 'down', v:count1)<CR>
+xnoremap gy :<C-u>call <SID>LineCopy('V', 'down', v:count1)<CR>gv
+nnoremap gY :<C-u>call <SID>LineCopy('n', 'up'  , v:count1)<CR>
+xnoremap gY :<C-u>call <SID>LineCopy('V', 'up'  , v:count1)<CR>gv
 "}}}
 
 "Grep:{{{
