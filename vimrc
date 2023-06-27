@@ -1856,7 +1856,9 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
   call dein#load_dict({
     \   'kana/vim-operator-replace': {},
     \   'rhysd/vim-operator-surround': {},
-    \   'tyru/operator-camelize.vim': {},
+    \   'mopp/vim-operator-convert-case': {
+    \     'on_map' : '<Plug>(operator-convert-case-'
+    \   },
     \   'tyru/operator-html-escape.vim': {
     \     'on_map' : '<Plug>(operator-html-'
     \   },
@@ -3768,10 +3770,9 @@ if Tap('vim-operator-surround') "{{{
   vmap Cs <Plug>(operator-surround-replace)
 endif "}}}
 
-if Tap('operator-camelize.vim') "{{{
-  map <LocalLeader>tc <Plug>(operator-camelize-toggle)
-  map <LocalLeader>c <Plug>(operator-camelize)
-  map <LocalLeader>C <Plug>(operator-decamelize)
+if Tap('vim-operator-convert-case') "{{{
+  map <LocalLeader>tc <Plug>(operator-convert-case-toggle-upper-lower)
+  map <LocalLeader>c <Plug>(operator-convert-case-loop)
 endif "}}}
 
 if Tap('operator-html-escape.vim') "{{{
