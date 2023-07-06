@@ -2961,7 +2961,7 @@ lua <<EOF
     require'vfiler/config'.setup {
       options = {
         auto_cd = false,
-        auto_resize = false,
+        auto_resize = true,
         columns = 'indent,icon,name',
         find_file = true,
         header = true,
@@ -5268,7 +5268,6 @@ if has('vim_starting')
   call Source('$VIMRUNTIME/delmenu.vim')
   if argc()
     if g:_dein_is_installed
-      call dein#source('vfiler.vim')
       call dein#call_hook('post_source')
     endif
   else
