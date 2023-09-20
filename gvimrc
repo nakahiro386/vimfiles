@@ -90,6 +90,7 @@ endif
 let g:guiFontList = []
 let g:guiFontWideList = []
 if g:is_windows
+  call add(g:guiFontList, 'HackGen_Console_NF:h11:cDEFAULT:qDEFAULT')
   call add(g:guiFontList, 'HackGen_Console_NFJ:h11:cDEFAULT:qDEFAULT')
   call add(g:guiFontList, 'MeiryoKe_Gothic:h11:cDEFAULT')
   call add(g:guiFontList, 'MyricaM_M:h12:cDEFAULT')
