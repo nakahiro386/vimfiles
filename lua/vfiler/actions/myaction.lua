@@ -1,4 +1,4 @@
-local api = require('vfiler/actions/api')
+local utilities = require('vfiler/actions/utilities')
 local directory = require('vfiler/actions/directory')
 
 local M = {}
@@ -8,7 +8,7 @@ function M.open_by_choose_or_open_tree(vfiler, context, view)
   if item.type == 'directory' then
     directory.open_tree(vfiler, context, view)
   else
-    api.open_file(vfiler, context, view, item.path, 'choose')
+    utilities.open_file(vfiler, context, view, item.path, 'choose')
   end
 end
 
