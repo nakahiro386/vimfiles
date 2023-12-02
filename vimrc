@@ -1576,7 +1576,6 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
 
   "unite_sources{{{
   call dein#load_dict({
-    \   'Shougo/neomru.vim': {'on_event' : s:event_idle},
     \   'Shougo/neoyank.vim': {'on_event' : s:event_idle},
     \   'Shougo/unite-build': {},
     \   'thinca/vim-unite-history': {},
@@ -2341,8 +2340,8 @@ if Tap('unite.vim') "{{{
   nnoremap <silent> [unite]B :<C-u>Unite -buffer-name=buffer_tab buffer_tab:!<CR>
   nnoremap <silent> [unite]R :<C-u>Unite resume<CR>
   nnoremap <silent> [unite]r :<C-u>Unite -buffer-name=register -default-action=yank -truncate register history/yank history/search history/command<CR>
-  nnoremap <silent> [unite]m :<C-u>Unite -default-action=tabopen -buffer-name=files file_mru bookmark<CR>
-  nnoremap <silent> [unite]D :<C-u>Unite -buffer-name=directory_mru directory_mru bookmark:directory<CR>
+  nnoremap <silent> [unite]m :<C-u>Unite -default-action=tabopen -buffer-name=files bookmark<CR>
+  nnoremap <silent> [unite]D :<C-u>Unite -buffer-name=bookmark_directory bookmark:directory<CR>
   nnoremap <silent> [unite]h :<C-u>Unite -buffer-name=help help<CR>
   nnoremap <silent> [unite]H :<C-u>UniteWithCursorWord -immediately -buffer-name=help help<CR>
   nnoremap <silent><expr> [unite]s  ":\<C-u>:UniteWithInput -max-multi-lines=1 -truncate -toggle -no-quit -buffer-name=search" . bufnr('%'). " line:all\<CR>"
@@ -2447,13 +2446,13 @@ if Tap('unite.vim') "{{{
 
   endfunction "}}}
   function! plugin.on_post_source() abort "{{{
-    call unite#custom_default_action('file,file_mru,bookmark', 'tabopen')
+    call unite#custom_default_action('file,bookmark', 'tabopen')
     call unite#custom_default_action('directory', 'lcd')
-    call unite#custom_default_action('directory,directory_mru', 'lcd')
+    call unite#custom_default_action('directory', 'lcd')
     call unite#custom_default_action('tag', 'vsplit')
     call unite#custom_default_action('command', 'execute')
     if has('migemo')
-      call unite#custom_source('file_mru,bookmark,buffer,menu,line_migemo,fold', 'matchers', 'matcher_migemo')
+      call unite#custom_source('bookmark,buffer,menu,line_migemo,fold', 'matchers', 'matcher_migemo')
     endif
     call unite#custom_source('line', 'max_candidates', 1000)
     call unite#custom_source('line_migemo', 'max_candidates', 50)
@@ -2660,17 +2659,6 @@ if Tap('unite.vim') "{{{
   endfunction "}}}
   call Set_hook('hook_source', 'on_source')
   call Set_hook('hook_post_source', 'on_post_source')
-endif "}}}
-
-if Tap('neomru.vim') "{{{
-  function! plugin.on_source() abort "{{{
-    let g:neomru#filename_format = ''
-    let g:neomru#time_format = ''
-    let g:neomru#do_validate = 0
-    let g:neomru#file_mru_path = expand(Getdir(g:vimrc_cache . '/unite/file', '$VIMFILES/tmp/.unite/file'))
-    let g:neomru#directory_mru_path = expand(Getdir(g:vimrc_cache . '/unite/directory', '$VIMFILES/tmp/.unite/directory'))
-  endfunction "}}}
-  call Set_hook('hook_source', 'on_source')
 endif "}}}
 
 if Tap('neoyank.vim') "{{{
