@@ -1998,9 +1998,15 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
   call dein#add('mopp/layoutplugin.vim', { 'on_cmd' : 'LayoutPlugin', })
 
   call dein#add('haya14busa/vim-poweryank', {
-    \   'if' : !has('gui_running'),
+    \   'if' : 0,
     \   'on_map' : [['nxo', '<Plug>(operator-poweryank-osc52)']],
     \   'on_cmd' : 'PowerYankOSC52',
+    \ })
+
+  call dein#add('ojroques/vim-oscyank', {
+    \   'if' : !has('gui_running'),
+    \   'on_map' : [['nxo', '<Plug>OSCYank']],
+    \   'on_cmd' : ['OSCYank', 'OSCYankVisual', 'OSCYankRegister',],
     \ })
 
   call dein#add('editorconfig/editorconfig-vim', {'on_cmd': 'EditorConfigEnable'})
@@ -4065,6 +4071,12 @@ endif "}}}
 if Tap('vim-poweryank') "{{{
   map <Leader>y <Plug>(operator-poweryank-osc52)
   nmap <Leader>yy 0<Plug>(operator-poweryank-osc52)$
+endif "}}}
+
+if Tap('vim-oscyank') "{{{
+  map <Leader>y <Plug>OSCYankOperator
+  vmap <Leader>y <Plug>OSCYankVisual
+  nmap <Leader>yy 0<Plug>OSCYankOperator$
 endif "}}}
 
 if Tap('hz_ja.vim') || exists(':Hankaku') is 2 "{{{
