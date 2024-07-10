@@ -1591,6 +1591,7 @@ if g:_dein_is_installed && dein#load_state(s:base_path)
   "}}}
 
   call dein#add('lambdalisue/mr.vim', {
+    \   'rev': 'v1.1.0',
     \   'on_event': s:event_idle + s:event_i,
     \   'on_func' : 'mr#',
     \ })
