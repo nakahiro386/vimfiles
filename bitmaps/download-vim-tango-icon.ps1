@@ -1,4 +1,4 @@
-$address = 'https://hail2u.net/pub/vim-tango-icon.zip'
+$address = 'https://hail2u.net/vim-tango-icon.zip'
 $currentPath = $(Split-Path -parent $MyInvocation.MyCommand.Definition)
 $fileName = $(join-path $currentPath 'vim-tango-icon.zip')
 $extractPath = $(join-path $currentPath 'vim-tango-icon')
